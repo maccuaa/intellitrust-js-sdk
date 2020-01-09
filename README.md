@@ -9,6 +9,8 @@ These are not official SDKs, this is a community project.
 
 ### Docs
 
+The instructions for installing and using the SDKs are published with the NPM package. See the SDK doc links below.
+
 Latest supported version: **5.5**
 
 |                | API                                                                                 | SDK                                                                  |
