@@ -10,6 +10,12 @@ const AUTH_PATH = "auth-sdk";
  * Main function.
  */
 (async () => {
+  const args = process.argv.slice(2);
+
+  const OTP = args.pop();
+
+  console.log("Using OTP", OTP);
+
   const exists = (path: string) => {
     if (!fs.existsSync(ADMIN_PATH)) {
       console.error(ADMIN_PATH, "does not exist. Did you forget to build?");
@@ -18,7 +24,13 @@ const AUTH_PATH = "auth-sdk";
   };
 
   const publish = async (path: string) => {
-    const subprocess = execa("npm", ["publish", "--public"], { cwd: path });
+    const subprocess = execa(
+      "npm",
+      ["publish", "--access", "public", "--otp", OTP],
+      {
+        cwd: path
+      }
+    );
     subprocess.stdout.pipe(process.stdout);
     subprocess.stderr.pipe(process.stderr);
     subprocess.stdin.pipe(process.stdin);

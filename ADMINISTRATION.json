@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "description": "\n# IntelliTrust Administration API documentation\nThis document describes how to manage your IntelliTrust account using Administration (Admin) API calls. This API allows you to seamlessly perform administrative actions on IntelliTrust without logging in to the IntelliTrust Administrator portal.\n# Prerequisites\nConfirm the following before executing the Admin API calls included in this guide:\n - An Admin API application has been created on your IntelliTrust account. The application must be configured with a role that has the permissions needed by your application. IntelliTrust allows you to download a JSON file once the application is created.\n - The Application ID and Shared Secret parameter values are easily accessible. They must be entered into the body of the Admin APi request. The required values are displayed after creating the Administration API application on IntelliTrust. Upon creation, you can either copy these values to your clipboard or download them as a JSON file.\n - The Admin API application configuration data has been downloaded and is available for use.\n\n# IntelliTrust Administration APIs\nIntelliTrust administration APIs are grouped into the following categories. You can only perform the API calls permitted by the role assigned to your Administration API application on IntelliTrust. See the **IntelliTrust Administrator Help** for more information on IntelliTrust roles:\n ### Admin Authentication\nThese APIs facilitate authentication between your Admin API application and IntelliTrust. You must make this call before making any other Admin API calls. The call generates an authentication token value that must be included in all other Admin API requests.\n\nWhen an admin API application authenticates, there is an option to enable a web session to add additional security to the session.  This is done by setting the enableWebSession argument passed to the authentication controller to true.  When a web session is enabled, a HTTP session cookie named INTELLITRUST_SESSION_ID will be returned with the authentication results.  This cookie must be included with all subsequent admin API calls along with the authentication token.\n ### Users \nThese APIs facilitate user management operations on an IntelliTrust account.\n ### Smart Credentials\nThe Entrust Datacard® Mobile Smart Credential (MSC) application allows users to perform authentications to their IntelliTrust account and configured applications. This API call facilitates mobile smart credential management operations on an IntelliTrust account.\n ### Tokens\nThese APIs facilitate hardware and soft token management operations on an IntelliTrust account.\n ### FIDO2 Tokens\n These APIs faciliate management of FIDO2 tokens.  FIDO2 tokens cannot be registered using the administration API but they can be viewed, deleted and updated.\n ### Grid Cards\n Grid authentication uses cards with a grid as the authentication lookup tool. This API call facilitates Grid Card management operations on an IntelliTrust account.\n ### Temporary Access Codes\nTemporary Access Codes can be used to log in when a user cannot access their one-time passcode (OTP), Grid Card, or token authenticator. This API call facilitates Temporary Access Code management operations on an IntelliTrust account.\n ### KBA - Knowledge-based Authenticators\nKnowledge-based authentication (or knowledge-based authenticators) (KBA) (also known as question-and-answer (Q&A) authentication) allows users to authenticate to SAML application accounts using IntelliTrust by providing the correct answer to one or more preregistered questions. This API call facilitates Knowledge-based Authenticator management operations on an IntelliTrust account.\n ### Passwords\nThere are two types of password authenticators available on IntelliTrust —IntelliTrust passwords and Active Directory (AD) passwords. IntelliTrust passwords are passwords that can be manually or automatically assigned to users on IntelliTrust. Active Directory (AD) passwords are passwords that have already been assigned to a user on their corporate directory - not through IntelliTrust. This API call facilitates password management operations on an IntelliTrust account for either type of password.\n ### User Risk-based authentication (RBA) Settings\n Risk-based authentication (RBA) identifies the level of risk associated with a user who tries to authenticate. This API call facilitates Risk-based authentication management operations on an IntelliTrust account.\n ### Machine authenticators\nMachine Authentication (MA) provides identification information on the Web browser being used to access a SAML application. This API call facilitates Machine Authenticator management operations on an IntelliTrust account. \n ### User Attributes\nUser attributes are the information fields listed as part of each user's Profile information. This API call facilitates user attribute management operations on an IntelliTrust account. \n ### Roles\nRoles control what operations a user can perform on their IntelliTrust account. These roles distinguish the amount of access given to each account, ranging from administrators with full access to end users (who can only access the user portal features).This API call facilitates role management operations on an IntelliTrust account.\n ### Groups\nAn IntelliTrust group is a collection of users given access to applications based on the resource rules they are assigned to. This API call facilitates group management operations on an IntelliTrust account.\n ### Reports\nThese APIs allows you to access the Audit Log on your IntelliTrust account. This Log lists the actions performed on your account within a period of time.\n ### Settings\n These APIs provide management of the settings used to configure IntelliTrust behavior.  Settings that can be managed using the administration API include General settings, OTP settings and Token settings.\n ### Applications\n These APIs provide management of authentication API applications using the administration API.\n ### Resource Rules\n Resource rules define what authenticators are required to authenticate to an application.  The resource rules APIs provide management of resource rules using the administration API.\n ### Directories\n These APIs provide directory related information using the administration API.\n ### Tenants\n For service provider accounts, the tenant APIs provide management of their child tenants as well as mangement of entitlements for those tenants. These APIs are only available for accounts that are service providers.\n ### Account Info\n The account info APIs provide functionality to fetch and modify account related information such as the company name and the license acknowledged flag.\n ### ActiveSync Access\n These APIs facilitate management of Exchange ActiveSync Devices available on your Microsoft Office 365 account.\n# Examples\nThe following are examples of Admin API calls that can be used to perform administrative actions. The examples below are not an exhaustive list of possible Admin API actions. \n\n**Important:** You must execute the Authentication (Admin API) call before executing any other Admin API calls. The Authentication (Admin API) call generates a token value that must be included in every other request to be successful.\n\n## Authentication (Admin API)\nTo perform this action, the first step is to submit a POST request to the Admin application. This is the Admin application created on your IntelliTrust account. The URL address of the Admin application includes your IntelliTrust account URL. The format of the URL is:  \n```  \nhttps://<domainname>.<region>.trustedauth.com/api/web/v1/adminapi/authenticate  \n```  \nFor example:  \n```  \nhttps://example.us.trustedauth.com/api/web/v1/adminapi/authenticate  \n```  \nThe body of this request should contain the JSON object with an Application ID and Shared Secret. This JSON file was generated during creation of Admin Application on IntelliTrust. For example:  \n```  \n{\t\"applicationId\": \"d3737e0f-4d8e-431c-b1d8-cd17ad4d633d\",\"sharedSecret\": \"randomSharedSecret\"}  \n```\nAn API response is received if the call is successful . For example:\n```\n{\n    \"authToken\": \"GLb6JWz966gCayVNw4lZSSKV6W3PGgsJZ4CagZjoZNMaa2Me7F5OX+CKOVx8sOXsBEdLemVEruixXoaVsjQc1j+GPBy5Qn+KlilA9GXrSEQujsmfiJono3Gta7Uc8b3VUkEBvU193UqWPtmW1NXsSnPV2Z9B2AjZT17zNlHAyOvFpOXTI5bkmj6f2cKses6cBem5kLSbGHH9lHBv4JvXBjNxtPf7urAUkFn8cJariZyb0/q/AYqYL9do8nFrPFmSCTjYeNmxuWm5CACRi17K5XSyhZpu979b3i7MQEeOq1Pfjw7WzdKfrSvLJg/qgYeLD4aSOrQu4HAixZSFBmW9RGDxlo0J0Y1uAAy4lR57yG3p6E8H6OcV3Vakso4CT8yHAFH8xmdsUXXfyv9v+hr5QKh+7iVYro8tjjByRzj6XXAOx0vDO2yhpOd4migv33aWlFEhbgxIzNseJ8je6wauST0O+hJ5kKjl5yLBXS3iKhZJZMG2FNcU5pbD7SnUh79OWoCuOsehOM2pDFDPnMEms5ri/y0yaKIZmtz9Poy6KH1BDd+645+xX8iqW4IeqJ3zW8RZtnJgzAkUFeCjuDtbvotIcR45p8ibXF0GWLFAbxzvc5daf21bBV29A33C7mFoX4id44BZJ6OC8fztmthRzR2l0uP04STG0dgRRTNgZpoqKiMczwbOVNDv7ZQeSf/Kh3n2S1O8SZXHZT+zUvPwCLg9mnhOTYEqPjoMlqTZycttFYv3D4hKbU7NzYmFdtGYreaI2rNNue7aOzn+J8BN0j3+ZHkhimfO/ZfhF89Bn02IRzDER1ENdcwBSO8frWeAR+nCy0m4Eg==\",\n    \"expirationTime\": \"2018-05-28T19:07:50.328+0000\",\n    \"creationTime\": \"2018-05-28T18:52:50.329+0000\"\n}\n```\nYou must include the **auth token** value displayed in this response in subsequent API calls. Without it, other Admin API calls will fail.\n\nAn error code is displayed if the call is unsuccessful. A different error code is displayed for each type of error.\n## Users\n### Create A User\nSubmit a POST request to create a User on your account. \nThe format of the URL is:  \n```  \nhttps://<domainname>.<region>.trustedauth.com/api/web/v2/users\n```   \nAn Authorization header field must be included in the header section of this request. The Authorization header stores the value received as **token** in the authentication request. The body of this request must contain all the fields mentioned in the example below that are configured as mandatory: \n```\n{\n   \"firstName\":\"john\",\n   \"lastName\":\"smith\",\n   \"email\":\"johnsmith@organization.com\",\n   \"userId\":\"john\",\n   \"mobile\":\"+16138561234\",\n   \"phone\":\"+161385699876\",\n   \"locale\":\"\",\n   \"state\":\"ACTIVE\",\n   \"externaId\":null,\n   \"externalSource\":null,\n   \"userAttributeValues\":[\n   ],\n   \"userAliases\": [\n      {\n         \"value\": \"johnny\",\n         \"type\": \"CUSTOM\"\n      }\n   ]   \n}\n```\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response that includes all the details of the create user. For example:\n```\n{\n    \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n    \"userId\": \"john\",\n    \"firstName\": \"john\",\n    \"lastName\": \"smith\",\n    \"email\": \"johnsmith@organization.com\",\n    \"mobile\": \"+16138561234\",\n    \"phone\":\"+161385699876\",\n    \"locale\": null,\n    \"state\": \"ACTIVE\",\n    \"externalId\": null,\n    \"externalSource\": null,\n    \"migrated\": null,\n    \"locked\": false,\n    \"lockoutExpiry\": null,\n    \"otpCreateTime\": null,\n    \"grids\": [],\n    \"tokens\": [\n        {\n            \"id\": \"9a2edcc5-46f0-4fff-89b1-13c0f73e1a5c\",\n            \"type\": \"ENTRUST_SOFT_TOKEN\",\n            \"serialNumber\": \"62461-69384\",\n            \"loadDate\": \"2018-05-29T19:12:54.000+0000\",\n            \"lastUsedDate\": null,\n            \"state\": \"ACTIVATING\",\n            \"platform\": null,\n            \"registeredForTransactions\": false,\n            \"name\": null,\n            \"allowedActions\": [\n                \"REACTIVATE\",\n                \"ACTIVATE_COMPLETE\",\n                \"DELETE\"\n            ],\n            \"description\": null,\n            \"userId\": null\n        }\n    ],\n    \"smartCredentials\": [],\n    \"tempAccessCode\": null,\n    \"userAttributeValues\": [],\n    \"userAliases\": [\n        {\n            \"id\": \"43422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n            \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n            \"value\": \"johnny\",\n            \"type\": \"CUSTOM\"\n        },\n        {\n            \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n            \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n            \"value\": \"john\",\n            \"type\": \"USERID\"\n        }\n    ],\n    \"groups\": [],\n    \"type\": \"MGMT_UI\"\n}\n```\n### Get a User by UserID\nSubmit a POST request to retrieve user details for a particular User Id. The format of the URL is:  \n```  \nhttps://<domainname>.<region>.trustedauth.com/api/web/v2/users/userid\n```  \nAn Authorization header field must be included in the header section of this request. The Authorization header stores the value received as **token** in the authentication request. The body of this request must contain **UserID**. For example:\n```\n{\"userId\":\"John\"}\n``` \nIn this example, all the required input parameters have been provided. The request would succeed and generate a response that includes the user's information. For example:\n```\n{\n    \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n    \"userId\": \"john\",\n    \"firstName\": \"john\",\n    \"lastName\": \"smith\",\n    \"email\": \"johnsmith@organization.com\",\n    \"mobile\": \"+16138561234\",\n    \"phone\":\"+161385699876\",\n    \"locale\": null,\n    \"state\": \"ACTIVE\",\n    \"externalId\": null,\n    \"externalSource\": null,\n    \"migrated\": null,\n    \"locked\": false,\n    \"lockoutExpiry\": null,\n    \"otpCreateTime\": null,\n    \"grids\": [],\n    \"tokens\": [\n        {\n            \"id\": \"9a2edcc5-46f0-4fff-89b1-13c0f73e1a5c\",\n            \"type\": \"ENTRUST_SOFT_TOKEN\",\n            \"serialNumber\": \"62461-69384\",\n            \"loadDate\": \"2018-05-29T19:12:54.000+0000\",\n            \"lastUsedDate\": null,\n            \"state\": \"ACTIVATING\",\n            \"platform\": null,\n            \"registeredForTransactions\": false,\n            \"name\": null,\n            \"allowedActions\": [\n                \"REACTIVATE\",\n                \"ACTIVATE_COMPLETE\",\n                \"DELETE\"\n            ],\n            \"description\": null,\n            \"userId\": null\n        }\n    ],\n    \"smartCredentials\": [],\n    \"tempAccessCode\": null,\n    \"userAttributeValues\": [],\n    \"userAliases\": [\n        {\n            \"id\": \"43422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n            \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n            \"value\": \"johnny\",\n            \"type\": \"CUSTOM\"\n        },\n        {\n            \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n            \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n            \"value\": \"john\",\n            \"type\": \"USERID\"\n        }\n    ],\n    \"groups\": [],\n    \"type\": \"MGMT_UI\"\n}\n```\n## Grids\n### Create a Grid\nSubmit a POST request to create a new Grid Card and assign it to a user. You must include the UUID of the user that you want to assign a Grid Card in the API request. The format of the URL is:  \n```  \nhttps://<domainname>.<region>.trustedauth.com/api/web/v1/users/{userid}/grids\n``` \nFor example:\n```\nhttps://example.us.trustedauth.com/api/web/v1/users/2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0/grids\n```\nAn Authorization header field must be included in the header section of this request. The Authorization header stores the value received as **token** in the authentication request. \n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response that includes the desired Grid Card information. For example:\n```\n{\n    \"id\": \"6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\",\n    \"serialNumber\": 2,\n    \"createDate\": \"2018-05-29T19:48:24.249+0000\",\n    \"assignDate\": null,\n    \"expiryDate\": null,\n    \"expired\": false,\n    \"lastUsedDate\": null,\n    \"state\": \"ACTIVE\",\n    \"gridContents\": [\n        [\n            \"TP\",\n            \"0M\",\n            \"P8\",\n            \"KW\",\n            \"3D\",\n            \"KR\",\n            \"M1\",\n            \"W0\",\n            \"TJ\",\n            \"F4\"\n        ],\n        [\n            \"9M\",\n            \"MV\",\n            \"88\",\n            \"DX\",\n            \"H3\",\n            \"DV\",\n            \"44\",\n            \"PW\",\n            \"V1\",\n            \"CX\"\n        ],\n        [\n            \"F2\",\n            \"FE\",\n            \"0Q\",\n            \"XN\",\n            \"CD\",\n            \"36\",\n            \"MQ\",\n            \"PN\",\n            \"WF\",\n            \"DD\"\n        ],\n        [\n            \"WN\",\n            \"9F\",\n            \"J4\",\n            \"TF\",\n            \"7J\",\n            \"W4\",\n            \"7M\",\n            \"9Q\",\n            \"1H\",\n            \"W5\"\n        ],\n        [\n            \"QM\",\n            \"21\",\n            \"VQ\",\n            \"39\",\n            \"1N\",\n            \"EV\",\n            \"PT\",\n            \"P4\",\n            \"28\",\n            \"WY\"\n        ]\n    ],\n    \"allowedActions\": [\n        \"DELETE\",\n        \"DISABLE\"\n    ],\n    \"userId\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n    \"userName\": \"john\"\n}\n```\n### Get a Grid by Id\nSubmit a POST request to display a Grid Card's details. You must include the Grid Card's ID string in the request. The ID is required to identify which Grid Card's details to display. The format of the request URL is:  \n```\nhttps://customer.region.trustedauth.com/api/web/v1/users/grids/{gridid}\n```\nFor example:\n```\nhttps://example.us.trustedauth.com/api/web/v1/users/grids/6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\n```\nAn Authorization header field must be included in the header section of this request. The Authorization header stores the value received as \"token\" in the authentication request. \n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response that includes Grid Card details. For example:\n```\n{\n    \"id\": \"6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\",\n    \"serialNumber\": 2,\n    \"createDate\": \"2018-05-29T19:48:24.000+0000\",\n    \"assignDate\": null,\n    \"expiryDate\": null,\n    \"expired\": false,\n    \"lastUsedDate\": null,\n    \"state\": \"ACTIVE\",\n    \"gridContents\": [\n        [\n            \"TP\",\n            \"0M\",\n            \"P8\",\n            \"KW\",\n            \"3D\",\n            \"KR\",\n            \"M1\",\n            \"W0\",\n            \"TJ\",\n            \"F4\"\n        ],\n        [\n            \"9M\",\n            \"MV\",\n            \"88\",\n            \"DX\",\n            \"H3\",\n            \"DV\",\n            \"44\",\n            \"PW\",\n            \"V1\",\n            \"CX\"\n        ],\n        [\n            \"F2\",\n            \"FE\",\n            \"0Q\",\n            \"XN\",\n            \"CD\",\n            \"36\",\n            \"MQ\",\n            \"PN\",\n            \"WF\",\n            \"DD\"\n        ],\n        [\n            \"WN\",\n            \"9F\",\n            \"J4\",\n            \"TF\",\n            \"7J\",\n            \"W4\",\n            \"7M\",\n            \"9Q\",\n            \"1H\",\n            \"W5\"\n        ],\n        [\n            \"QM\",\n            \"21\",\n            \"VQ\",\n            \"39\",\n            \"1N\",\n            \"EV\",\n            \"PT\",\n            \"P4\",\n            \"28\",\n            \"WY\"\n        ]\n    ],\n    \"allowedActions\": [\n        \"DELETE\",\n        \"DISABLE\"\n    ],\n    \"userId\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n    \"userName\": \"john\"\n}\n```\n\n# Authentication\n\n<!-- ReDoc-Inject: <security-definitions> -->",
-    "version": "5.4",
+    "version": "5.5",
     "title": "Entrust Datacard IntelliTrust Administration API",
     "contact": {
       "email": "support@entrustdatacard.com"
@@ -347,6 +347,542 @@
             }
           }
         },
+        "deprecated": false
+      }
+    },
+    "/api/web/v1/applications/adminapi": {
+      "get": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "List Admin API application",
+        "description": "List Admin API application. Caller requires the APPLICATIONS:VIEW permission.",
+        "operationId": "listAdminApiApplicationsUsingGET",
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminApiApplication"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "APPLICATIONS:VIEW"
+            ]
+          }
+        ],
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "Create Admin API application",
+        "description": "Create an Admin API application. Caller requires the APPLICATIONS:ADD permission.",
+        "operationId": "createAdminApiApplicationUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminApiApplicationParms"
+              }
+            }
+          },
+          "description": "Parameters for the new application.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminApiApplication"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "APPLICATIONS:ADD"
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "/api/web/v1/applications/adminapi/regenerate/{id}": {
+      "put": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "Regenerate Admin API application shared secret",
+        "description": "Regenerate the shared secret for an Admin API application. Caller requires the APPLICATIONS:EDIT permission.",
+        "operationId": "updateAdminApiSharedSecretUsingPUT",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the application to be updated.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "APPLICATIONS:EDIT"
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "/api/web/v1/applications/adminapi/{id}": {
+      "get": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "Get Admin API application",
+        "description": "Get an Admin API application. Caller requires the APPLICATIONS:VIEW permission.",
+        "operationId": "getAdminApiApplicationUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the application to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminApiApplication"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "APPLICATIONS:VIEW"
+            ]
+          }
+        ],
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "Update Admin API application",
+        "description": "Update an Adminp API application. Caller requires the APPLICATIONS:EDIT permission.",
+        "operationId": "updateAdminApiApplicationUsingPUT",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the application to be updated.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminApiApplicationParms"
+              }
+            }
+          },
+          "description": "Parameters to be updated in the application.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminApiApplication"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "APPLICATIONS:EDIT"
+            ]
+          }
+        ],
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "Remove Admin API application",
+        "description": "Remove an Admin API application. Caller requires the APPLICATIONS:REMOVE permission.",
+        "operationId": "removeAdminApiApplicationUsingDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the application to be removed.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "APPLICATIONS:REMOVE"
+            ]
+          }
+        ],
         "deprecated": false
       }
     },
@@ -782,6 +1318,39 @@
           {
             "AdminAPIAuthentication": [
               "APPLICATIONS:REMOVE"
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "/api/web/v1/applications/templates": {
+      "get": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "List application templates",
+        "description": "List application templates. Caller requires the TEMPLATES:VIEW permission.",
+        "operationId": "listApplicationTemplatesUsingGET",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ApplicationTemplate"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "TEMPLATES:VIEW"
             ]
           }
         ],
@@ -3734,172 +4303,6 @@
           }
         ],
         "deprecated": true
-      }
-    },
-    "/api/web/v1/reports/auditeventspaged": {
-      "post": {
-        "tags": [
-          "Reports"
-        ],
-        "summary": "Lists a page of audit events",
-        "description": "Returns audit events for the provided search parameters. Caller requires the REPORTS:VIEW permission.The following searchByAttributes are supported: <ul><li>eventTime: a <b>mandatory</b> String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are: GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL. </li><li>outcome: SUCCESS or FAIL. Allowed operator: EQUALS. </li><li>category: AUTHENTICATION or MANAGEMENT. Allowed operator: EQUALS. </li><li>entityName: a String up to 100 characters. Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>entityType: a String up to 40 characters (e.g., USERS, GROUPS, QUESTIONS, REPORTS, ROLES). Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>entityAction: a String up to 100 characters (e.g., ADD, EDIT, REMOVE, ASSIGN, RESET). Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>resourceName: a String up to 100 characters. Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>sourceIp: a String up to 39 characters. Allowed operators: EQUALS, STARTS_WITH. </li><li>subjectName: a String up to 100 characters (e.g., jsmith). Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>eventType: a String up to 100 characters (e.g., AuthenticationDeniedEvent). Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>subject: Restrict events to the UUID of a specific subject. Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br><br>The orderByAttribute supports these attribute names: eventTime, outcome, category, entityName, entityType, entityAction, resourceName, sourceIp, subjectName.<br>The results will only include audit events with data in the orderByAttribute selected. If ordering by entityName, entityType, or entityAction, then AUTHENTICATION events will not be returned.",
-        "operationId": "auditEventPageUsingPOST",
-        "requestBody": {
-          "$ref": "#/components/requestBodies/SearchParms"
-        },
-        "responses": {
-          "200": {
-            "description": "Successful",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AuditEventPage"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Access denied",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "AdminAPIAuthentication": [
-              "REPORTS:VIEW"
-            ]
-          }
-        ],
-        "deprecated": false
-      }
-    },
-    "/api/web/v1/reports/auditeventspaged/siem": {
-      "post": {
-        "tags": [
-          "Reports"
-        ],
-        "summary": "Lists a page of audit events (SIEM)",
-        "description": "Returns audit events for the provided search parameters in ascending order always. Caller requires the REPORTS:VIEW permission.The following searchByAttributes are supported: <ul><li>startTime: a <b>mandatory</b> String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are: GREATER_THAN_OR_EQUAL. </li><li>endTime: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-31T18:15:30). Allowed operators are: LESS_THAN_OR_EQUAL. </li><li>outcome: SUCCESS or FAIL. Allowed operator: EQUALS. </li><li>category: AUTHENTICATION or MANAGEMENT. Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br><br>The orderByAttribute is not used even if provided. Results are returned in ascending order always (oldest to newest event)",
-        "operationId": "siemAuditEventPageUsingPOST",
-        "requestBody": {
-          "$ref": "#/components/requestBodies/SearchParms"
-        },
-        "responses": {
-          "200": {
-            "description": "Successful",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AuditEventPage"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Access denied",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "AdminAPIAuthentication": [
-              "REPORTS:VIEW"
-            ]
-          }
-        ],
-        "deprecated": false
       }
     },
     "/api/web/v1/resourcerules": {
@@ -12361,6 +12764,172 @@
         "deprecated": false
       }
     },
+    "/api/web/v2/reports/auditeventspaged": {
+      "post": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Lists a page of audit events",
+        "description": "Returns audit events for the provided search parameters. Caller requires the REPORTS:VIEW permission.The following searchByAttributes are supported: <ul><li>eventTime: a <b>mandatory</b> String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are: GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL. </li><li>outcome: SUCCESS or FAIL. Allowed operator: EQUALS. </li><li>category: AUTHENTICATION or MANAGEMENT. Allowed operator: EQUALS. </li><li>entityName: a String up to 100 characters. Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>entityType: a String up to 40 characters (e.g., USERS, GROUPS, QUESTIONS, REPORTS, ROLES). Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>entityAction: a String up to 100 characters (e.g., ADD, EDIT, REMOVE, ASSIGN, RESET). Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>resourceName: a String up to 100 characters. Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>sourceIp: a String up to 39 characters. Allowed operators: EQUALS, STARTS_WITH. </li><li>subjectName: a String up to 100 characters (e.g., jsmith). Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>eventType: a String up to 100 characters (e.g., AuthenticationDeniedEvent). Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>subject: Restrict events to the UUID of a specific subject. Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br><br>The orderByAttribute supports these attribute names: eventTime, outcome, category, entityName, entityType, entityAction, resourceName, sourceIp, subjectName.<br>The results will only include audit events with data in the orderByAttribute selected. If ordering by entityName, entityType, or entityAction, then AUTHENTICATION events will not be returned.",
+        "operationId": "auditEventPageUsingPOST",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/SearchParms"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditEventPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "REPORTS:VIEW"
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "/api/web/v2/reports/auditeventspaged/siem": {
+      "post": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Lists a page of audit events (SIEM)",
+        "description": "Returns audit events for the provided search parameters in ascending order always. Caller requires the REPORTS:VIEW permission.The following searchByAttributes are supported: <ul><li>startTime: a <b>mandatory</b> String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are: GREATER_THAN_OR_EQUAL. </li><li>endTime: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-31T18:15:30). Allowed operators are: LESS_THAN_OR_EQUAL. </li><li>outcome: SUCCESS or FAIL. Allowed operator: EQUALS. </li><li>category: AUTHENTICATION or MANAGEMENT. Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br><br>The orderByAttribute is not used even if provided. Results are returned in ascending order always (oldest to newest event)",
+        "operationId": "siemAuditEventPageUsingPOST",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/SearchParms"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditEventPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "REPORTS:VIEW"
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
     "/api/web/v2/settings/otp": {
       "get": {
         "tags": [
@@ -13581,7 +14150,8 @@
             "description": "The category of the event.  Values are AUTHENTICATION or MANAGEMENT.",
             "enum": [
               "AUTHENTICATION",
-              "MANAGEMENT"
+              "MANAGEMENT",
+              "ISSUANCE"
             ]
           },
           "eventOutcome": {
@@ -13651,7 +14221,8 @@
             "enum": [
               "USER",
               "ADMIN_API",
-              "SERVICE_PROVIDER"
+              "SERVICE_PROVIDER",
+              "AGENT"
             ]
           },
           "subscriberAdminRoleId": {
@@ -13851,9 +14422,15 @@
       "AdminApiApplication": {
         "type": "object",
         "required": [
+          "applicationTemplate",
           "name"
         ],
         "properties": {
+          "applicationTemplate": {
+            "type": "string",
+            "example": "Administration API",
+            "description": "The name of the application template specific to this application type."
+          },
           "applicationTemplateId": {
             "type": "string",
             "example": "00dc1d40-b512-4159-bccc-e8c1b4524515",
@@ -13907,6 +14484,11 @@
           "name"
         ],
         "properties": {
+          "applicationTemplateId": {
+            "type": "string",
+            "example": "53df23b1-5f57-sdc5-tr23-asd345ip6789",
+            "description": "The UUID of the application template.  This value is only used when creating a new application. If not specified, the default admininstration API template is used."
+          },
           "description": {
             "type": "string",
             "example": "application for testing",
@@ -13980,6 +14562,34 @@
           }
         },
         "title": "AdminApiAuthenticationResult"
+      },
+      "ApplicationTemplate": {
+        "type": "object",
+        "required": [
+          "authenticationMethod",
+          "id",
+          "name"
+        ],
+        "properties": {
+          "authenticationMethod": {
+            "type": "string",
+            "description": "The type the application template. Possible values are SAML20, RADIUS, AAAS, IDG, OIDC, AUTHAPI, ADMINAPI, SIEMAPI."
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of application template."
+          },
+          "id": {
+            "type": "string",
+            "description": "The UUID of the application template."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the application template."
+          }
+        },
+        "title": "ApplicationTemplate",
+        "description": "Information returned about an IntelliTrust application template."
       },
       "AssignParms": {
         "type": "object",
@@ -14059,7 +14669,8 @@
             "description": "Restrict events to a specific category (authentication or management).",
             "enum": [
               "AUTHENTICATION",
-              "MANAGEMENT"
+              "MANAGEMENT",
+              "ISSUANCE"
             ]
           },
           "endTime": {
@@ -14116,6 +14727,7 @@
               "BULKHARDWARETOKENS",
               "DIGITALIDCONFIGS",
               "DIGITALIDCONFIGVARIABLES",
+              "DIGITALIDCONFIGCERTTEMPS",
               "DIGITALIDCONFIGSANS",
               "SCDEFNS",
               "SCDEFNPIVAPPLETCONFIGS",
@@ -14150,7 +14762,9 @@
               "ARCHIVES",
               "CERTIFICATES",
               "INTELLITRUSTDESKTOPS",
-              "ACTIVESYNC"
+              "ACTIVESYNC",
+              "PRINTERS",
+              "ISSUANCE"
             ]
           },
           "ip": {
@@ -14309,7 +14923,6 @@
         "type": "object",
         "required": [
           "adminUser",
-          "entitlements",
           "tenant"
         ],
         "properties": {
@@ -14612,6 +15225,21 @@
             "type": "string",
             "description": "The name of the CA for this digital id config."
           },
+          "caType": {
+            "type": "string",
+            "description": "The CA type of this Digital Id Config.",
+            "enum": [
+              "EDC",
+              "MS"
+            ]
+          },
+          "certTemplates": {
+            "type": "array",
+            "description": "A list of cert templates associated with this digital id config.",
+            "items": {
+              "$ref": "#/components/schemas/DigitalIdConfigCertTemplate"
+            }
+          },
           "certificateType": {
             "type": "string",
             "description": "The CA certificate type which digital ids using this config will use."
@@ -14627,6 +15255,10 @@
           "dnFormat": {
             "type": "string",
             "description": "The format which digital ids using this config will use for their DN."
+          },
+          "dnFormatSearchbaseIncluded": {
+            "type": "boolean",
+            "description": "Whether digital ids using this config should include the searchbase in their DN."
           },
           "id": {
             "type": "string",
@@ -14673,6 +15305,36 @@
         },
         "title": "DigitalIdConfig",
         "description": "Information that defines how digital ids are created in the CA."
+      },
+      "DigitalIdConfigCertTemplate": {
+        "type": "object",
+        "properties": {
+          "digitalIdConfigId": {
+            "type": "string",
+            "description": "The UUID of the Digital Id Config that owns this Digital Id Config Cert Template."
+          },
+          "id": {
+            "type": "string",
+            "description": "The UUID of the Digital Id Config Cert Template."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the Digital Id Config Cert Template."
+          },
+          "pivContainer": {
+            "type": "string",
+            "description": "The PIV container of the Digital Id Config Cert Template.",
+            "enum": [
+              "PivAuth",
+              "CardAuth",
+              "DigSig",
+              "KeyMgmt",
+              "None"
+            ]
+          }
+        },
+        "title": "DigitalIdConfigCertTemplate",
+        "description": "Information that describes a Digital Id Config Cert Template."
       },
       "DigitalIdConfigSubjectAltName": {
         "type": "object",
@@ -15319,6 +15981,18 @@
             "minimum": 60,
             "exclusiveMinimum": false,
             "exclusiveMaximum": false
+          },
+          "activationTypes": {
+            "type": "array",
+            "description": "The list of activation types that will be performed.  Allowed values are: CLASSIC (return activation values that must be manually entered into the mobile application), ONLINE (return a link that when clicked will launch the mobile application) and OFFLINE (return a QR code that can be scanned by the mobile application).  If no values are specified in the list then activation types are not updated.",
+            "items": {
+              "type": "string",
+              "enum": [
+                "CLASSIC",
+                "ONLINE",
+                "OFFLINE"
+              ]
+            }
           },
           "allowUnsecureDevice": {
             "type": "boolean",
@@ -16261,6 +16935,7 @@
               "BULKHARDWARETOKENS",
               "DIGITALIDCONFIGS",
               "DIGITALIDCONFIGVARIABLES",
+              "DIGITALIDCONFIGCERTTEMPS",
               "DIGITALIDCONFIGSANS",
               "SCDEFNS",
               "SCDEFNPIVAPPLETCONFIGS",
@@ -16295,7 +16970,9 @@
               "ARCHIVES",
               "CERTIFICATES",
               "INTELLITRUSTDESKTOPS",
-              "ACTIVESYNC"
+              "ACTIVESYNC",
+              "PRINTERS",
+              "ISSUANCE"
             ]
           },
           "id": {
@@ -17616,6 +18293,10 @@
       "Tenant": {
         "type": "object",
         "properties": {
+          "authenticationAccount": {
+            "type": "boolean",
+            "description": "A flag indicating if this tenant is an authentication account."
+          },
           "companyName": {
             "type": "string",
             "example": "Acme Corp.",
@@ -17629,6 +18310,10 @@
           "id": {
             "type": "string",
             "description": "The UUID of this tenant within the service provider."
+          },
+          "issuanceAccount": {
+            "type": "boolean",
+            "description": "A flag indicating if this tenant is an issuance account."
           },
           "locked": {
             "type": "boolean",
@@ -17645,6 +18330,11 @@
       "TenantParms": {
         "type": "object",
         "properties": {
+          "authenticationAccount": {
+            "type": "boolean",
+            "example": true,
+            "description": "When creating a new tenant as a child of the root service provider set this to true if the tenant is to be an authentication service. If not specified, it defaults to true. You cannot set the authenticate and issuance values to both true or both false. A child of a non-root service provider inherits the value of its service provider and if specified, this value is ignored."
+          },
           "companyCountry": {
             "type": "string",
             "example": "ca",
@@ -17664,6 +18354,11 @@
             "type": "string",
             "example": "acme",
             "description": "The domain for this account. This value is required when creating a tenant"
+          },
+          "issuanceAccount": {
+            "type": "boolean",
+            "example": false,
+            "description": "When creating a new tenant as a child of the root service provider set this to true if the tenant is to be an issuance service. If not specified, it defaults to false. You cannot set the authenticate and issuance values to both true or both false. A child of a non-root service provider inherits the value of its service provider and if specified, this value is ignored."
           }
         },
         "title": "TenantParms",
@@ -17939,6 +18634,10 @@
       "User": {
         "type": "object",
         "properties": {
+          "directoryDN": {
+            "type": "string",
+            "description": "The DN of the user in the directory the user was synchronized from."
+          },
           "directoryId": {
             "type": "string",
             "description": "If the user was synchronized from a directory, the UUID of that directory."

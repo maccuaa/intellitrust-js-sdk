@@ -1,6 +1,6 @@
 {
   "name": "intellitrust-ts-sdk-generator",
-  "version": "5.4.0",
+  "version": "1.0.0",
   "description": "Intellitrust TypeScript SDK Generator",
   "scripts": {
     "audit:admin": "cd admin-sdk && npm audit",
