@@ -1,6 +1,11 @@
-# IntelliTrust TypeScript SDK
+# IntelliTrust JavaScript SDK
 
 This repository generates the IntelliTrust JavaScript SDKs for the Entrust Datacard IntelliTrust Administration and Authentication APIs.
+
+These are not official SDKs, this is a community project.
+
+- SDKS generated using [Open API Generator](https://openapi-generator.tech/)
+- Includes TypeScript definitions
 
 ### Docs
 
