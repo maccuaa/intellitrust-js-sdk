@@ -43,3 +43,4 @@ TODO:
 - Add download script
 - Add CI build
 - Automate PR creation with Zapier
+- Swagger UI? (or something similar)
