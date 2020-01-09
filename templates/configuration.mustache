@@ -1,0 +1,39 @@
+{{>licenseInfo}}
+import { AxiosRequestConfig } from "axios";
+
+export interface ConfigurationParameters {
+    apiKey?: string | ((name: string) => string);
+    basePath?: string;
+    baseOptions?: AxiosRequestConfig;
+}
+
+export class Configuration {
+    /**
+     * parameter for apiKey security
+     * @param name security name
+     * @memberof Configuration
+     */
+    apiKey?: string | ((name: string) => string);
+
+    /**
+     * override base path
+     * 
+     * @type {string}
+     * @memberof Configuration
+     */
+    basePath?: string;
+
+    /**
+     * base options for axios calls
+     *
+     * @type {AxiosRequestConfig}
+     * @memberof Configuration
+     */
+    baseOptions?: AxiosRequestConfig;
+
+    constructor(param: ConfigurationParameters) {
+        this.apiKey = param.apiKey;
+        this.basePath = param.basePath;
+        this.baseOptions = param.baseOptions;
+    }
+}

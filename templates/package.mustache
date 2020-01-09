@@ -1,0 +1,30 @@
+{
+  "name": "{{npmName}}",
+  "version": "{{npmVersion}}",
+  "description": "JavaScript client for {{npmName}}",
+  "author": "Andrew MacCuaig <andrewmaccuaig@gmail.com>",
+  "homepage": "https://www.npmjs.com/package/{{npmName}}/v/{{npmVersion}}",
+  "repository": "https://github.com/maccuaa/intellitrust-sdk",
+  "keywords": [
+    "axios",
+    "typescript",
+    "openapi-client",
+    "authentication",
+    "intellitrust",
+    "{{npmName}}"
+  ],
+  "license": "ISC",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --outDir dist/",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "axios": "0.19.1"
+  },
+  "devDependencies": {
+    "@types/node": "13.1.5",
+    "typescript": "3.7.4"
+  }
+}

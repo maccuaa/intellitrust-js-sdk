@@ -1,0 +1,23 @@
+{{>licenseInfo}}
+import * as globalImportUrl from 'url';
+import { Configuration } from './configuration';
+import globalAxios, { AxiosPromise, AxiosInstance } from 'axios';
+import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from './base';
+
+{{! Generates the TypeScript model definitions }}
+{{#models}}
+{{#model}}{{#isEnum}}{{>modelEnum}}{{/isEnum}}{{#oneOf}}{{#-first}}{{>modelOneOf}}{{/-first}}{{/oneOf}}{{^isEnum}}{{^oneOf}}{{>modelGeneric}}{{/oneOf}}{{/isEnum}}{{/model}}
+{{/models}}
+
+export class API extends BaseAPI {
+
+  public setApiKey = (apiKey: string) => {
+    this.configuration.apiKey = apiKey
+  }
+
+{{#apiInfo}}{{#apis}}
+{{>apiInner}}
+{{/apis}}{{/apiInfo}}
+}
+
+export default API;
