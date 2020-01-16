@@ -1,4 +1,4 @@
 language: node_js
-script: ci:build
+script: "ci:build"
 node_js:
-  - node
+  - "node"
