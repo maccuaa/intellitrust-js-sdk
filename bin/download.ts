@@ -1,10 +1,15 @@
 #!/usr/bin/env node
 
 import * as fs from "fs";
+import * as dotenv from "dotenv";
 import axios from "axios";
 import getGeneratorOptions from "./lib";
 
-const BASE_PATH = "https://entrust.us.trustedauth.com/documentation/apiDocs";
+dotenv.config();
+
+const basePath = process.env.BASE_PATH || "https://entrust.us.trustedauth.com";
+
+const DOC_PATH = `${basePath}/documentation/apiDocs`;
 const VERSION_KEY = "npmVersion";
 
 /**
@@ -38,9 +43,9 @@ const VERSION_KEY = "npmVersion";
   const downloadFile = async (type: "auth" | "admin") => {
     const { config: configFile, input: file } = getGeneratorOptions(type);
 
-    const URL = `${BASE_PATH}/${file}`;
+    const URL = `${DOC_PATH}/${file}`;
 
-    console.log("Downloading", file);
+    console.log("Downloading", file, "from", URL);
 
     const response = await axios.get(URL);
 
