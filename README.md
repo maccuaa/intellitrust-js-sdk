@@ -24,12 +24,28 @@ Latest supported version: **5.5**
 1. Update the NPM Version in the config JSON files.
 1. Update lates version in README.
 
+### Updating
+
+Updating the Swagger files.
+
+```shell
+npm run download
+```
+
 ### Generating
 
-Generating the SDKs
+Generating the SDKs.
 
 ```shell
 npm run build
+```
+
+### Update & Generated
+
+To update the Swagger files and generate the SDKs:
+
+```shell
+npm run ci:build
 ```
 
 ### Publishing
@@ -42,7 +58,5 @@ npm run publish -- [OTP]
 
 TODO:
 
-- Add download script
 - Add CI build
-- Automate PR creation with Zapier
 - Swagger UI? (or something similar)
