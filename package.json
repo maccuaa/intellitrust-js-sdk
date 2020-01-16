@@ -2,6 +2,9 @@
   "name": "intellitrust-ts-sdk-generator",
   "version": "1.0.0",
   "description": "Intellitrust TypeScript SDK Generator",
+  "engines": {
+    "node": ">=12"
+  },
   "scripts": {
     "audit:admin": "cd admin-sdk && npm audit",
     "audit:auth": "cd auth-sdk && npm audit",
