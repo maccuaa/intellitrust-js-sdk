@@ -1,7 +1,6 @@
 # IntelliTrust JavaScript SDK
 
 [![Build Status](https://travis-ci.org/maccuaa/intellitrust-js-sdk.svg?branch=master)](https://travis-ci.org/maccuaa/intellitrust-js-sdk)
-[![NPM Downloads](https://badgen.net/npm/dm/@maccuaa/intellitrust-admin-sdk)](https://badgen.net/npm/dm/@maccuaa/intellitrust-admin-sdk)
 
 This repository generates the IntelliTrust JavaScript SDKs for the Entrust Datacard IntelliTrust Administration and Authentication APIs.
 
