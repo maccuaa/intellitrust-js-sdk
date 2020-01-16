@@ -4,12 +4,7 @@ import * as execa from "execa";
 import * as fs from "fs";
 import * as path from "path";
 import * as mustache from "mustache";
-
-interface GeneratorOptions {
-  input: string;
-  output: string;
-  config: string;
-}
+import getGeneratorOptions from "./lib";
 
 const GENERATOR = "typescript-axios";
 const TEMPLATES = "templates";
@@ -19,30 +14,6 @@ const README = "README.md";
 const README_TEMPLATE = "README-custom.mustache";
 const ADMIN_EXAMPLE = "admin-example.ts";
 const AUTH_EXAMPLE = "auth-example.ts";
-
-const getGeneratorOptions = (type: string): GeneratorOptions => {
-  let input: string,
-    output: string,
-    config: string = "";
-
-  if (type === ADMIN) {
-    input = "ADMINISTRATION.json";
-    output = "admin-sdk";
-    config = "config-admin.json";
-  }
-
-  if (type === AUTH) {
-    input = "AUTHENTICATION.json";
-    output = "auth-sdk";
-    config = "config-auth.json";
-  }
-
-  return {
-    input,
-    output,
-    config
-  };
-};
 
 const generateReadme = (config: string, output: string, type: string) => {
   const isAdmin = type === "admin";
@@ -91,7 +62,7 @@ const generateReadme = (config: string, output: string, type: string) => {
 
   const sdkType = args.pop();
 
-  if (![AUTH, ADMIN].includes(sdkType)) {
+  if (sdkType !== "auth" && sdkType !== "admin") {
     console.error(
       `Invalid type provided. Exected '${ADMIN}' or '${AUTH}', received`,
       sdkType

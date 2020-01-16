@@ -2,17 +2,42 @@
 
 import * as fs from "fs";
 import axios from "axios";
+import getGeneratorOptions from "./lib";
 
 const BASE_PATH = "https://entrust.us.trustedauth.com/documentation/apiDocs";
-
-const ADMIN_FILE = "ADMINISTRATION.json";
-const AUTH_FILE = "AUTHENTICATION.json";
+const VERSION_KEY = "npmVersion";
 
 /**
  * Main function.
  */
 (async () => {
-  const downloadFile = async (file: string) => {
+  /**
+   * Formats a version so that the patch version is properly applied.
+   *
+   * 5.5 -> 5.5.0
+   * 5.5.1 -> 5.5.1
+   *
+   * @param version The version read from the Swagger file.
+   * @returns The properly formatted version.
+   */
+  const formatVersion = (version: string) => {
+    const [major, minor, patch = "0"] = version.split(".");
+
+    if (!major || !minor) {
+      console.error("Invalid IntelliTrust version found", version);
+      process.exit(1);
+    }
+
+    return [major, minor, patch].join(".");
+  };
+
+  /**
+   * Download and save Swagger file.
+   * @param file The name of the swagger file.
+   */
+  const downloadFile = async (type: "auth" | "admin") => {
+    const { config: configFile, input: file } = getGeneratorOptions(type);
+
     const URL = `${BASE_PATH}/${file}`;
 
     console.log("Downloading", file);
@@ -27,9 +52,25 @@ const AUTH_FILE = "AUTHENTICATION.json";
       encoding: "UTF-8"
     });
 
-    console.log(file, "updated.");
+    console.log("Reading", configFile);
+
+    const configStr = fs.readFileSync(configFile, { encoding: "UTF-8" });
+
+    const config = JSON.parse(configStr);
+
+    const version = formatVersion(swagger.info.version);
+
+    config[VERSION_KEY] = version;
+
+    console.log("Saving", configFile);
+
+    fs.writeFileSync(configFile, JSON.stringify(config, null, 2), {
+      encoding: "UTF-8"
+    });
+
+    console.log("Saved.");
   };
 
-  await downloadFile(ADMIN_FILE);
-  await downloadFile(AUTH_FILE);
+  await downloadFile("admin");
+  await downloadFile("auth");
 })();
