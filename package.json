@@ -11,7 +11,7 @@
     "build:admin": "run-s clean:admin generate:admin compile:admin audit:admin pack:admin",
     "build:auth": "run-s clean:auth generate:auth compile:auth audit:auth pack:auth",
     "build": "npm-run-all --parallel build:* --sequential test",
-    "ci:build": "run-s download build:* test",
+    "ci:build": "run-s build:* test",
     "clean": "run-p clean:*",
     "clean:admin": "rm -rf admin-sdk",
     "clean:auth": "rm -rf auth-sdk",

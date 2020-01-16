@@ -42,14 +42,6 @@ Generating the SDKs.
 npm run build
 ```
 
-### Update & Generated
-
-To update the Swagger files and generate the SDKs:
-
-```shell
-npm run ci:build
-```
-
 ### Publishing
 
 Publish the SDKs. Make sure to pass in the OTP code.
@@ -60,4 +52,5 @@ npm run publish -- [OTP]
 
 TODO:
 
+- Travis Cron job to download latest?
 - Swagger UI? (or something similar)
