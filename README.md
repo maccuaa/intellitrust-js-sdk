@@ -22,21 +22,17 @@ Latest supported version: **5.5**
 
 ### Updating
 
-1. Update the Open API JSON files.
-1. Update the NPM Version in the config JSON files.
-1. Update lates version in README.
-
-### Updating
-
-Updating the Swagger files.
+Updating the Swagger files:
 
 ```shell
 npm run download
 ```
 
+Also update version in README.
+
 ### Generating
 
-Generating the SDKs.
+Generating the SDKs:
 
 ```shell
 npm run build
