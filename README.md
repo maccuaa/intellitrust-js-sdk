@@ -58,5 +58,4 @@ npm run publish -- [OTP]
 
 TODO:
 
-- Add CI build
 - Swagger UI? (or something similar)
