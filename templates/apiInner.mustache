@@ -98,7 +98,9 @@ private {{classname}}AxiosParamCreator = (configuration?: Configuration) => {
             {{^isListContainer}}
             if ({{paramName}} !== undefined) {
                 {{#isDateTime}}
-                localVarQueryParameter['{{baseName}}'] = ({{paramName}} as any).toISOString();
+                localVarQueryParameter['{{baseName}}'] = ({{paramName}} as any instanceof Date) ?
+                    ({{paramName}} as any).toISOString() :
+                    {{paramName}};
                 {{/isDateTime}}
                 {{^isDateTime}}
                 {{#isDate}}
