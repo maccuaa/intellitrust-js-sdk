@@ -1,4 +1,4 @@
-name: CI
+name: IntelliTrust API CI
 on: [push, check_run]
 env:
   BASE_PATH: ${{ secrets.BASE_PATH }}
@@ -19,8 +19,13 @@ jobs:
     - name: Download latest API
       run: npm run download
     - name: Get Diff
-      run: git diff | grep json
-    - run: echo "New API released"
-      if: success()
-    - run: echo "No new API released"
-      if: failure()
+      uses: technote-space/get-diff-action@v1.1.5
+      with:
+        SUFFIX_FILTER: .json
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v2.4.1
+      if: env.GIT_DIFF
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        title: New IntelliTrust API released
+        reviewers: maccuaa
