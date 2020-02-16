@@ -21,6 +21,7 @@ jobs:
     - name: Get Diff
       uses: technote-space/get-diff-action@v1.1.5
       with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SUFFIX_FILTER: .json
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v2.4.1
