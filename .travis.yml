@@ -1,5 +1,0 @@
-version: ~> 1.0
-language: node_js
-script: npm run ci:build
-node_js:
-  - "node"

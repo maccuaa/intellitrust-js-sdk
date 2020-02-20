@@ -1,9 +1,5 @@
-name: IntelliTrust API CI
-on:
-  schedule:
-    - cron:  0 21 * * *
-  push:
-  check_run:
+name: main
+on: [check_run, push]
 env:
   BASE_PATH: ${{ secrets.BASE_PATH }}
   AUTH_USER_ID: ${{ secrets.AUTH_USER_ID }}
@@ -11,26 +7,14 @@ env:
   ADMIN_APP_ID: ${{ secrets.ADMIN_APP_ID }}
   ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}
 jobs:
-  update:
-    name: Update API
+  build-and-test:
+    name: Build and Test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Using Node.js
-      uses: actions/setup-node@v1.1.0
-    - name: Install dependencies
-      run: npm ci
-    - name: Download latest API
-      run: npm run download
-    - name: Get Diff
-      uses: technote-space/get-diff-action@v1.1.6
-      with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SUFFIX_FILTER: .json
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v2.4.1
-      if: env.GIT_DIFF
-      with:
-        token: ${{ secrets.PAT }}
-        title: New IntelliTrust API released
-        reviewers: maccuaa
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1.1.0
+
+      - run: node -v
+      - run: npm -v
+      - run: npm ci
+      - run: npm run ci:build
