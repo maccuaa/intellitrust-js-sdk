@@ -1,4 +1,4 @@
-name: main
+name: build
 on: [push]
 env:
   BASE_PATH: ${{ secrets.BASE_PATH }}

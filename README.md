@@ -1,6 +1,6 @@
 # IntelliTrust JavaScript SDK
 
-[![Build Status](https://travis-ci.org/maccuaa/intellitrust-js-sdk.svg?branch=master)](https://travis-ci.org/maccuaa/intellitrust-js-sdk)
+![build](https://github.com/maccuaa/intellitrust-js-sdk/workflows/build/badge.svg)
 [![Greenkeeper badge](https://badges.greenkeeper.io/maccuaa/intellitrust-js-sdk.svg)](https://greenkeeper.io/)
 
 This repository generates the IntelliTrust JavaScript SDKs for the Entrust Datacard IntelliTrust Administration and Authentication APIs.
