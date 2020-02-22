@@ -19,12 +19,7 @@ jobs:
 
     - run: npm ci
     - run: npm run download
-
-    - uses: technote-space/get-diff-action@v1.1.9
-      with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SUFFIX_FILTER: .json
-
+      
     - uses: peter-evans/create-pull-request@v2.4.4
       if: env.GIT_DIFF
       with:
