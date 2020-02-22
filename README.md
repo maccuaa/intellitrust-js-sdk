@@ -46,10 +46,3 @@ Publish the SDKs. Make sure to pass in the OTP code.
 ```shell
 npm run publish -- [OTP]
 ```
-
-TODO:
-
-- Add dependency on openapi-generator
-- Add documentation site
-- Travis Cron job to download latest?
-- Swagger UI? (or something similar)
