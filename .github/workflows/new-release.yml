@@ -2,7 +2,6 @@ name: New Release Check
 on:
   schedule:
     - cron:  0 21 * * *
-  push:
 env:
   BASE_PATH: ${{ secrets.BASE_PATH }}
   AUTH_USER_ID: ${{ secrets.AUTH_USER_ID }}
