@@ -21,7 +21,6 @@ jobs:
     - run: npm run download
       
     - uses: peter-evans/create-pull-request@v2.4.4
-      if: env.GIT_DIFF
       with:
         token: ${{ secrets.PAT }}
         title: New IntelliTrust API released
