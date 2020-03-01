@@ -1,6 +1,6 @@
 # IntelliTrust JavaScript SDK
 
-![build](https://github.com/maccuaa/intellitrust-js-sdk/workflows/build/badge.svg)
+![Build](https://github.com/maccuaa/intellitrust-js-sdk/workflows/Build/badge.svg)
 ![NPM Audit](https://github.com/maccuaa/intellitrust-js-sdk/workflows/NPM%20Audit/badge.svg)
 [![Greenkeeper badge](https://badges.greenkeeper.io/maccuaa/intellitrust-js-sdk.svg)](https://greenkeeper.io/)
 
