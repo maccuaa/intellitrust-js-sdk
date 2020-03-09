@@ -11,4 +11,7 @@ jobs:
     - uses: actions/setup-node@v1.1.0
 
     - run: npm ci
-    - run: npm audit
+#     - run: npm audit
+    - uses: snyk/actions/node@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
