@@ -1,7 +1,7 @@
 # IntelliTrust JavaScript SDK
 
-![Build](https://github.com/maccuaa/intellitrust-js-sdk/workflows/Build/badge.svg)
-![NPM Audit](https://github.com/maccuaa/intellitrust-js-sdk/workflows/NPM%20Audit/badge.svg)
+[![Build](https://github.com/maccuaa/intellitrust-js-sdk/workflows/Build/badge.svg)](https://github.com/maccuaa/intellitrust-js-sdk/actions?query=workflow%3ABuild)
+[![NPM Audit](https://github.com/maccuaa/intellitrust-js-sdk/workflows/NPM%20Audit/badge.svg)](https://github.com/maccuaa/intellitrust-js-sdk/actions?query=workflow%3A%22NPM+Audit%22)
 [![Greenkeeper badge](https://badges.greenkeeper.io/maccuaa/intellitrust-js-sdk.svg)](https://greenkeeper.io/)
 
 This repository generates the IntelliTrust JavaScript SDKs for the Entrust Datacard IntelliTrust Administration and Authentication APIs.
