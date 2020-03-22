@@ -5,13 +5,22 @@ on:
 jobs:
   audit:
     name: NPM Audit
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest]
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1.1.0
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1.1.0
 
-    - run: npm ci
-#     - run: npm audit
-    - uses: snyk/actions/node@master
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - run: npm ci
+      - run: npm audit
+  
+  fix:
+    name: NPM Audit fix
+    runs-on: [ubuntu-latest]
+    if: failure()
+    steps:
+      - run: npm audit fix
+      - uses: peter-evans/create-pull-request@v2.4.4
+        with:
+          token: ${{ secrets.PAT }}
+          title: NPM Audit Vulnerability Found
+        
