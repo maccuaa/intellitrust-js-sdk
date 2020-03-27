@@ -3,8 +3,8 @@ on:
   schedule:
     - cron:  0 0 * * *
 jobs:
-  audit:
-    name: NPM Audit
+  audit-generator:
+    name: Audit Generator
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v2
@@ -12,7 +12,12 @@ jobs:
 
       - run: npm ci
       - run: npm audit
-  
+
+  build-sdk:
+    name: Audit SDKs
+    steps:
+      - run: npm run ci:build
+
   fix:
     name: NPM Audit fix
     runs-on: [ubuntu-latest]
@@ -23,4 +28,3 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           title: NPM Audit Vulnerability Found
-        
