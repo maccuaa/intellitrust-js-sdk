@@ -15,8 +15,6 @@ These are not official SDKs, this is a community project.
 
 The instructions for installing and using the SDKs are published with the NPM package. See the SDK doc links below.
 
-Latest supported version: **5.6**
-
 |                | Documentation                                                                       | SDK                                                                  | Badges                                                                                                                                                                                                                                                                        |
 | -------------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Administration | [API](https://entrust.us.trustedauth.com/documentation/apiDocs/administration.html) | [SDK](https://www.npmjs.com/package/@maccuaa/intellitrust-admin-sdk) | [![NPM Version](https://badgen.net/npm/v/@maccuaa/intellitrust-admin-sdk)](https://badgen.net/npm/v/@maccuaa/intellitrust-admin-sdk) [![NPM Downloads](https://badgen.net/npm/dm/@maccuaa/intellitrust-admin-sdk)](https://badgen.net/npm/dm/@maccuaa/intellitrust-admin-sdk) |
