@@ -4,7 +4,7 @@ on:
     - cron:  0 0 * * *
 jobs:
   audit-generator:
-    name: Audit Generator
+    name: NPM Audit
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v2
@@ -12,10 +12,6 @@ jobs:
 
       - run: npm ci
       - run: npm audit
-
-  build-sdk:
-    name: Audit SDKs
-    steps:
       - run: npm run ci:build
 
   fix:
