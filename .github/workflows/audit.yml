@@ -2,6 +2,12 @@ name: NPM Audit
 on:
   schedule:
     - cron:  0 0 * * *
+env:
+  BASE_PATH: ${{ secrets.BASE_PATH }}
+  AUTH_USER_ID: ${{ secrets.AUTH_USER_ID }}
+  AUTH_APP_ID: ${{ secrets.AUTH_APP_ID }}
+  ADMIN_APP_ID: ${{ secrets.ADMIN_APP_ID }}
+  ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}
 jobs:
   audit-generator:
     name: NPM Audit
