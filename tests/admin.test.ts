@@ -5,6 +5,10 @@ dotenv.config();
 
 const basePath = process.env.BASE_PATH;
 
+if (!basePath) {
+  throw new Error("BASE_PATH not defined.");
+}
+
 const credentials: AdminSDK.AdminApiAuthentication = {
   applicationId: process.env.ADMIN_APP_ID,
   sharedSecret: process.env.ADMIN_SECRET

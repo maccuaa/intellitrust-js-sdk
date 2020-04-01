@@ -5,6 +5,10 @@ dotenv.config();
 
 const basePath = process.env.BASE_PATH;
 
+if (!basePath) {
+  throw new Error("BASE_PATH not defined.");
+}
+
 const queryParms: AuthSDK.UserAuthenticateQueryParameters = {
   userId: process.env.AUTH_USER_ID,
   applicationId: process.env.AUTH_APP_ID
