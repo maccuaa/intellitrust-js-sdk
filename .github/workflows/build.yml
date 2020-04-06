@@ -12,7 +12,7 @@ jobs:
       ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1.1.0
+      - uses: actions/setup-node@v1
       - run: echo "$BASE_PATH"
       - run: node -v
       - run: npm -v
