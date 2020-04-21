@@ -1,8 +1,8 @@
 name: Build
 on: [push]
 jobs:
-  build-and-test:
-    name: Build and Test
+  build:
+    name: Build
     runs-on: ubuntu-latest
     env:
       BASE_PATH: ${{ secrets.BASE_PATH }}
