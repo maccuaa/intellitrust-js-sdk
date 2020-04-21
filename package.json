@@ -22,7 +22,8 @@
     "generate:auth": "ts-node ./bin/generate auth",
     "pack:admin": "npm pack ./admin-sdk --dry-run",
     "pack:auth": "npm pack ./auth-sdk --dry-run",
-    "publish": "ts-node ./bin/publish",
+    "publish": "run-s build publish:npm",
+    "publish:npm": "ts-node ./bin/publish",
     "test": "jest"
   },
   "author": "Andrew MacCuaig <andrewmaccuaig@gmail.com>",

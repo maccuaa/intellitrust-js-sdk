@@ -27,8 +27,6 @@ Updating the Swagger files:
 npm run download
 ```
 
-Also update version in README.
-
 ### Generating
 
 Generating the SDKs:
