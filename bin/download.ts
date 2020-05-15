@@ -54,12 +54,12 @@ const VERSION_KEY = "npmVersion";
     console.log("Writing", file);
 
     fs.writeFileSync(file, JSON.stringify(swagger, null, 2), {
-      encoding: "UTF-8"
+      encoding: "utf-8"
     });
 
     console.log("Reading", configFile);
 
-    const configStr = fs.readFileSync(configFile, { encoding: "UTF-8" });
+    const configStr = fs.readFileSync(configFile, { encoding: "utf-8" });
 
     const config = JSON.parse(configStr);
 
@@ -70,7 +70,7 @@ const VERSION_KEY = "npmVersion";
     console.log("Saving", configFile);
 
     fs.writeFileSync(configFile, JSON.stringify(config, null, 2), {
-      encoding: "UTF-8"
+      encoding: "utf-8"
     });
 
     console.log("Saved.");
