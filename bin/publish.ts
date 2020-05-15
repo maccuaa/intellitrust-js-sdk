@@ -26,7 +26,11 @@ const AUTH_PATH = "auth-sdk";
     await subprocess;
   };
 
+  cli.action.start("Building SDKs");
+
   await execa("npm", ["run", "build"]);
+
+  cli.action.stop();
 
   const otp = await cli.prompt("🔑 Enter OTP", { required: true });
 
