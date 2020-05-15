@@ -19,10 +19,10 @@ const generateReadme = (config: string, output: string, type: string) => {
   const isAdmin = type === "admin";
 
   const template = fs.readFileSync(path.join(TEMPLATES, README_TEMPLATE), {
-    encoding: "UTF-8"
+    encoding: "utf-8"
   });
 
-  const options = fs.readFileSync(config, { encoding: "UTF-8" });
+  const options = fs.readFileSync(config, { encoding: "utf-8" });
 
   const { npmName, npmVersion } = JSON.parse(options);
 
@@ -43,7 +43,7 @@ const generateReadme = (config: string, output: string, type: string) => {
     sdkTypeLower: sdkType.toLowerCase()
   });
 
-  fs.writeFileSync(path.join(output, README), readme, { encoding: "UTF-8" });
+  fs.writeFileSync(path.join(output, README), readme, { encoding: "utf-8" });
 };
 
 /**
