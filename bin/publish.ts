@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import * as execa from "execa";
-import * as fs from "fs";
+import cli from "cli-ux";
 
 const ADMIN_PATH = "admin-sdk";
 const AUTH_PATH = "auth-sdk";
@@ -10,27 +10,15 @@ const AUTH_PATH = "auth-sdk";
  * Main function.
  */
 (async () => {
-  const args = process.argv.slice(2);
-
-  const OTP = args.pop();
-
-  console.log("Using OTP", OTP);
-
-  const exists = (path: string) => {
-    if (!fs.existsSync(ADMIN_PATH)) {
-      console.error(ADMIN_PATH, "does not exist. Did you forget to build?");
-      process.exit(1);
-    }
-  };
-
-  const publish = async (path: string) => {
+  const publish = async (path: string, otp: string) => {
     const subprocess = execa(
       "npm",
-      ["publish", "--access", "public", "--otp", OTP],
+      ["publish", "--access", "public", "--otp", otp],
       {
-        cwd: path
+        cwd: path,
       }
     );
+
     subprocess.stdout.pipe(process.stdout);
     subprocess.stderr.pipe(process.stderr);
     subprocess.stdin.pipe(process.stdin);
@@ -38,9 +26,10 @@ const AUTH_PATH = "auth-sdk";
     await subprocess;
   };
 
-  exists(ADMIN_PATH);
-  exists(AUTH_PATH);
+  await execa("npm", ["run", "build"]);
 
-  await publish(ADMIN_PATH);
-  await publish(AUTH_PATH);
+  const otp = await cli.prompt("🔑 Enter OTP", { required: true });
+
+  await publish(ADMIN_PATH, otp);
+  await publish(AUTH_PATH, otp);
 })();
