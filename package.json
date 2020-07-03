@@ -33,7 +33,7 @@
     "@types/mustache": "4.0.1",
     "@types/node": "14.0.14",
     "axios": "0.19.2",
-    "cli-ux": "5.4.7",
+    "cli-ux": "5.4.9",
     "dotenv": "8.2.0",
     "execa": "4.0.2",
     "jest": "25.5.4",
