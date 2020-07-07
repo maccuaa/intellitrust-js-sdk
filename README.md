@@ -37,8 +37,8 @@ npm run build
 
 ### Publishing
 
-Publish the SDKs. Make sure to pass in the OTP code.
+Publish the SDKs.
 
 ```shell
-npm run publish -- [OTP]
+npm run publish
 ```
