@@ -89,7 +89,7 @@ const generateReadme = (config: string, output: string, type: string) => {
       output,
       "-c",
       config,
-      "--skip-validate-spec",
+      "--skip-validate-spec", // TODO: remove in 5.12
     ],
     {
       shell: true,
