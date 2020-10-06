@@ -10,8 +10,8 @@
     "audit:auth": "cd auth-sdk && npm audit",
     "build:admin": "run-s clean:admin generate:admin compile:admin audit:admin pack:admin",
     "build:auth": "run-s clean:auth generate:auth compile:auth audit:auth pack:auth",
-    "build": "npm-run-all --parallel build:* --sequential test",
-    "ci:build": "run-s build:* test",
+    "build": "npm-run-all --sequential update --parallel build:* --sequential test",
+    "ci:build": "run-s update build:* test",
     "clean": "run-p clean:*",
     "clean:admin": "rm -rf admin-sdk",
     "clean:auth": "rm -rf auth-sdk",
@@ -23,7 +23,8 @@
     "pack:admin": "npm pack ./admin-sdk --dry-run",
     "pack:auth": "npm pack ./auth-sdk --dry-run",
     "publish": "ts-node ./bin/publish",
-    "test": "jest"
+    "test": "jest",
+    "update": "openapi-generator-cli version-manager set latest"
   },
   "author": "Andrew MacCuaig <andrewmaccuaig@gmail.com>",
   "license": "ISC",
