@@ -19,7 +19,7 @@ const generateReadme = (config: string, output: string, type: string) => {
   const isAdmin = type === "admin";
 
   const template = fs.readFileSync(path.join(TEMPLATES, README_TEMPLATE), {
-    encoding: "utf-8"
+    encoding: "utf-8",
   });
 
   const options = fs.readFileSync(config, { encoding: "utf-8" });
@@ -40,7 +40,7 @@ const generateReadme = (config: string, output: string, type: string) => {
     example,
     sdkType,
     sdkVar,
-    sdkTypeLower: sdkType.toLowerCase()
+    sdkTypeLower: sdkType.toLowerCase(),
   });
 
   fs.writeFileSync(path.join(output, README), readme, { encoding: "utf-8" });
@@ -77,7 +77,7 @@ const generateReadme = (config: string, output: string, type: string) => {
   const subprocess = execa(
     "npx",
     [
-      "openapi-generator",
+      "openapi-generator-cli",
       "generate",
       "-i",
       input,
@@ -88,10 +88,10 @@ const generateReadme = (config: string, output: string, type: string) => {
       "-o",
       output,
       "-c",
-      config
+      config,
     ],
     {
-      shell: true
+      shell: true,
     }
   );
 
