@@ -19,7 +19,7 @@ jobs:
     - run: npm ci
     - run: npm run download
       
-    - uses: peter-evans/create-pull-request@v2.4.4
+    - uses: peter-evans/create-pull-request@v3
       with:
         token: ${{ secrets.PAT }}
-        title: New IntelliTrust API released
+        title: New IDaaS API version
