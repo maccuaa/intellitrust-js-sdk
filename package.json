@@ -30,7 +30,7 @@
   "license": "ISC",
   "dependencies": {
     "@openapitools/openapi-generator-cli": "2.1.7",
-    "@types/jest": "26.0.15",
+    "@types/jest": "26.0.16",
     "@types/mustache": "4.0.1",
     "@types/node": "14.14.10",
     "axios": "0.21.0",
