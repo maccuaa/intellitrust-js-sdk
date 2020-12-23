@@ -29,7 +29,7 @@
   "author": "Andrew MacCuaig <andrewmaccuaig@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "@openapitools/openapi-generator-cli": "2.1.13",
+    "@openapitools/openapi-generator-cli": "2.1.14",
     "@types/jest": "26.0.19",
     "@types/mustache": "4.1.0",
     "@types/node": "14.14.14",
