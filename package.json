@@ -32,7 +32,7 @@
     "@openapitools/openapi-generator-cli": "2.1.16",
     "@types/jest": "26.0.19",
     "@types/mustache": "4.1.0",
-    "@types/node": "14.14.17",
+    "@types/node": "14.14.19",
     "axios": "0.21.1",
     "cli-ux": "5.5.1",
     "dotenv": "8.2.0",
