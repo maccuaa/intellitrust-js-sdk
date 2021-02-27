@@ -11,14 +11,12 @@ if (!basePath) {
 
 const credentials: AdminSDK.AdminApiAuthentication = {
   applicationId: process.env.ADMIN_APP_ID,
-  sharedSecret: process.env.ADMIN_SECRET
+  sharedSecret: process.env.ADMIN_SECRET,
 };
 
 describe("Administration API", () => {
   it("should successfully call IntelliTrust", async () => {
-    const sdk = new AdminSDK.API({
-      basePath
-    });
+    const sdk = new AdminSDK.API({ basePath });
 
     const authResponse = await sdk.authenticateAdminApiUsingPOST(credentials);
 

@@ -11,14 +11,12 @@ if (!basePath) {
 
 const queryParms: AuthSDK.UserAuthenticateQueryParameters = {
   userId: process.env.AUTH_USER_ID,
-  applicationId: process.env.AUTH_APP_ID
+  applicationId: process.env.AUTH_APP_ID,
 };
 
 describe("Authentication API", () => {
   it("should successfully call IntelliTrust", async () => {
-    const sdk = new AuthSDK.API({
-      basePath
-    });
+    const sdk = new AuthSDK.API({ basePath });
 
     const response = await sdk.userAuthenticatorQueryUsingPOST(queryParms);
 

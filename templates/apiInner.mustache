@@ -3,7 +3,7 @@
  * {{classname}} - axios parameter creator{{#description}}
  * {{&description}}{{/description}}
  */
-private {{classname}}AxiosParamCreator = (configuration?: Configuration) => {
+private {{classname}}AxiosParamCreator = (configuration?: ConfigurationParameters) => {
     return {
     {{#operation}}
         /**
@@ -196,7 +196,7 @@ private {{classname}}AxiosParamCreator = (configuration?: Configuration) => {
  * {{{description}}}{{/description}}
  * @export
  */
-private {{classname}}Fp = (configuration?: Configuration) => {
+private {{classname}}Fp = (configuration?: ConfigurationParameters) => {
     return {
     {{#operation}}
         /**
