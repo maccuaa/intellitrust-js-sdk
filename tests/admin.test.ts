@@ -30,4 +30,34 @@ describe("Administration API", () => {
 
     expect(listResponse.status).toBe(200);
   });
+
+  it("should create a soft token", async () => {
+    const sdk = new AdminSDK.API({ basePath });
+
+    const authResponse = await sdk.authenticateAdminApiUsingPOST(credentials);
+
+    const { authToken } = authResponse.data;
+
+    sdk.setApiKey(authToken);
+
+    // Get the user
+    const getUserResponse = await sdk.userByUseridUsingPOST({
+      userId: "homer",
+    });
+
+    const user = getUserResponse.data;
+
+    // Create a new Soft Token for the user
+    const createTokenResult = await sdk.createTokenUsingPOST(
+      "ENTRUST_SOFT_TOKEN",
+      user.id,
+      {
+        activateParms: null,
+      }
+    );
+
+    const token = createTokenResult.data;
+
+    await sdk.deleteTokenUsingDELETE(token.id);
+  });
 });
