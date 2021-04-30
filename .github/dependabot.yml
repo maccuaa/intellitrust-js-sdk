@@ -1,0 +1,27 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "11:00"
+  open-pull-requests-limit: 10
+  versioning-strategy: increase
+  ignore:
+  - dependency-name: "@openapitools/openapi-generator-cli"
+    versions:
+    - 2.1.23
+    - 2.1.24
+    - 2.1.25
+  - dependency-name: "@types/node"
+    versions:
+    - 14.14.27
+    - 14.14.28
+    - 14.14.30
+  - dependency-name: typescript
+    versions:
+    - 4.1.4
+    - 4.1.5
+  - dependency-name: ts-jest
+    versions:
+    - 26.5.1
