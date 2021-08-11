@@ -1,9 +1,9 @@
-# IntelliTrust JavaScript SDK
+# Entrust Idenitity as a Service JavaScript SDK
 
 [![Build](https://github.com/maccuaa/intellitrust-js-sdk/workflows/Build/badge.svg)](https://github.com/maccuaa/intellitrust-js-sdk/actions?query=workflow%3ABuild)
 [![NPM Audit](https://github.com/maccuaa/intellitrust-js-sdk/workflows/NPM%20Audit/badge.svg)](https://github.com/maccuaa/intellitrust-js-sdk/actions?query=workflow%3A%22NPM+Audit%22)
 
-This repository generates the IntelliTrust JavaScript SDKs for the Entrust Datacard IntelliTrust Administration and Authentication APIs.
+This repository generates the JavaScript SDKs for the Entrust Identity as a Service Administration and Authentication APIs.
 
 These are not official SDKs, this is a community project.
 
