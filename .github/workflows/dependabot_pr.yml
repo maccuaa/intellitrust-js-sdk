@@ -1,7 +1,6 @@
 # This workflow doesn't have access to secrets and has a read-only token
-name: Dependabot
-on:
-  pull_request
+name: Dependabot PR
+on: pull_request
 jobs:
   build:
     name: Build
