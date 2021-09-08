@@ -1,0 +1,15 @@
+# This workflow doesn't have access to secrets and has a read-only token
+name: Dependabot
+on:
+  pull_request
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: node -v
+      - run: npm -v
+      - run: npm ci
+      - run: npm run ci:build
