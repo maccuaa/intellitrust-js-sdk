@@ -15,7 +15,7 @@ jobs:
       ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
       - run: echo "$BASE_PATH"
       - run: node -v
       - run: npm -v
