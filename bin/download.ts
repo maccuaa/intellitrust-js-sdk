@@ -12,6 +12,12 @@ const basePath = process.env.BASE_PATH || "https://entrust.us.trustedauth.com";
 const DOC_PATH = `${basePath}/documentation/apiDocs`;
 const VERSION_KEY = "npmVersion";
 
+interface Swagger {
+  info: {
+    version: string;
+  };
+}
+
 /**
  * Main function.
  */
@@ -47,14 +53,14 @@ const VERSION_KEY = "npmVersion";
 
     console.log("Downloading", file, "from", URL);
 
-    const response = await axios.get(URL);
+    const response = await axios.get(URL, { responseType: "json" });
 
-    const swagger = response.data;
+    const swagger = response.data as Swagger;
 
     console.log("Writing", file);
 
     fs.writeFileSync(file, JSON.stringify(swagger, null, 2), {
-      encoding: "utf-8"
+      encoding: "utf-8",
     });
 
     console.log("Reading", configFile);
@@ -70,7 +76,7 @@ const VERSION_KEY = "npmVersion";
     console.log("Saving", configFile);
 
     fs.writeFileSync(configFile, JSON.stringify(config, null, 2), {
-      encoding: "utf-8"
+      encoding: "utf-8",
     });
 
     console.log("Saved.");
