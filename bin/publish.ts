@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import * as execa from "execa";
-import cli from "cli-ux";
+
+import { CliUx } from "@oclif/core";
 
 const ADMIN_PATH = "admin-sdk";
 const AUTH_PATH = "auth-sdk";
@@ -26,13 +27,13 @@ const AUTH_PATH = "auth-sdk";
     await subprocess;
   };
 
-  cli.action.start("Building SDKs");
+  CliUx.ux.action.start("Building SDKs");
 
   await execa("npm", ["run", "build"]);
 
-  cli.action.stop();
+  CliUx.ux.action.stop();
 
-  const otp = await cli.prompt("🔑 Enter OTP", { required: true });
+  const otp = await CliUx.ux.prompt("🔑 Enter OTP", { required: true });
 
   await publish(ADMIN_PATH, otp);
   await publish(AUTH_PATH, otp);
