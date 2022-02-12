@@ -15,7 +15,7 @@ const queryParms: AuthSDK.UserAuthenticateQueryParameters = {
 };
 
 describe("Authentication API", () => {
-  it("should successfully call IntelliTrust", async () => {
+  it("should successfully call IDaaS", async () => {
     const sdk = new AuthSDK.API({ basePath });
 
     const response = await sdk.userAuthenticatorQueryUsingPOST(queryParms);

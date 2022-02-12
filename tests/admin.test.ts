@@ -15,7 +15,7 @@ const credentials: AdminSDK.AdminApiAuthentication = {
 };
 
 describe("Administration API", () => {
-  it("should successfully call IntelliTrust", async () => {
+  it("should successfully call IDaaS", async () => {
     const sdk = new AdminSDK.API({ basePath });
 
     const authResponse = await sdk.authenticateAdminApiUsingPOST(credentials);

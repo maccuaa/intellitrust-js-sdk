@@ -35,7 +35,7 @@ interface Swagger {
     const [major, minor, patch = "0"] = version.split(".");
 
     if (!major || !minor) {
-      console.error("Invalid IntelliTrust version found", version);
+      console.error("Invalid IDaaS version found", version);
       process.exit(1);
     }
 
