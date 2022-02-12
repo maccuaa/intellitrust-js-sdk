@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Identity as a Service TypeScript SDK Generator",
   "engines": {
-    "node": ">=12"
+    "node": ">=16"
   },
   "scripts": {
     "audit:admin": "cd admin-sdk && npm audit",
