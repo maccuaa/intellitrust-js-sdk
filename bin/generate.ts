@@ -1,8 +1,8 @@
+import * as execa from "execa";
 import * as fs from "fs";
 import * as mustache from "mustache";
 import * as path from "path";
 
-import { execa } from "execa";
 import getGeneratorOptions from "./lib";
 
 const GENERATOR = "typescript-axios";

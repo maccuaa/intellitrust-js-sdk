@@ -1,5 +1,6 @@
+import * as execa from "execa";
+
 import { CliUx } from "@oclif/core";
-import { execa } from "execa";
 
 const ADMIN_PATH = "admin-sdk";
 const AUTH_PATH = "auth-sdk";
