@@ -1,7 +1,6 @@
-#!/usr/bin/env node
-
-import * as fs from "fs";
 import * as dotenv from "dotenv";
+import * as fs from "fs";
+
 import axios from "axios";
 import getGeneratorOptions from "./lib";
 
