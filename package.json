@@ -1,5 +1,6 @@
 {
   "name": "idaas-ts-sdk-generator",
+  "private": true,
   "version": "1.0.0",
   "description": "Identity as a Service TypeScript SDK Generator",
   "engines": {
