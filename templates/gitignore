@@ -3,5 +3,5 @@ node_modules
 .openapi-generator-ignore
 git_push.sh
 tsconfig.json
-/*.ts
+*.ts
 package-lock.json
