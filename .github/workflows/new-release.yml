@@ -17,6 +17,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version-file: "package.json"
+      - run: node -v
+      - run: npm -v
       - run: npm ci
       - run: npm run download
       - uses: peter-evans/create-pull-request@v3

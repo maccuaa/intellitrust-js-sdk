@@ -35,7 +35,7 @@
     "@openapitools/openapi-generator-cli": "^2.4.26",
     "@types/mustache": "^4.1.2",
     "@types/node": "^18.0.0",
-    "axios": "1.1.2",
+    "axios": "^1.1.2",
     "dotenv": "^16.0.0",
     "execa": "^6.1.0",
     "mustache": "^4.2.0",
