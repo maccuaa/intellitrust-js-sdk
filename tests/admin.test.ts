@@ -1,6 +1,8 @@
 import * as AdminSDK from "../admin-sdk";
 import * as dotenv from "dotenv";
 
+import { describe, expect, it } from "vitest";
+
 dotenv.config();
 
 const basePath = process.env.BASE_PATH;

@@ -1,6 +1,8 @@
 import * as AuthSDK from "../auth-sdk/dist/index";
 import * as dotenv from "dotenv";
 
+import { describe, expect, it } from "vitest";
+
 dotenv.config();
 
 const basePath = process.env.BASE_PATH;
