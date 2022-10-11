@@ -16,6 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
+        with:
+          node-version-file: "package.json"
       - run: echo "$BASE_PATH"
       - run: node -v
       - run: npm -v

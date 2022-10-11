@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Identity as a Service TypeScript SDK Generator",
   "engines": {
-    "node": ">=16"
+    "node": "lts/**"
   },
   "scripts": {
     "audit:admin": "cd admin-sdk && npm audit",
@@ -19,12 +19,12 @@
     "clean:auth": "rm -rf auth-sdk",
     "compile:admin": "cd admin-sdk && npm i && npm run build",
     "compile:auth": "cd auth-sdk && npm i && npm run build",
-    "download": "ts-node ./bin/download",
-    "generate:admin": "ts-node ./bin/generate admin",
-    "generate:auth": "ts-node ./bin/generate auth",
+    "download": "tsx ./bin/download",
+    "generate:admin": "tsx ./bin/generate admin",
+    "generate:auth": "tsx ./bin/generate auth",
     "pack:admin": "npm pack ./admin-sdk --dry-run",
     "pack:auth": "npm pack ./auth-sdk --dry-run",
-    "publish": "ts-node ./bin/publish",
+    "publish": "tsx ./bin/publish",
     "test": "jest",
     "update": "openapi-generator-cli version-manager set latest"
   },
@@ -38,12 +38,12 @@
     "@types/node": "^18.0.0",
     "axios": "1.1.2",
     "dotenv": "^16.0.0",
-    "execa": "^5.1.1",
+    "execa": "^6.1.0",
     "jest": "^27.4.7",
     "mustache": "^4.2.0",
     "npm-run-all": "^4.1.5",
     "ts-jest": "^27.1.3",
-    "ts-node": "^10.4.0",
+    "tsx": "^3.10.1",
     "typescript": "^4.5.5"
   }
 }

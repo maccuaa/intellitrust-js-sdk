@@ -3,7 +3,7 @@ name: Dependabot Automerge
 on:
   workflow_run:
     workflows: ["Dependabot PR"]
-    types: 
+    types:
       - completed
 
 jobs:
@@ -12,11 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: "package.json"
       - run: node -v
       - run: npm -v
       - run: npm ci
