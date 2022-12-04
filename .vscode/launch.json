@@ -5,6 +5,14 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Download",
+      "request": "launch",
+      "runtimeArgs": ["run-script", "download"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
       "name": "Vitest Current File",
       "request": "launch",
       "runtimeArgs": ["vitest", "${relativeFile}"],
