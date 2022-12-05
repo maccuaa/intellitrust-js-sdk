@@ -49,12 +49,18 @@ const downloadFile = async (type: "auth" | "admin") => {
 
   const response = await axios.get(URL, { responseType: "json" });
 
+  console.log("Download Status:", response.status);
+
   const swagger = response.data as Swagger;
 
-  if (!swagger.info.version) {
+  if (!swagger?.info?.version) {
     console.error(
       "Version not found in Swagger file.",
       JSON.stringify(swagger, null, 2)
+    );
+    console.error(
+      "Response headers:",
+      JSON.stringify(response.headers, null, 2)
     );
     process.exit(1);
   }
