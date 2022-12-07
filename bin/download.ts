@@ -1,7 +1,7 @@
 import { readFile, writeFile } from "fs/promises";
 
-import axios from "axios";
 import { config } from "dotenv";
+import fetch from "node-fetch";
 import getGeneratorOptions from "./lib";
 
 config();
@@ -47,17 +47,16 @@ const downloadFile = async (type: "auth" | "admin") => {
 
   console.log("Downloading", file, "from", URL);
 
-  const response = await axios.get(URL, { responseType: "json" });
+  const response = await fetch(URL);
 
   console.log("Download Status:", response.status);
 
-  const swagger = response.data as Swagger;
+  // const swagger = response.data as Swagger;
+  const swagger = (await response.json()) as Swagger;
 
   if (!swagger?.info?.version) {
-    console.error(
-      "Version not found in Swagger file.",
-      JSON.stringify(swagger, null, 2)
-    );
+    console.error("Version not found in Swagger file.", swagger);
+    // console.error("Request headers:", JSON.stringify(response.request))
     console.error(
       "Response headers:",
       JSON.stringify(response.headers, null, 2)

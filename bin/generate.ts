@@ -1,9 +1,9 @@
-import * as fs from "fs";
-import * as mustache from "mustache";
-import * as path from "path";
+import { readFile, writeFile } from "fs/promises";
 
 import { execa } from "execa";
 import getGeneratorOptions from "./lib";
+import { join } from "path";
+import { render } from "mustache";
 
 const GENERATOR = "typescript-axios";
 const TEMPLATES = "templates";
@@ -14,26 +14,26 @@ const README_TEMPLATE = "README-custom.mustache";
 const ADMIN_EXAMPLE = "admin-example.ts";
 const AUTH_EXAMPLE = "auth-example.ts";
 
-const generateReadme = (config: string, output: string, type: string) => {
+const generateReadme = async (config: string, output: string, type: string) => {
   const isAdmin = type === "admin";
 
-  const template = fs.readFileSync(path.join(TEMPLATES, README_TEMPLATE), {
+  const template = await readFile(join(TEMPLATES, README_TEMPLATE), {
     encoding: "utf-8",
   });
 
-  const options = fs.readFileSync(config, { encoding: "utf-8" });
+  const options = await readFile(config, { encoding: "utf-8" });
 
   const { npmName, npmVersion } = JSON.parse(options);
 
-  const example = fs.readFileSync(
-    path.join(TEMPLATES, isAdmin ? ADMIN_EXAMPLE : AUTH_EXAMPLE)
+  const example = await readFile(
+    join(TEMPLATES, isAdmin ? ADMIN_EXAMPLE : AUTH_EXAMPLE)
   );
 
   const sdkType = isAdmin ? "Administration" : "Authentication";
 
   const sdkVar = isAdmin ? "AdminSDK" : "AuthSDK";
 
-  const readme = mustache.render(template, {
+  const readme = render(template, {
     npmName,
     npmVersion,
     example,
@@ -42,7 +42,7 @@ const generateReadme = (config: string, output: string, type: string) => {
     sdkTypeLower: sdkType.toLowerCase(),
   });
 
-  fs.writeFileSync(path.join(output, README), readme, { encoding: "utf-8" });
+  await writeFile(join(output, README), readme, { encoding: "utf-8" });
 };
 
 /**
@@ -101,7 +101,7 @@ const generateReadme = (config: string, output: string, type: string) => {
 
   console.log("Post processing files...");
 
-  generateReadme(config, output, sdkType);
+  await generateReadme(config, output, sdkType);
 
   console.log("Generated README");
 })();
