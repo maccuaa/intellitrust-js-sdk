@@ -1,5 +1,5 @@
-import { CliUx } from "@oclif/core";
 import { execa } from "execa";
+import { ux } from "@oclif/core";
 
 const ADMIN_PATH = "admin-sdk";
 const AUTH_PATH = "auth-sdk";
@@ -24,13 +24,13 @@ const AUTH_PATH = "auth-sdk";
     await subprocess;
   };
 
-  CliUx.ux.action.start("Building SDKs");
+  ux.action.start("Building SDKs");
 
   await execa("npm", ["run", "build"]);
 
-  CliUx.ux.action.stop();
+  ux.action.stop();
 
-  const otp = await CliUx.ux.prompt("🔑 Enter OTP", { required: true });
+  const otp = await ux.prompt("🔑 Enter OTP", { required: true });
 
   await publish(ADMIN_PATH, otp);
   await publish(AUTH_PATH, otp);
