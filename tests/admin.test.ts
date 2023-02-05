@@ -51,8 +51,8 @@ describe("Administration API", () => {
 
     // Create a new Soft Token for the user
     const createTokenResult = await sdk.createTokenUsingPOST(
-      "ENTRUST_SOFT_TOKEN",
       user.id,
+      "ENTRUST_SOFT_TOKEN",
       {
         activateParms: null,
       }
