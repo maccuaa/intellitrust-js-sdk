@@ -1,8 +1,8 @@
-import { readFile, stat, writeFile } from "node:fs/promises";
+import { join, resolve } from "node:path";
+import { readFile, readdir, stat, writeFile } from "node:fs/promises";
 
 import { execa } from "execa";
 import getGeneratorOptions from "./lib";
-import { join } from "node:path";
 import { render } from "mustache";
 
 const GENERATOR = "typescript-axios";
@@ -75,11 +75,18 @@ const generateReadme = async (config: string, output: string, type: string) => {
 
   console.log(`Current directory: ${process.cwd()}`);
 
+  const files = await readdir(process.cwd());
+  for (const file of files) {
+    console.log(file);
+  }
+
+  const inputFile = resolve(process.cwd(), input);
+
   try {
-    await stat(input);
-    console.log(`${input} exists`);
+    await stat(inputFile);
+    console.log(`${inputFile} exists`);
   } catch (e) {
-    console.error(`${input} does not exist`);
+    console.error(`${inputFile} does not exist`);
   }
 
   const subprocess = execa(
@@ -88,7 +95,7 @@ const generateReadme = async (config: string, output: string, type: string) => {
       "openapi-generator-cli",
       "generate",
       "-i",
-      input.toUpperCase(),
+      inputFile,
       "-g",
       GENERATOR,
       "-t",
@@ -99,6 +106,7 @@ const generateReadme = async (config: string, output: string, type: string) => {
       config,
     ],
     {
+      cwd: process.cwd(),
       shell: true,
     }
   );
