@@ -7,9 +7,9 @@ export interface GeneratorOptions {
 export const getGeneratorOptions = (
   type: "admin" | "auth"
 ): GeneratorOptions => {
-  let input: string,
-    output: string,
-    config: string = "";
+  let input: string = "";
+  let output: string = "";
+  let config: string = "";
 
   if (type === "admin") {
     input = "administration.json";
@@ -26,7 +26,7 @@ export const getGeneratorOptions = (
   return {
     input,
     output,
-    config
+    config,
   };
 };
 
