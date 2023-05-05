@@ -12,13 +12,13 @@ export const getGeneratorOptions = (
     config: string = "";
 
   if (type === "admin") {
-    input = "ADMINISTRATION.json";
+    input = "administration.json";
     output = "admin-sdk";
     config = "config-admin.json";
   }
 
   if (type === "auth") {
-    input = "AUTHENTICATION.json";
+    input = "authentication.json";
     output = "auth-sdk";
     config = "config-auth.json";
   }

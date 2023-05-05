@@ -8,7 +8,7 @@ config();
 
 const basePath = "https://entrust.us.trustedauth.com";
 
-const DOC_PATH = `${basePath}/documentation/apiDocs`;
+const DOC_PATH = `${basePath}/help/developer/openapi`;
 const VERSION_KEY = "npmVersion";
 
 interface Swagger {
