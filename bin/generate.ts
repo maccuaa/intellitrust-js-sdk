@@ -1,8 +1,8 @@
-import { readFile, writeFile } from "fs/promises";
+import { readFile, stat, writeFile } from "node:fs/promises";
 
 import { execa } from "execa";
 import getGeneratorOptions from "./lib";
-import { join } from "path";
+import { join } from "node:path";
 import { render } from "mustache";
 
 const GENERATOR = "typescript-axios";
@@ -73,13 +73,22 @@ const generateReadme = async (config: string, output: string, type: string) => {
 
   console.log(`Generating ${sdkType} SDK...`);
 
+  console.log(`Current directory: ${process.cwd()}`);
+
+  try {
+    await stat(input);
+    console.log(`${input} exists`);
+  } catch (e) {
+    console.error(`${input} does not exist`);
+  }
+
   const subprocess = execa(
     "npx",
     [
       "openapi-generator-cli",
       "generate",
       "-i",
-      input,
+      input.toUpperCase(),
       "-g",
       GENERATOR,
       "-t",
@@ -88,7 +97,6 @@ const generateReadme = async (config: string, output: string, type: string) => {
       output,
       "-c",
       config,
-      "--skip-validate-spec", // TODO: remove in 5.12
     ],
     {
       shell: true,
