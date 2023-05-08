@@ -34,7 +34,7 @@
     "@oclif/core": "^2.0.8",
     "@openapitools/openapi-generator-cli": "^2.4.26",
     "@types/mustache": "^4.1.2",
-    "@types/node": "^18.11.19",
+    "@types/node": "^20.1.0",
     "dotenv": "^16.0.0",
     "execa": "^7.0.0",
     "mustache": "^4.2.0",
