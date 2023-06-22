@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.29"
+    "version": "5.30"
   },
   "servers": [
     {
@@ -11498,6 +11498,89 @@
         ]
       }
     },
+    "/api/web/v1/users/{userid}/password/notify": {
+      "put": {
+        "tags": [
+          "Passwords"
+        ],
+        "summary": "Update and send a password expiry notification",
+        "description": "Updates and sends a password expiry notification to the specified user. Caller requires the USERPASSWORDS:EDIT permission.",
+        "operationId": "sendPasswordExpiryNotificationUsingPUT",
+        "parameters": [
+          {
+            "name": "userid",
+            "in": "path",
+            "description": "The UUID of the user to send an expiry notification to.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "USERPASSWORDS:EDIT"
+            ]
+          }
+        ]
+      }
+    },
     "/api/web/v1/users/{userid}/password/validate": {
       "post": {
         "tags": [
@@ -16917,6 +17000,10 @@
             "description": "Name of application. ",
             "example": "authApiApplication"
           },
+          "passkeyEnabled": {
+            "type": "boolean",
+            "description": "Flag indicating if passkey authentication is allowed for this application."
+          },
           "protectedOfflineSettings": {
             "$ref": "#/components/schemas/ProtectedOfflineSettings"
           },
@@ -16971,6 +17058,10 @@
             "type": "string",
             "description": "Name of the application. ",
             "example": "authApiApplication"
+          },
+          "passkeyEnabled": {
+            "type": "boolean",
+            "description": "Flag indicating if passkey authentication is allowed for this application."
           },
           "protectedOfflineSettings": {
             "$ref": "#/components/schemas/ProtectedOfflineSettings"
@@ -18424,6 +18515,10 @@
           "name": {
             "type": "string",
             "description": "The name of this FIDO token."
+          },
+          "origin": {
+            "type": "string",
+            "description": "The origin of where the FIDO token was generated."
           },
           "state": {
             "type": "string",
@@ -22960,6 +23055,11 @@
             "description": "Indicates whether self-registration is required. This attribute doesn't apply to administrators.",
             "example": true
           },
+          "showNotification": {
+            "type": "boolean",
+            "description": "Indicates whether to show notifications to this user.",
+            "example": true
+          },
           "smartCredentials": {
             "type": "array",
             "description": "A list of all the smart credentials owned by this user.",
@@ -23600,6 +23700,11 @@
       "UserPassword": {
         "type": "object",
         "properties": {
+          "expiryNotificationDate": {
+            "type": "string",
+            "description": "The date at which the next password expiry notification will be sent.",
+            "format": "date-time"
+          },
           "expiryTime": {
             "type": "string",
             "description": "The date at which the password will expire.",
