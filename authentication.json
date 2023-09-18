@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.30"
+    "version": "5.31"
   },
   "servers": [
     {
@@ -735,6 +735,10 @@
             "description": "The authenticator response for MSCHAPv2",
             "format": "byte"
           },
+          "deviceCertAuthDesired": {
+            "type": "boolean",
+            "description": "Flag to indicate if the user has to attempt device certificate authentication."
+          },
           "expires": {
             "type": "integer",
             "format": "int64"
@@ -917,6 +921,33 @@
               "type": "string",
               "description": "The IDs of FIDO tokens already registered to this user.  These values are base-64 encoded."
             }
+          },
+          "registrationAuthenticatorAttachment": {
+            "type": "string",
+            "description": "Should the token be embedded on the device or stored externally?",
+            "enum": [
+              "EITHER",
+              "PLATFORM",
+              "CROSS_PLATFORM"
+            ]
+          },
+          "registrationRequireResidentKey": {
+            "type": "string",
+            "description": "Should the User ID be stored on the Passkey/FIDO2 token?",
+            "enum": [
+              "DISCOURAGED",
+              "PREFERRED",
+              "REQUIRED"
+            ]
+          },
+          "registrationUserVerification": {
+            "type": "string",
+            "description": "Should the token perform user verification?",
+            "enum": [
+              "DISCOURAGED",
+              "PREFERRED",
+              "REQUIRED"
+            ]
           },
           "rpName": {
             "type": "string",
@@ -1147,7 +1178,8 @@
           "expiryDate": {
             "type": "string",
             "description": "The expiry date of the grid. Null value indicates the grid will never expire.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "serialNumber": {
             "type": "string",
@@ -1712,6 +1744,10 @@
             "description": "Unique identifier of the Identity as a Service Authentication API application",
             "example": "6781549d-433c-44ea-a42f-4705c26f3245"
           },
+          "authToken": {
+            "type": "string",
+            "description": "Authentication token."
+          },
           "clientIp": {
             "type": "string",
             "description": "Provided client IP address."
@@ -1780,6 +1816,10 @@
       "UserAuthenticateQueryResponse": {
         "type": "object",
         "properties": {
+          "authenticationCompleted": {
+            "type": "boolean",
+            "description": "Flag to indicate if access to the application is allowed with the current JWT."
+          },
           "authenticationTypes": {
             "type": "array",
             "description": "List of authenticator types available for the user.",
@@ -1830,6 +1870,10 @@
                 "PASSWORD_AND_SECONDFACTOR"
               ]
             }
+          },
+          "deviceCertAuthDesired": {
+            "type": "boolean",
+            "description": "Flag to indicate if the user has to attempt device certificate authentication."
           },
           "fidoChallenge": {
             "$ref": "#/components/schemas/FIDOChallenge"
@@ -2079,7 +2123,8 @@
           "expiryTime": {
             "type": "string",
             "description": "When this machine secret expires in UTC time",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "id": {
             "type": "string",
@@ -2092,12 +2137,14 @@
           "lastUsedTime": {
             "type": "string",
             "description": "When this machine secret was last used",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "registrationTime": {
             "type": "string",
             "description": "When this machine secret was created in UTC time",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           }
         },
         "description": "UserMachineAuthenticator"

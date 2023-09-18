@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.30"
+    "version": "5.31"
   },
   "servers": [
     {
@@ -1488,6 +1488,142 @@
           {
             "AdminAPIAuthentication": [
               "DIRECTORIES:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/contact/verification/authenticate": {
+      "post": {
+        "tags": [
+          "OTPs"
+        ],
+        "summary": "Authenticate the OTP verification challenge",
+        "operationId": "contactVerificationAuthenticateUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OTPVerificationAuthenticateValue"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OTPVerificationAuthenticateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "CONTACTVERIFICATION:ADD"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/contact/verification/challenge": {
+      "post": {
+        "tags": [
+          "OTPs"
+        ],
+        "summary": "Challenge by sending an OTP to the contact specified in OTPVerificationChallengeValue.",
+        "operationId": "contactVerificationChallengeUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OTPVerificationChallengeValue"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OTPVerificationChallengeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "CONTACTVERIFICATION:ADD"
             ]
           }
         ]
@@ -16405,7 +16541,8 @@
           "eventTime": {
             "type": "string",
             "description": "The time of this event.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "eventType": {
             "type": "string",
@@ -16702,6 +16839,11 @@
         ],
         "type": "object",
         "properties": {
+          "allowLongLivedToken": {
+            "type": "boolean",
+            "description": "Determines if the application can use a long-lived token for authentication.",
+            "example": true
+          },
           "applicationTemplate": {
             "type": "string",
             "description": "The name of the application template specific to this application type.",
@@ -16730,7 +16872,8 @@
           "lastAuthnDate": {
             "type": "string",
             "description": "Last successful authentication time to use administration api",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "logo": {
             "type": "string",
@@ -16764,6 +16907,11 @@
         ],
         "type": "object",
         "properties": {
+          "allowLongLivedToken": {
+            "type": "boolean",
+            "description": "Determines if a long-lived token is allowed in this application.",
+            "example": true
+          },
           "applicationTemplateId": {
             "type": "string",
             "description": "The UUID of the application template.  This value is only used when creating a new application. If not specified, the default admininstration API template is used.",
@@ -17197,6 +17345,7 @@
       },
       "DateTimeContext": {
         "required": [
+          "denyAccess",
           "riskPoint"
         ],
         "type": "object",
@@ -17209,10 +17358,15 @@
             "type": "boolean",
             "description": "If true, the startTime and endTime define the allowed time range. If false, the startTime and endTime define the denied time range."
           },
+          "denyAccess": {
+            "type": "boolean",
+            "description": "If true, the resource rule evaluating the context will return Access Denied."
+          },
           "endDateTime": {
             "type": "string",
             "description": "If specifying a date range, the end date of the range.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "endTime": {
             "type": "string",
@@ -17229,7 +17383,8 @@
           "startDateTime": {
             "type": "string",
             "description": "If specifying a date range, the start date of the range.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "startTime": {
             "type": "string",
@@ -17317,6 +17472,27 @@
         },
         "description": "The list of UUIDs of users to be deleted."
       },
+      "DeviceCertificateContext": {
+        "required": [
+          "denyAccess",
+          "riskPoint"
+        ],
+        "type": "object",
+        "properties": {
+          "denyAccess": {
+            "type": "boolean",
+            "description": "If true, the resource rule evaluating the context will return Access Denied."
+          },
+          "riskPoint": {
+            "maximum": 100,
+            "minimum": 0,
+            "type": "integer",
+            "description": "The number of risk points that apply if this context applies.",
+            "format": "int32"
+          }
+        },
+        "description": "Device Certificate checks to see if the user presented a trusted device certificate that's valid. If not found, risk is applied."
+      },
       "DigitalId": {
         "type": "object",
         "properties": {
@@ -17384,12 +17560,14 @@
           "notAfter": {
             "type": "string",
             "description": "The expiry date of this certificate.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "notBefore": {
             "type": "string",
             "description": "The issue date of this certificate.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "pivContainer": {
             "type": "string",
@@ -17831,7 +18009,8 @@
           "lastUpdate": {
             "type": "string",
             "description": "The last time the directory was updated.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "pageSize": {
             "type": "integer",
@@ -17982,12 +18161,14 @@
           "syncStarted": {
             "type": "string",
             "description": "The time when the synchronization was started.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "syncUpdated": {
             "type": "string",
             "description": "The last time the directory was updated.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "totalSearchbases": {
             "type": "integer",
@@ -18134,6 +18315,9 @@
           "issuance": {
             "$ref": "#/components/schemas/Issuance"
           },
+          "payToPrint": {
+            "$ref": "#/components/schemas/PayToPrint"
+          },
           "printer": {
             "$ref": "#/components/schemas/PrinterEntitlement"
           },
@@ -18214,7 +18398,8 @@
           "endDate": {
             "type": "string",
             "description": "The date this entitlement will end.  The value must be after the start date. If not specified, this value defaults to the end date of the service provider's entitlement.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "entitlementId": {
             "type": "string",
@@ -18236,6 +18421,9 @@
           "issuance": {
             "$ref": "#/components/schemas/IssuanceParms"
           },
+          "payToPrint": {
+            "$ref": "#/components/schemas/PayToPrintParms"
+          },
           "printer": {
             "$ref": "#/components/schemas/PrinterParms"
           },
@@ -18256,7 +18444,8 @@
           "startDate": {
             "type": "string",
             "description": "The date this entitlement will start.  If not specified, it defaults to the current date.  This value cannot be in the future.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "status": {
             "type": "string",
@@ -18415,6 +18604,27 @@
           }
         },
         "description": "New Entrust ST Authenticator settings."
+      },
+      "Error": {
+        "required": [
+          "code",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The server error code"
+          },
+          "message": {
+            "type": "string",
+            "description": "A human-readable representation of the error"
+          },
+          "target": {
+            "type": "string",
+            "description": "The target of the error"
+          }
+        }
       },
       "ErrorInfo": {
         "type": "object",
@@ -18669,6 +18879,14 @@
             "description": "Indicates whether to enable Enhanced Authentication Details or not.",
             "example": true
           },
+          "inactivityGracePeriod": {
+            "maximum": 2592000,
+            "minimum": 60,
+            "type": "integer",
+            "description": "The amount of time in seconds that administrators can grant for users.",
+            "format": "int32",
+            "default": 3600
+          },
           "lockoutCount": {
             "maximum": 20,
             "minimum": 1,
@@ -18688,6 +18906,11 @@
               "AUTHENTICATOR",
               "USER"
             ]
+          },
+          "manageInactiveUsers": {
+            "type": "boolean",
+            "description": "Indicates whether to block users who have not authenticated for a time being.",
+            "default": false
           },
           "maxFIDOTokensPerUser": {
             "maximum": 10,
@@ -18754,6 +18977,14 @@
           "smartCredentialDefn": {
             "type": "string",
             "description": "The UUID of the Smart Credential Definition to use when a user enrolls a Smart Credential."
+          },
+          "userInactivityThreshold": {
+            "maximum": 31536000,
+            "minimum": 604800,
+            "type": "integer",
+            "description": "The amount of time in seconds for a user to be inactive.",
+            "format": "int32",
+            "default": 2592000
           }
         },
         "description": "New general settings."
@@ -18846,7 +19077,8 @@
           "lastUsedDate": {
             "type": "string",
             "description": "The date on which this grid was last used for authentication. This value will be null if the grid has never been used.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "serialNumber": {
             "type": "integer",
@@ -19427,7 +19659,8 @@
           "endDate": {
             "type": "string",
             "description": "The date this entitlement will end (required).  The value must be after the start date.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "quantity": {
             "maximum": 50000000,
@@ -19439,7 +19672,8 @@
           "startDate": {
             "type": "string",
             "description": "The date this entitlement will start (required).",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           }
         },
         "description": "Parameters passed when setting the ID Proofing entitlements of a tenant."
@@ -19602,6 +19836,7 @@
       },
       "IpContext": {
         "required": [
+          "denyAccess",
           "riskPoint"
         ],
         "type": "object",
@@ -19629,6 +19864,10 @@
               "type": "string",
               "description": "List of IP Address ranges (in CIDR notation) that cannot access the resource. Risk applies if the given IP address is in one of the denied IP ranges. The denied IP values are ignored if allowed IP ranges are specified."
             }
+          },
+          "denyAccess": {
+            "type": "boolean",
+            "description": "If true, the resource rule evaluating the context will return Access Denied."
           },
           "riskPoint": {
             "maximum": 100,
@@ -19737,7 +19976,8 @@
           "endDate": {
             "type": "string",
             "description": "The date when the Trial period will end.  The value must be after the start date. If specified, this value cannot be more than 30 days after start date.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "quantity": {
             "type": "integer",
@@ -19759,18 +19999,26 @@
           "startDate": {
             "type": "string",
             "description": "The date when the Trial period starts. This value cannot be in the future. If not specified, it defaults to the current date.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           }
         },
         "description": "Parameters passed when setting the Issuance entitlements of a tenant."
       },
       "KbaContext": {
+        "required": [
+          "denyAccess"
+        ],
         "type": "object",
         "properties": {
           "challengeSize": {
             "type": "integer",
             "description": "Number of questions that the user must answer. If not provided, the default QA challenge size in the KBA settings is used.",
             "format": "int32"
+          },
+          "denyAccess": {
+            "type": "boolean",
+            "description": "If true, the resource rule evaluating the context will return Access Denied."
           },
           "wrongAnswersAllowed": {
             "type": "integer",
@@ -19816,6 +20064,7 @@
           "allowed",
           "anonymousAllowed",
           "countryCodes",
+          "denyAccess",
           "riskPoint"
         ],
         "type": "object",
@@ -19836,6 +20085,10 @@
               "description": "List of country codes (ISO alpha-2) that can access(allowed=true) or not access (allowed=false)."
             }
           },
+          "denyAccess": {
+            "type": "boolean",
+            "description": "If true, the resource rule evaluating the context will return Access Denied."
+          },
           "riskPoint": {
             "maximum": 100,
             "minimum": 0,
@@ -19848,10 +20101,15 @@
       },
       "LocationHistoryContext": {
         "required": [
+          "denyAccess",
           "riskPoint"
         ],
         "type": "object",
         "properties": {
+          "denyAccess": {
+            "type": "boolean",
+            "description": "If true, the resource rule evaluating the context will return Access Denied."
+          },
           "riskPoint": {
             "maximum": 100,
             "minimum": 0,
@@ -19915,11 +20173,16 @@
       },
       "MachineContext": {
         "required": [
+          "denyAccess",
           "riskLimit",
           "riskPoint"
         ],
         "type": "object",
         "properties": {
+          "denyAccess": {
+            "type": "boolean",
+            "description": "If true, the resource rule evaluating the context will return Access Denied."
+          },
           "riskLimit": {
             "type": "integer",
             "description": "The risk points apply if the machine authenticator risk is below or equal to this value.",
@@ -20230,6 +20493,98 @@
         },
         "description": "The OTP to create."
       },
+      "OTPVerificationAuthenticateResponse": {
+        "required": [
+          "attemptsLeft",
+          "challengeId",
+          "success"
+        ],
+        "type": "object",
+        "properties": {
+          "attemptsLeft": {
+            "type": "integer",
+            "description": "The number of attempts left for authentication failure",
+            "format": "int32",
+            "example": 5
+          },
+          "challengeId": {
+            "type": "string",
+            "description": "The challenge Id of the user's input",
+            "example": "74750999-a59f-4b84-aa26-687d36f5001f"
+          },
+          "errorCode": {
+            "type": "string",
+            "description": "The error message during the authentication",
+            "example": "invalid_otp"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "A boolean value which indicates if the authentication is successful",
+            "example": true
+          }
+        },
+        "description": "Response from contact verification"
+      },
+      "OTPVerificationAuthenticateValue": {
+        "required": [
+          "challengeId",
+          "challengeResponse"
+        ],
+        "type": "object",
+        "properties": {
+          "challengeId": {
+            "type": "string",
+            "description": "The unique challenge response identifier used for authentication",
+            "example": "74750999-a59f-4b84-aa26-687d36f5001f"
+          },
+          "challengeResponse": {
+            "type": "string",
+            "description": "The otp response",
+            "example": "0000"
+          }
+        },
+        "description": "Information passed in when authenticating the contact verification challenge."
+      },
+      "OTPVerificationChallengeResponse": {
+        "required": [
+          "challengeId"
+        ],
+        "type": "object",
+        "properties": {
+          "challengeId": {
+            "type": "string",
+            "description": "The unique challenge response identifier which will be used for authentication.",
+            "example": "74750999-a59f-4b84-aa26-687d36f5001f"
+          }
+        },
+        "description": "Challenge response returned by the contact verification challenge request"
+      },
+      "OTPVerificationChallengeValue": {
+        "required": [
+          "type",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Type of contact delivery. Only supported for OTP contact attributes.",
+            "example": "OTP_EMAIL",
+            "enum": [
+              "NONE",
+              "OTP_EMAIL",
+              "OTP_SMS",
+              "OTP_VOICE"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "description": "The exact email or phone number that the OTP will be sent to.",
+            "example": "example@mycompany.com"
+          }
+        },
+        "description": "Information passed when sending contact verification challenge request"
+      },
       "OrderByAttribute": {
         "required": [
           "ascending",
@@ -20357,6 +20712,43 @@
           }
         },
         "description": "Settings used to manage the Password Reset functionality."
+      },
+      "PayToPrint": {
+        "type": "object",
+        "properties": {
+          "addOn": {
+            "type": "string",
+            "description": "Add on column to store PayToPrint addon"
+          },
+          "consumed": {
+            "type": "integer",
+            "description": "The entitlements consumed since start date during the entitlement period.",
+            "format": "int32"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "The date when the entitlement will end.",
+            "format": "date-time",
+            "example": "2020-02-19T00:00:00Z"
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "The number of PayToPrint prints allowed during the period.",
+            "format": "int32",
+            "example": 1000
+          },
+          "startDate": {
+            "type": "string",
+            "description": "The date when the entitlement starts.",
+            "format": "date-time",
+            "example": "2019-02-19T00:00:00Z"
+          }
+        },
+        "description": "PayToPrint entitlements of a tenant."
+      },
+      "PayToPrintParms": {
+        "type": "object",
+        "description": "Parameters passed when setting the Pay to print entitlements of a tenant."
       },
       "Permission": {
         "required": [
@@ -20490,7 +20882,10 @@
               "DIRECTORYSEARCHATTRIBUTES",
               "DIRECTORYATTRIBUTES",
               "RISKENGINES",
-              "SCIMPROVISIONINGS"
+              "SCIMPROVISIONINGS",
+              "RATELIMITING",
+              "CLAIMS",
+              "CONTACTVERIFICATION"
             ]
           },
           "id": {
@@ -20608,6 +21003,9 @@
           "description": {
             "type": "string",
             "description": "The description of the resource rule."
+          },
+          "deviceCertificateContext": {
+            "$ref": "#/components/schemas/DeviceCertificateContext"
           },
           "disableSSO": {
             "type": "boolean",
@@ -20821,6 +21219,9 @@
             "type": "string",
             "description": "The description of the resource rule."
           },
+          "deviceCertificateContext": {
+            "$ref": "#/components/schemas/DeviceCertificateContext"
+          },
           "disableSSO": {
             "type": "boolean",
             "description": "A flag indicating if single-sign on is disabled for this resource rule."
@@ -20995,6 +21396,10 @@
           "removeDateTimeContext": {
             "type": "boolean",
             "description": "When updating a resource rule, if removeDateTimeContext is set to true, the existing date time context is removed. This attribute is ignored when creating a resource rule and when updating a resource rule if dateTimeContext is specified."
+          },
+          "removeDeviceCertificateContext": {
+            "type": "boolean",
+            "description": "When updating a resource rule, if removeDeviceCertificateContext is set to true, the existing device certificate context is removed. This attribute is ignored when creating a resource rule and when updating a resource rule if deviceCertificateContext is specified."
           },
           "removeIPContext": {
             "type": "boolean",
@@ -21648,7 +22053,8 @@
           "lastUpdated": {
             "type": "string",
             "description": "The date this list of IP addresses was last updated.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           }
         },
         "description": "Information returned when a client queries the service IP addresses."
@@ -21739,7 +22145,8 @@
           "expiryDate": {
             "type": "string",
             "description": "For issued smart credentials, the expiry date is the date on which the smart credential will expire.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "id": {
             "type": "string",
@@ -21748,7 +22155,8 @@
           "issueDate": {
             "type": "string",
             "description": "The date on which the smart credential was issued.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "notifyEnabled": {
             "type": "boolean",
@@ -22000,7 +22408,8 @@
           "endDate": {
             "type": "string",
             "description": "The date when the entitlement period will end.  The value must be after the start date. ",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "quantity": {
             "type": "integer",
@@ -22017,7 +22426,8 @@
           "startDate": {
             "type": "string",
             "description": "The date when the entitlement period starts. This value cannot be in the future. If not specified, it defaults to the current date.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           }
         },
         "description": "Parameters passed when setting the SMS/Voice entitlements of a tenant."
@@ -22525,6 +22935,7 @@
       },
       "TransactionContext": {
         "required": [
+          "denyAccess",
           "name",
           "riskLimit",
           "riskPoint",
@@ -22532,6 +22943,10 @@
         ],
         "type": "object",
         "properties": {
+          "denyAccess": {
+            "type": "boolean",
+            "description": "If true, the resource rule evaluating the context will return Access Denied."
+          },
           "name": {
             "type": "string",
             "description": "The name of this transaction context."
@@ -22631,10 +23046,15 @@
       },
       "TravelVelocityContext": {
         "required": [
+          "denyAccess",
           "riskPoint"
         ],
         "type": "object",
         "properties": {
+          "denyAccess": {
+            "type": "boolean",
+            "description": "If true, the resource rule evaluating the context will return Access Denied."
+          },
           "riskPoint": {
             "maximum": 100,
             "minimum": 0,
@@ -22902,6 +23322,17 @@
             "type": "string",
             "description": "The first name of this user.  This value may or may not be required depending on configuration."
           },
+          "frozen": {
+            "type": "boolean",
+            "description": "Indicates whether a user is unable to authenticate due to inactivity.",
+            "example": true
+          },
+          "frozenGracePeriod": {
+            "type": "string",
+            "description": "Indicates a user's frozen grace period.",
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
+          },
           "grids": {
             "type": "array",
             "description": "A list of all the grids owned by this user.",
@@ -22923,7 +23354,14 @@
           "lastAuthTime": {
             "type": "string",
             "description": "The last time this user successfully authenticated.  Null if the user has never authenticated.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
+          },
+          "lastModified": {
+            "type": "string",
+            "description": "When the user was last modified.",
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "lastName": {
             "type": "string",
@@ -23014,7 +23452,8 @@
           "passwordExpirationTime": {
             "type": "string",
             "description": "The password expiration time.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "phone": {
             "type": "string",
@@ -23054,6 +23493,11 @@
             "type": "boolean",
             "description": "Indicates whether self-registration is required. This attribute doesn't apply to administrators.",
             "example": true
+          },
+          "securityId": {
+            "type": "string",
+            "description": "The security ID of this user.  This value is a UUID like string which is used to enhance the strong authentication for Microsoft AD users.",
+            "example": "8c35d5f2-a18a-11ed-a8fc-0242ac120002"
           },
           "showNotification": {
             "type": "boolean",
@@ -23107,6 +23551,12 @@
             "items": {
               "$ref": "#/components/schemas/UserAttributeValue"
             }
+          },
+          "userCreationTime": {
+            "type": "string",
+            "description": "The time this user was created. ",
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "userExtraAttributes": {
             "type": "array",
@@ -23457,7 +23907,8 @@
           "expiryDate": {
             "type": "string",
             "description": "The date this user location will expire.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "id": {
             "type": "string",
@@ -23474,7 +23925,8 @@
           "lastAuthenticationTime": {
             "type": "string",
             "description": "The time of the last authentication from this location.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "latitude": {
             "type": "number",
@@ -23509,7 +23961,8 @@
           "expiryTime": {
             "type": "string",
             "description": "When this machine secret expires in UTC time",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "id": {
             "type": "string",
@@ -23522,12 +23975,14 @@
           "lastUsedTime": {
             "type": "string",
             "description": "When this machine secret was last used",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "registrationTime": {
             "type": "string",
             "description": "When this machine secret was created in UTC time",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           }
         },
         "description": "UserMachineAuthenticator"
@@ -23535,6 +23990,11 @@
       "UserParms": {
         "type": "object",
         "properties": {
+          "applyGracePeriod": {
+            "type": "boolean",
+            "description": "Indicates if the user is granted a new frozen grace period. This value is not used when creating a user. If provided, it will be ignored.",
+            "example": true
+          },
           "email": {
             "type": "string",
             "description": "The email address of this user.  This value may or may not be required depending on configuration.  If it is required, it must be specified when creating the user.  If it is required, it must be specified when updating the user and a value is not currently set.  It must be set to use EMAIL OTP authentication and other features that require an email address.  To remove the existing value, set the value to an empty string.",
@@ -23649,6 +24109,11 @@
             "description": "Indicates whether self-registration is required. If not set when the user is created, this value defaults to true.",
             "example": true
           },
+          "securityId": {
+            "type": "string",
+            "description": "The security ID of this user. The security ID is a unique value used to identity the user when performing smart card login to Microsoft Windows.",
+            "example": "8c35d5f2-a18a-11ed-a8fc-0242ac120002"
+          },
           "state": {
             "type": "string",
             "description": "The state of this user.  Only users in the ACTIVE state can perform authentication. If not set when the user is created, this value defaults to ACTIVE.",
@@ -23703,12 +24168,14 @@
           "expiryNotificationDate": {
             "type": "string",
             "description": "The date at which the next password expiry notification will be sent.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "expiryTime": {
             "type": "string",
             "description": "The date at which the password will expire.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "forceUpdate": {
             "type": "boolean",
@@ -23717,7 +24184,8 @@
           "lastChangedTime": {
             "type": "string",
             "description": "The last time the password was changed.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "newPassword": {
             "type": "string",
@@ -23748,7 +24216,8 @@
           "expiryTime": {
             "type": "string",
             "description": "The date at which the password will expire.",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "forceUpdate": {
             "type": "boolean",
@@ -24071,11 +24540,13 @@
         "properties": {
           "dateTimeAfter": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "dateTimeBefore": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "duration": {
             "$ref": "#/components/schemas/Duration"
@@ -24085,7 +24556,8 @@
           },
           "instant": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
           },
           "offsetAfter": {
             "$ref": "#/components/schemas/ZoneOffset"
