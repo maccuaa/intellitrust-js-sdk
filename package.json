@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Identity as a Service TypeScript SDK Generator",
   "engines": {
-    "node": "lts/*"
+    "node": ">= 18.7.1"
   },
   "scripts": {
     "audit:admin": "cd admin-sdk && npm audit",
