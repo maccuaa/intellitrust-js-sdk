@@ -12,59 +12,59 @@ private {{classname}}AxiosParamCreator = (configuration?: ConfigurationParameter
          * @summary {{&summary}}
          {{/summary}}
          {{#allParams}}
-         * @param {{=<% %>=}}{<%&dataType%>}<%={{ }}=%> {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{description}}
+         * @param {{=<% %>=}}{<%&dataType%><%#isNullable%> | null<%/isNullable%>}<%={{ }}=%> {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{description}}
          {{/allParams}}
-         * @param {*} [options] Override http request option.
+         * @param {*} [options] Override http request option.{{#isDeprecated}}
+         * @deprecated{{/isDeprecated}}
          * @throws {RequiredError}
          */
-        {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}, {{/allParams}}options: any = {}): RequestArgs {
+         {{nickname}}: async ({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{#isNullable}} | null{{/isNullable}}, {{/allParams}}options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
     {{#allParams}}
     {{#required}}
             // verify required parameter '{{paramName}}' is not null or undefined
-            if ({{paramName}} === null || {{paramName}} === undefined) {
-                throw new RequiredError('{{paramName}}','Required parameter {{paramName}} was null or undefined when calling {{nickname}}.');
-            }
+            assertParamExists('{{nickname}}', '{{paramName}}', {{paramName}})
     {{/required}}
     {{/allParams}}
             const localVarPath = `{{{path}}}`{{#pathParams}}
                 .replace(`{${"{{baseName}}"}}`, encodeURIComponent(String({{paramName}}))){{/pathParams}};
-            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             const localVarRequestOptions = { method: '{{httpMethod}}', ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;{{#vendorExtensions}}{{#hasFormParams}}
-            const localVarFormParams = new {{^multipartFormData}}URLSearchParams(){{/multipartFormData}}{{#multipartFormData}}FormData(){{/multipartFormData}};{{/hasFormParams}}{{/vendorExtensions}}
+            const localVarFormParams = new {{^multipartFormData}}URLSearchParams(){{/multipartFormData}}{{#multipartFormData}}((configuration && configuration.formDataCtor) || FormData)(){{/multipartFormData}};{{/hasFormParams}}{{/vendorExtensions}}
 
     {{#authMethods}}
             // authentication {{name}} required
             {{#isApiKey}}
             {{#isKeyInHeader}}
-            if (configuration && configuration.apiKey) {
-                const localVarApiKeyValue = typeof configuration.apiKey === 'function'
-                    ? configuration.apiKey("{{keyParamName}}")
-                    : configuration.apiKey;
-                localVarHeaderParameter["{{keyParamName}}"] = localVarApiKeyValue;
-            }
+            await setApiKeyToObject(localVarHeaderParameter, "{{keyParamName}}", configuration)
             {{/isKeyInHeader}}
-            {{#isKeyInQuery}}
-            if (configuration && configuration.apiKey) {
-                const localVarApiKeyValue = typeof configuration.apiKey === 'function'
-                    ? configuration.apiKey("{{keyParamName}}")
-                    : configuration.apiKey;
-                localVarQueryParameter["{{keyParamName}}"] = localVarApiKeyValue;
-            }
-            {{/isKeyInQuery}}
             {{/isApiKey}}
     {{/authMethods}}
-    
+
     {{#queryParams}}
-            {{#isListContainer}}
+            {{#isArray}}
             if ({{paramName}}) {
             {{#isCollectionFormatMulti}}
+                {{#uniqueItems}}
+                localVarQueryParameter['{{baseName}}'] = Array.from({{paramName}});
+                {{/uniqueItems}}
+                {{^uniqueItems}}
                 localVarQueryParameter['{{baseName}}'] = {{paramName}};
+                {{/uniqueItems}}
+            {{/isCollectionFormatMulti}}
+            {{^isCollectionFormatMulti}}
+                {{#uniqueItems}}
+                localVarQueryParameter['{{baseName}}'] = Array.from({{paramName}}).join(COLLECTION_FORMATS.{{collectionFormat}});
+                {{/uniqueItems}}
+                {{^uniqueItems}}
+                localVarQueryParameter['{{baseName}}'] = {{paramName}}.join(COLLECTION_FORMATS.{{collectionFormat}});
+                {{/uniqueItems}}
             {{/isCollectionFormatMulti}}
             }
-            {{/isListContainer}}
-            {{^isListContainer}}
+            {{/isArray}}
+            {{^isArray}}
             if ({{paramName}} !== undefined) {
                 {{#isDateTime}}
                 localVarQueryParameter['{{baseName}}'] = ({{paramName}} as any instanceof Date) ?
@@ -74,46 +74,88 @@ private {{classname}}AxiosParamCreator = (configuration?: ConfigurationParameter
                 {{^isDateTime}}
                 {{#isDate}}
                 localVarQueryParameter['{{baseName}}'] = ({{paramName}} as any instanceof Date) ?
-                    ({{paramName}} as any).toISOString().substr(0,10) :
+                    ({{paramName}} as any).toISOString().substring(0,10) :
                     {{paramName}};
                 {{/isDate}}
                 {{^isDate}}
+                {{#isExplode}}
+                {{#isPrimitiveType}}
                 localVarQueryParameter['{{baseName}}'] = {{paramName}};
+                {{/isPrimitiveType}}
+                {{^isPrimitiveType}}
+                {{^isEnumRef}}
+                {{^isEnum}}
+                for (const [key, value] of Object.entries({{paramName}})) {
+                    localVarQueryParameter[key] = value;
+                }
+                {{/isEnum}}
+                {{/isEnumRef}}
+                {{#isEnum}}
+                localVarQueryParameter['{{baseName}}'] = {{paramName}};
+                {{/isEnum}}
+                {{#isEnumRef}}
+                localVarQueryParameter['{{baseName}}'] = {{paramName}};
+                {{/isEnumRef}}
+                {{/isPrimitiveType}}
+                {{/isExplode}}
+                {{^isExplode}}
+                localVarQueryParameter['{{baseName}}'] = {{paramName}};
+                {{/isExplode}}
                 {{/isDate}}
                 {{/isDateTime}}
             }
-            {{/isListContainer}}
+            {{/isArray}}
 
     {{/queryParams}}
     {{#headerParams}}
-            {{^isListContainer}}
-            if ({{paramName}} !== undefined && {{paramName}} !== null) {
+            {{#isArray}}
+            if ({{paramName}}) {
+                {{#uniqueItems}}
+                let mapped = Array.from({{paramName}}).map(value => (<any>"{{{dataType}}}" !== "Set<string>") ? JSON.stringify(value) : (value || ""));
+                {{/uniqueItems}}
+                {{^uniqueItems}}
+                let mapped = {{paramName}}.map(value => (<any>"{{{dataType}}}" !== "Array<string>") ? JSON.stringify(value) : (value || ""));
+                {{/uniqueItems}}
+                localVarHeaderParameter['{{baseName}}'] = mapped.join(COLLECTION_FORMATS["{{collectionFormat}}"]);
+            }
+            {{/isArray}}
+            {{^isArray}}
+            {{! `val == null` covers for both `null` and `undefined`}}
+            if ({{paramName}} != null) {
                 {{#isString}}
                 localVarHeaderParameter['{{baseName}}'] = String({{paramName}});
                 {{/isString}}
                 {{^isString}}
-                localVarHeaderParameter['{{baseName}}'] = String(JSON.stringify({{paramName}}));
+                {{! isString is falsy also for $ref that defines a string or enum type}}
+                localVarHeaderParameter['{{baseName}}'] = typeof {{paramName}} === 'string'
+                    ? {{paramName}}
+                    : JSON.stringify({{paramName}});
                 {{/isString}}
             }
-            {{/isListContainer}}
+            {{/isArray}}
 
     {{/headerParams}}
     {{#vendorExtensions}}
     {{#formParams}}
-            {{#isListContainer}}
+            // XXX - form params
+            {{#isArray}}
             if ({{paramName}}) {
             {{#isCollectionFormatMulti}}
                 {{paramName}}.forEach((element) => {
-                    localVarFormParams.append('{{baseName}}', element as any);
+                    localVarFormParams.{{#multipartFormData}}append{{/multipartFormData}}{{^multipartFormData}}set{{/multipartFormData}}('{{baseName}}', element as any);
                 })
             {{/isCollectionFormatMulti}}
-            }{{/isListContainer}}
-            {{^isListContainer}}
+            {{^isCollectionFormatMulti}}
+                localVarFormParams.{{#multipartFormData}}append{{/multipartFormData}}{{^multipartFormData}}set{{/multipartFormData}}('{{baseName}}', {{paramName}}.join(COLLECTION_FORMATS.{{collectionFormat}}));
+            {{/isCollectionFormatMulti}}
+            }{{/isArray}}
+            {{^isArray}}
             if ({{paramName}} !== undefined) { {{^multipartFormData}}
-                localVarFormParams.set('{{baseName}}', {{paramName}} as any);{{/multipartFormData}}{{#multipartFormData}}
-                localVarFormParams.append('{{baseName}}', {{paramName}} as any);{{/multipartFormData}}
-            }
-            {{/isListContainer}}
+                localVarFormParams.set('{{baseName}}', {{paramName}} as any);{{/multipartFormData}}{{#multipartFormData}}{{#isPrimitiveType}}
+                localVarFormParams.append('{{baseName}}', {{paramName}} as any);{{/isPrimitiveType}}{{^isPrimitiveType}}{{#isEnumRef}}
+                localVarFormParams.append('{{baseName}}', {{paramName}} as any);{{/isEnumRef}}{{^isEnumRef}}
+                localVarFormParams.append('{{baseName}}', new Blob([JSON.stringify({{paramName}})], { type: "application/json", }));{{/isEnumRef}}{{/isPrimitiveType}}{{/multipartFormData}}
+            }{{/isArray}}
     {{/formParams}}{{/vendorExtensions}}
     {{#vendorExtensions}}{{#hasFormParams}}{{^multipartFormData}}
             localVarHeaderParameter['Content-Type'] = 'application/x-www-form-urlencoded';{{/multipartFormData}}{{#multipartFormData}}
@@ -128,20 +170,17 @@ private {{classname}}AxiosParamCreator = (configuration?: ConfigurationParameter
             {{/consumes.0}}
 
     {{/bodyParam}}
-            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
-            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-            delete localVarUrlObj.search;
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...options.headers};
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarRequestOptions.headers = {...localVarHeaderParameter, {{#hasFormParams}}{{#multipartFormData}} ...(localVarFormParams as any).getHeaders?.(),{{/multipartFormData}}{{/hasFormParams}} ...options.headers};
     {{#hasFormParams}}
             localVarRequestOptions.data = localVarFormParams{{#vendorExtensions}}{{^multipartFormData}}.toString(){{/multipartFormData}}{{/vendorExtensions}};
     {{/hasFormParams}}
     {{#bodyParam}}
-            const needsSerialization = localVarRequestOptions.headers['Content-Type'] === 'application/octet-stream' ? false : (typeof {{paramName}} !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
-            localVarRequestOptions.data =  needsSerialization ? JSON.stringify({{paramName}} !== undefined ? {{paramName}} : {}) : ({{paramName}} || "");
+            localVarRequestOptions.data = serializeDataIfNeeded({{paramName}}, localVarRequestOptions, configuration)
     {{/bodyParam}}
 
             return {
-                url: globalImportUrl.format(localVarUrlObj),
+                url: toPathString(localVarUrlObj),
                 options: localVarRequestOptions,
             };
         },
@@ -151,10 +190,11 @@ private {{classname}}AxiosParamCreator = (configuration?: ConfigurationParameter
 
 /**
  * {{classname}} - functional programming interface{{#description}}
- * {{{description}}}{{/description}}
+ * {{{.}}}{{/description}}
  * @export
  */
 private {{classname}}Fp = (configuration?: ConfigurationParameters) => {
+    const localVarAxiosParamCreator = this.{{classname}}AxiosParamCreator(configuration)
     return {
     {{#operation}}
         /**
@@ -163,16 +203,15 @@ private {{classname}}Fp = (configuration?: ConfigurationParameters) => {
          * @summary {{&summary}}
          {{/summary}}
          {{#allParams}}
-         * @param {{=<% %>=}}{<%&dataType%>}<%={{ }}=%> {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{description}}
+         * @param {{=<% %>=}}{<%&dataType%><%#isNullable%> | null<%/isNullable%>}<%={{ }}=%> {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{description}}
          {{/allParams}}
+         * @param {*} [options] Override http request option.{{#isDeprecated}}
+         * @deprecated{{/isDeprecated}}
          * @throws {RequiredError}
          */
-        {{nickname}}: ({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}, {{/allParams}}options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}> => {
-            const localVarAxiosArgs = this.{{classname}}AxiosParamCreator(configuration).{{nickname}}({{#allParams}}{{paramName}}, {{/allParams}}options);
-            return (axios: AxiosInstance) => {
-                const axiosRequestArgs = {...localVarAxiosArgs.options, url: localVarAxiosArgs.url };
-                return axios.request(axiosRequestArgs);
-            };
+        {{nickname}}: async ({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{#isNullable}} | null{{/isNullable}}, {{/allParams}}options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{{{returnType}}}{{^returnType}}void{{/returnType}}>> => {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.{{nickname}}({{#allParams}}{{paramName}}, {{/allParams}}options);
+            return (axios) => createRequestFunction(localVarAxiosArgs, configuration)(axios);
         },
     {{/operation}}
     }
@@ -180,8 +219,9 @@ private {{classname}}Fp = (configuration?: ConfigurationParameters) => {
 
 
 {{#operation}}
-public {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}, {{/allParams}}options?: any) {
-    return this.{{classname}}Fp(this.configuration).{{nickname}}({{#allParams}}{{paramName}}, {{/allParams}}options)(this.axios);
+public async {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{#isNullable}} | null{{/isNullable}}, {{/allParams}}options?: AxiosRequestConfig) {
+    const request = await this.{{classname}}Fp(this.configuration).{{nickname}}({{#allParams}}{{paramName}}, {{/allParams}}options);
+    return await request(this.axios);
 }
 {{/operation}}
 {{/operations}}

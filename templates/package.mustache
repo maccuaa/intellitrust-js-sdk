@@ -4,28 +4,35 @@
   "description": "JavaScript client for {{npmName}}",
   "author": "Andrew MacCuaig <andrewmaccuaig@gmail.com>",
   "homepage": "https://www.npmjs.com/package/{{npmName}}/v/{{npmVersion}}",
-  "repository": "https://github.com/maccuaa/intellitrust-sdk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maccuaa/intellitrust-sdk"
+  },
   "keywords": [
     "axios",
     "typescript",
     "openapi-client",
     "authentication",
-    "intellitrust",
+    "entrust",
+    "identity",
+    "authentication",
     "idaas",
     "{{npmName}}"
   ],
   "license": "ISC",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
+  "module": "./dist/index.js",
+  "sideEffects": false,
   "scripts": {
     "build": "tsc --outDir dist/",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "axios": "1.5.0"
+    "axios": "1.6.1"
   },
   "devDependencies": {
-    "@types/node": "^20.1.0",
-    "typescript": "^5.0.4"
+    "@types/node": "^20.9.0",
+    "typescript": "^5.2.2"
   }
 }
