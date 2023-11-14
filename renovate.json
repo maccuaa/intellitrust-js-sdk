@@ -1,0 +1,18 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "timezone": "America/New_York",
+  "schedule": "after 10pm on sunday",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": "after 10pm on sunday",
+    "automerge": true
+  },
+  "extends": [
+    "config:base",
+    ":dependencyDashboard",
+    ":semanticCommitType(chore)",
+    "github>whitesource/merge-confidence:beta",
+    ":rebaseStalePrs"
+  ],
+  "minimumReleaseAge": "3 days"
+}

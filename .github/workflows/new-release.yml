@@ -15,8 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
-      - run: bun -v
-      - run: bun i
+      - run: bun i --frozen-lockfile
       - run: bun run download
       - uses: peter-evans/create-pull-request@v5
         with:
