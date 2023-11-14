@@ -1,48 +1,33 @@
-import { readFile, writeFile } from "node:fs/promises";
-
 import { execa } from "execa";
 import { getGeneratorOptions } from "./lib";
 import { join } from "node:path";
-import { render } from "mustache";
 
 const GENERATOR = "typescript-axios";
 const TEMPLATES = "templates";
 const AUTH = "auth";
 const ADMIN = "admin";
 const README = "README.md";
-const README_TEMPLATE = "README-custom.mustache";
 const ADMIN_EXAMPLE = "admin-example.ts";
 const AUTH_EXAMPLE = "auth-example.ts";
 
 const generateReadme = async (config: string, output: string, type: string) => {
   const isAdmin = type === "admin";
 
-  const template = await readFile(join(TEMPLATES, README_TEMPLATE), {
-    encoding: "utf-8",
-  });
-
-  const options = await readFile(config, { encoding: "utf-8" });
+  const options = await Bun.file(config).text();
 
   const { npmName, npmVersion } = JSON.parse(options);
 
-  const example = await readFile(
+  const example = await Bun.file(
     join(TEMPLATES, isAdmin ? ADMIN_EXAMPLE : AUTH_EXAMPLE)
-  );
+  ).text();
 
   const sdkType = isAdmin ? "Administration" : "Authentication";
 
   const sdkVar = isAdmin ? "AdminSDK" : "AuthSDK";
 
-  const readme = render(template, {
-    npmName,
-    npmVersion,
-    example,
-    sdkType,
-    sdkVar,
-    sdkTypeLower: sdkType.toLowerCase(),
-  });
+  const readme = renderReadme(npmName, npmVersion, example, sdkType, sdkVar);
 
-  await writeFile(join(output, README), readme, { encoding: "utf-8" });
+  await Bun.write(join(output, README), readme);
 };
 
 /**
@@ -74,7 +59,7 @@ const generateReadme = async (config: string, output: string, type: string) => {
   console.log(`Generating ${sdkType} SDK...`);
 
   const subprocess = execa(
-    "npx",
+    "bunx",
     [
       "openapi-generator-cli",
       "generate",
@@ -105,3 +90,42 @@ const generateReadme = async (config: string, output: string, type: string) => {
 
   console.log("Generated README");
 })();
+
+const renderReadme = (
+  npmName: string,
+  npmVersion: string,
+  example: string,
+  sdkType: string,
+  sdkVar: string
+): string => {
+  return `## ${npmName}@${npmVersion}
+
+This is a JavaScript client for the Entrust Identity as a Service ${sdkType} API. This module can be used in the following environments:
+
+- Node.js
+- Webpack
+- Browserify
+
+It can be used in both TypeScript and JavaScript projects.
+
+### Installation
+
+\`\`\`bash
+npm install ${npmName} --save
+\`\`\`
+
+### Usage
+
+**NOTE:** Make sure to replace the configuration values in the examples with the values from your Identity as a Service account!
+
+\`\`\`javascript
+import * as ${sdkVar}$ from "${npmName}";
+
+${example}
+\`\`\`
+
+### Help
+
+For more information on how to use the APIs please refer to the Identity as a Service [${sdkType} API](https://entrust.us.trustedauth.com/documentation/apiDocs/${sdkType.toLowerCase()}.html) documentation.
+`;
+};

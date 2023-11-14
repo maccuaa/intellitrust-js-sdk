@@ -9,6 +9,7 @@ const AUTH_PATH = "auth-sdk";
  */
 (async () => {
   const publish = async (path: string, otp: string) => {
+    // TODO: Still need npm?
     const subprocess = execa(
       "npm",
       ["publish", "--access", "public", "--otp", otp],
@@ -26,7 +27,7 @@ const AUTH_PATH = "auth-sdk";
 
   ux.action.start("Building SDKs");
 
-  await execa("npm", ["run", "build"]);
+  await execa("bun", ["run", "build"]);
 
   ux.action.stop();
 

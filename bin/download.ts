@@ -1,10 +1,4 @@
-import { readFile, writeFile } from "node:fs/promises";
-
-import { config } from "dotenv";
-import fetch from "node-fetch";
 import getGeneratorOptions from "./lib";
-
-config();
 
 const basePath = "https://entrust.us.trustedauth.com";
 
@@ -41,11 +35,14 @@ const formatVersion = (version: string) => {
  * Download and save Swagger file.
  */
 const downloadFile = async (type: "auth" | "admin") => {
-  const { config: configFile, input: file } = getGeneratorOptions(type);
+  const { config: genConfig, input } = getGeneratorOptions(type);
 
-  const URL = `${DOC_PATH}/${file}`;
+  const configFile = Bun.file(genConfig);
+  const file = Bun.file(input);
 
-  console.log("Downloading", file, "from", URL);
+  const URL = `${DOC_PATH}/${file.name}`;
+
+  console.log("Downloading", file.name, "from", URL);
 
   const response = await fetch(URL);
 
@@ -64,15 +61,13 @@ const downloadFile = async (type: "auth" | "admin") => {
     process.exit(1);
   }
 
-  console.log("Writing", file);
+  console.log("Writing", file.name);
 
-  await writeFile(file, JSON.stringify(swagger, null, 2), {
-    encoding: "utf-8",
-  });
+  await Bun.write(file, JSON.stringify(swagger, null, 2));
 
-  console.log("Reading", configFile);
+  console.log("Reading", configFile.name);
 
-  const configStr = await readFile(configFile, { encoding: "utf-8" });
+  const configStr = await configFile.text();
 
   const config = JSON.parse(configStr);
 
@@ -80,11 +75,9 @@ const downloadFile = async (type: "auth" | "admin") => {
 
   config[VERSION_KEY] = version;
 
-  console.log("Saving", configFile);
+  console.log("Saving", configFile.name);
 
-  await writeFile(configFile, JSON.stringify(config, null, 2), {
-    encoding: "utf-8",
-  });
+  await Bun.write(configFile, JSON.stringify(config, null, 2));
 
   console.log("Saved.");
 };
