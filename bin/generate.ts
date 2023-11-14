@@ -1,4 +1,3 @@
-import { execa } from "execa";
 import { getGeneratorOptions } from "./lib";
 import { join } from "node:path";
 
@@ -58,9 +57,9 @@ const generateReadme = async (config: string, output: string, type: string) => {
 
   console.log(`Generating ${sdkType} SDK...`);
 
-  const subprocess = execa(
-    "bunx",
+  const subprocess = Bun.spawn(
     [
+      "bunx",
       "openapi-generator-cli",
       "generate",
       "-i",
@@ -80,9 +79,7 @@ const generateReadme = async (config: string, output: string, type: string) => {
     }
   );
 
-  subprocess.stdout.pipe(process.stdout);
-
-  await subprocess;
+  await subprocess.exited;
 
   console.log("Post processing files...");
 

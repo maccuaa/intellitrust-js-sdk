@@ -1,4 +1,3 @@
-import { execa } from "execa";
 import { ux } from "@oclif/core";
 
 const ADMIN_PATH = "admin-sdk";
@@ -9,25 +8,19 @@ const AUTH_PATH = "auth-sdk";
  */
 (async () => {
   const publish = async (path: string, otp: string) => {
-    // TODO: Still need npm?
-    const subprocess = execa(
-      "npm",
-      ["publish", "--access", "public", "--otp", otp],
+    const subprocess = Bun.spawn(
+      ["npm", "publish", "--access", "public", "--otp", otp],
       {
         cwd: path,
       }
     );
 
-    subprocess.stdout.pipe(process.stdout);
-    subprocess.stderr.pipe(process.stderr);
-    subprocess.stdin.pipe(process.stdin);
-
-    await subprocess;
+    await subprocess.exited;
   };
 
   ux.action.start("Building SDKs");
 
-  await execa("bun", ["run", "build"]);
+  await Bun.spawn(["bun", "run", "build"]).exited;
 
   ux.action.stop();
 
