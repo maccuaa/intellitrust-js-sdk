@@ -14,7 +14,7 @@ jobs:
       ADMIN_APP_ID: ${{ secrets.ADMIN_APP_ID }}
       ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
       - run: echo "$BASE_PATH"
       - run: bun -v
