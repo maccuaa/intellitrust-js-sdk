@@ -12,6 +12,8 @@ const AUTH_PATH = "auth-sdk";
       ["npm", "publish", "--access", "public", "--otp", otp],
       {
         cwd: path,
+        stdout: "inherit",
+        stderr: "inherit",
       }
     );
 

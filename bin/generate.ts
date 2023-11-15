@@ -12,17 +12,15 @@ const AUTH_EXAMPLE = "auth-example.ts";
 const generateReadme = async (config: string, output: string, type: string) => {
   const isAdmin = type === "admin";
 
+  const sdkType = isAdmin ? "Administration" : "Authentication";
+  const sdkVar = isAdmin ? "AdminSDK" : "AuthSDK";
+  const examplePath = isAdmin ? ADMIN_EXAMPLE : AUTH_EXAMPLE;
+
   const options = await Bun.file(config).text();
 
   const { npmName, npmVersion } = JSON.parse(options);
 
-  const example = await Bun.file(
-    join(TEMPLATES, isAdmin ? ADMIN_EXAMPLE : AUTH_EXAMPLE)
-  ).text();
-
-  const sdkType = isAdmin ? "Administration" : "Authentication";
-
-  const sdkVar = isAdmin ? "AdminSDK" : "AuthSDK";
+  const example = await Bun.file(join(TEMPLATES, examplePath)).text();
 
   const readme = renderReadme(npmName, npmVersion, example, sdkType, sdkVar);
 
@@ -76,6 +74,8 @@ const generateReadme = async (config: string, output: string, type: string) => {
     {
       cwd: process.cwd(),
       shell: true,
+      stdout: "inherit",
+      stderr: "inherit",
     }
   );
 
