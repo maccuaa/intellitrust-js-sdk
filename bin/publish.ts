@@ -20,12 +20,6 @@ const AUTH_PATH = "auth-sdk";
     await subprocess.exited;
   };
 
-  ux.action.start("Building SDKs");
-
-  await Bun.spawn(["bun", "run", "build"]).exited;
-
-  ux.action.stop();
-
   const otp = await ux.prompt("🔑 Enter OTP", { required: true });
 
   await publish(ADMIN_PATH, otp);
