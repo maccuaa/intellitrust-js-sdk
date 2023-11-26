@@ -14,8 +14,8 @@ jobs:
       ADMIN_APP_ID: ${{ secrets.ADMIN_APP_ID }}
       ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: oven-sh/setup-bun@a1800f471a0bc25cddac36bb13e6f436ddf341d7 # v1
       - run: echo "$BASE_PATH"
       - run: bun i --frozen-lockfile
       - run: bun run cd:build
