@@ -6,5 +6,6 @@
     "automerge": true
   },
   "extends": ["config:best-practices", ":rebaseStalePrs"],
-  "minimumReleaseAge": "3 days"
+  "minimumReleaseAge": "3 days",
+  "osvVulnerabilityAlerts": true
 }
