@@ -1,4 +1,4 @@
-import getGeneratorOptions from "./lib";
+import { getGeneratorOptions } from "./lib";
 
 const basePath = "https://entrust.us.trustedauth.com";
 

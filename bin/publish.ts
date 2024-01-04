@@ -1,4 +1,4 @@
-import { ux } from "@oclif/core";
+import { prompt } from "./lib";
 
 const ADMIN_PATH = "admin-sdk";
 const AUTH_PATH = "auth-sdk";
@@ -20,8 +20,12 @@ const AUTH_PATH = "auth-sdk";
     await subprocess.exited;
   };
 
-  const otp = await ux.prompt("🔑 Enter OTP", { required: true });
+  const otp = await prompt("🔑 Enter OTP: ");
 
-  await publish(ADMIN_PATH, otp);
-  await publish(AUTH_PATH, otp);
+  console.log("OTP is", otp);
+
+  if (otp) {
+    await publish(ADMIN_PATH, otp);
+    await publish(AUTH_PATH, otp);
+  }
 })();

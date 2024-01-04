@@ -1,4 +1,7 @@
-export interface GeneratorOptions {
+import { createInterface } from "node:readline/promises";
+import { stdin as input, stdout as output } from "node:process";
+
+interface GeneratorOptions {
   input: string;
   output: string;
   config: string;
@@ -30,4 +33,12 @@ export const getGeneratorOptions = (
   };
 };
 
-export default getGeneratorOptions;
+export const prompt = async (question: string) => {
+  const rl = createInterface({ input, output });
+
+  const response = await rl.question(question);
+
+  rl.close();
+
+  return response.trim();
+};
