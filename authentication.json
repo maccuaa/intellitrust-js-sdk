@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.32.3"
+    "version": "5.33"
   },
   "servers": [
     {
@@ -104,7 +104,7 @@
         "tags": [
           "Authentication"
         ],
-        "summary": "Request Passkey Challenge",
+        "summary": "Request Passkey Challenge. This API is deprecated, use /api/web/v2/authentication/users/authenticate/PASSKEY instead.",
         "operationId": "requestPasskeyChallengeUsingPOST",
         "requestBody": {
           "content": {
@@ -167,7 +167,8 @@
               }
             }
           }
-        }
+        },
+        "deprecated": true
       }
     },
     "/api/web/v1/authentication/users/authenticate/{authenticator}/complete": {
@@ -196,7 +197,10 @@
                 "TOKENPUSH",
                 "FIDO",
                 "SMARTCREDENTIALPUSH",
-                "PASSWORD_AND_SECONDFACTOR"
+                "PASSWORD_AND_SECONDFACTOR",
+                "SMART_LOGIN",
+                "IDP",
+                "PASSKEY"
               ]
             }
           },
@@ -941,7 +945,10 @@
                 "TOKENPUSH",
                 "FIDO",
                 "SMARTCREDENTIALPUSH",
-                "PASSWORD_AND_SECONDFACTOR"
+                "PASSWORD_AND_SECONDFACTOR",
+                "SMART_LOGIN",
+                "IDP",
+                "PASSKEY"
               ]
             }
           }
@@ -1063,6 +1070,14 @@
               "SMS",
               "VOICE"
             ]
+          },
+          "redirectUrl": {
+            "type": "string",
+            "description": "The redirect URL when using a Magic Link."
+          },
+          "smartLoginChallenge": {
+            "type": "string",
+            "description": "For a SMART_LOGIN authenticator challenge, provides the challenge."
           },
           "status": {
             "type": "string",
@@ -1356,6 +1371,10 @@
           "origin": {
             "type": "string",
             "description": "The origin of where the FIDO token was generated."
+          },
+          "relyingPartyId": {
+            "type": "string",
+            "description": "The relying party ID of where the FIDO token was generated."
           },
           "state": {
             "type": "string",
@@ -1940,6 +1959,10 @@
             "description": "Cancel Identity as a Service authentication to the application",
             "example": false
           },
+          "certificate": {
+            "type": "string",
+            "description": "The certificate with public key to verify signature."
+          },
           "chapResponse": {
             "$ref": "#/components/schemas/CHAPResponse"
           },
@@ -1986,7 +2009,7 @@
           },
           "response": {
             "type": "string",
-            "description": "API response based on Authenticator type. This is not a required field if Mobile Smart Credential, KBA or Token Push authentication is being used.",
+            "description": "API response based on Authenticator type. This is not a required field if Mobile Smart Credential, KBA, Token Push, or Smart Login authentication is being used.",
             "example": "7569582."
           },
           "secondFactorAuthenticator": {
@@ -2005,7 +2028,10 @@
               "TOKENPUSH",
               "FIDO",
               "SMARTCREDENTIALPUSH",
-              "PASSWORD_AND_SECONDFACTOR"
+              "PASSWORD_AND_SECONDFACTOR",
+              "SMART_LOGIN",
+              "IDP",
+              "PASSKEY"
             ]
           },
           "tokenProtectedOfflineParms": {
@@ -2132,7 +2158,10 @@
                 "TOKENPUSH",
                 "FIDO",
                 "SMARTCREDENTIALPUSH",
-                "PASSWORD_AND_SECONDFACTOR"
+                "PASSWORD_AND_SECONDFACTOR",
+                "SMART_LOGIN",
+                "IDP",
+                "PASSKEY"
               ]
             }
           },
@@ -2161,7 +2190,10 @@
                 "TOKENPUSH",
                 "FIDO",
                 "SMARTCREDENTIALPUSH",
-                "PASSWORD_AND_SECONDFACTOR"
+                "PASSWORD_AND_SECONDFACTOR",
+                "SMART_LOGIN",
+                "IDP",
+                "PASSKEY"
               ]
             }
           },
@@ -2276,7 +2308,10 @@
               "TOKENPUSH",
               "FIDO",
               "SMARTCREDENTIALPUSH",
-              "PASSWORD_AND_SECONDFACTOR"
+              "PASSWORD_AND_SECONDFACTOR",
+              "SMART_LOGIN",
+              "IDP",
+              "PASSKEY"
             ]
           }
         },
@@ -2284,8 +2319,7 @@
       },
       "UserChallengeParameters": {
         "required": [
-          "applicationId",
-          "userId"
+          "applicationId"
         ],
         "type": "object",
         "properties": {
@@ -2364,7 +2398,10 @@
               "TOKENPUSH",
               "FIDO",
               "SMARTCREDENTIALPUSH",
-              "PASSWORD_AND_SECONDFACTOR"
+              "PASSWORD_AND_SECONDFACTOR",
+              "SMART_LOGIN",
+              "IDP",
+              "PASSKEY"
             ]
           },
           "summary": {
@@ -2386,7 +2423,7 @@
           },
           "userId": {
             "type": "string",
-            "description": "User ID (containing the user ID or a user alias) of the Identity as a Service user completing the authentication challenge.",
+            "description": "User ID (containing the user ID or a user alias) of the Identity as a Service user completing the authentication challenge. The userid is required for non-passwordless authenticators.",
             "example": "admin"
           }
         },
