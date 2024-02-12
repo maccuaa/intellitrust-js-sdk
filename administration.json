@@ -2,13 +2,13 @@
   "openapi": "3.0.1",
   "info": {
     "title": "Entrust Identity as a Service Administration API",
-    "description": "This document describes how to manage your Identity as a Service account using Administration (Admin) API calls. This\nAPI allows you to seamlessly perform administrative actions on Identity as a Service without logging in to the Identity\nas a Service Administrator portal.\n\n# Prerequisites\n\nConfirm the following before executing the Admin API calls included in this guide:\n\n- An Admin API application has been created on your Identity as a Service account. The application must be configured\n  with a role that has the permissions needed by your application. Identity as a Service allows you to download a JSON\n  file once the application is created.\n- The Application ID and Shared Secret parameter values are easily accessible. They must be entered into the body of the\n  Admin APi request. The required values are displayed after creating the Administration API application on Identity as\n  a Service. Upon creation, you can either copy these values to your clipboard or download them as a JSON file.\n- The Admin API application configuration data has been downloaded and is available for use.\n\n# Identity as a Service Administration APIs\n\nIdentity as a Service administration APIs are grouped into the following categories. You can only perform the API calls\npermitted by the role assigned to your Administration API application on Identity as a Service. See the **Identity as a\nService Administrator Help** for more information on Identity as a Service roles:\n\n### Admin Authentication\n\nThese APIs facilitate authentication between your Admin API application and Identity as a Service. You must make this\ncall before making any other Admin API calls. The call generates an authentication token value that must be included in\nall other Admin API requests.\n\nThe Admin API authentication response includes the token's expiration time. For instance:\n\n```json\n{\n  \"authToken\": \"GLrKMuDGiIWPJooDRFTZIHc65RyjJBiPdy4b5xNR8fKxXfwy4tbSIvh+xiFHlJ2p6tm3FuOZ34sxjCHYbDa77eLrxFcMuwYjRMmLWsUIGfkpfg33Wb/5X01Xag4Vdjz5DpVKfCg/OL2rnd4tfCfzM9FoY+vY/sllGgRtQkGeZodsi+QvazqQS1iJ5e6i5ouR05P52YsLgmMlZ4mUfH3JiXZmkkAJvXuM3oj9msi/a4ULWeUGYW5oHM5Gs6ab37baa5xzVykzowHdIoZMVeC8+zVqDr+yXTAHVysBYQHngyckgBizDc2g49RgRTEz2k+yRIvwUU5swGzKtgt6kYtyyFM8YdeODB59Fkl8w5mQQDpxIyZcclCFv2C+MBWdnbM0kJIgNtE1ZeRA+zxwS6avE8EKw3T9Nczs6KBfycV3NxgxTvTQIxNi3kPA8XdJtAmCkUR/gyLkqJXk7bGDvFo4+rWR4uX2XxHm2NZGTNA1QezK96Y7JVjImfoHlUJnxGm207/kVPIVtSUD+6XuEl0uVvrtnTPmQnpq3P0gTYvon3Cw1caQvIydtrUv4yfs4Q/WVvSF3GQh3uet/IkUeGbkxLn43CSVz2hCQoeF8jxIoiJuSAxs1e3phylp0plijvok01Tbit6um/x4tK5UZYCRZYmeSD/ltXGtZNOoA4YHh5cDK+KcDy2tuWaexi2Hf+nJ5adqiMHwuozIH69Eqc6OZ9o86t75mIdux8zLgWt0T3SFOphtCvF0L8BdxICrEXGMDhguRRH7f+/IPU0ggFwnxsIV2a3c4oOayFfHwVSg4rGSKfWuWtkfNavA8RI5y6JOKzMrulrdg+gzuBMms2nKn38HNIRu2pKMVzQ2jU8CrtPgOT8=\",\n  \"expirationTime\": \"2020-01-23T16:30:58Z\",\n  \"creationTime\": \"2020-01-23T16:15:58Z\"\n}\n```\n\nIf you use this authentication token to make requests after it expires, the service will return an UNAUTHORIZED response\ncode (401) and you will need to reauthenticate to obtain a new token.\n\nSome workarounds to prevent this are:\n\n- Always reauthenticate before making a request; or\n- Track the expiration time and reauthenticate when you detect that it has expired; or\n- Send an OPTIONS request to the same end-point to detect whether the token has expired. This can be useful with\n  end-points receiving a large payload such as images where the token can expire before the request has completed. In\n  these cases the request may fail with a 500 error.\n\nWhen an admin API application authenticates, there is an option to enable a web session to add additional security to\nthe session. This is done by setting the enableWebSession argument passed to the authentication controller to true. When\na web session is enabled, an HTTP session cookie named Identity as a Service_SESSION_ID will be returned with the\nauthentication results. This cookie must be included with all subsequent admin API calls along with the authentication\ntoken.\n\n### Users\n\nThese APIs facilitate user management operations on an Identity as a Service account.\n\n### Smart Credentials\n\nThe Entrust® Mobile Smart Credential (MSC) application allows users to perform authentications to their Identity as a\nService account and configured applications. This API call facilitates mobile smart credential management operations on\nan Identity as a Service account.\n\n### Tokens\n\nThese APIs facilitate hardware and soft token management operations on an Identity as a Service account.\n\n### FIDO2/Passkey Tokens\n\nThese APIs facilitate management of FIDO2 tokens. FIDO2 tokens can be registered, viewed, deleted and updated.\n\n### Grid Cards\n\nGrid authentication uses cards with a grid as the authentication lookup tool. This API call facilitates Grid Card\nmanagement operations on an Identity as a Service account.\n\n### Temporary Access Codes\n\nTemporary Access Codes can be used to log in when a user cannot access their one-time passcode (OTP), Grid Card, or\ntoken authenticator. This API call facilitates Temporary Access Code management operations on an Identity as a Service\naccount.\n\n### KBA - Knowledge-based Authenticators\n\nKnowledge-based authentication (or knowledge-based authenticators) (KBA) (also known as question-and-answer (Q&A)\nauthentication) allows users to authenticate to SAML application accounts using Identity as a Service by providing the\ncorrect answer to one or more preregistered questions. This API call facilitates Knowledge-based Authenticator\nmanagement operations on an Identity as a Service account.\n\n### Passwords\n\nThere are two types of password authenticators available on Identity as a Service —Identity as a Service passwords and\nActive Directory (AD) passwords. Identity as a Service passwords are passwords that can be manually or automatically\nassigned to users on Identity as a Service. Active Directory (AD) passwords are passwords that have already been\nassigned to a user on their corporate directory - not through Identity as a Service. This API call facilitates password\nmanagement operations on an Identity as a Service account for either type of password.\n\n### OTPs\n\nThese APIs facilitate OTP management operations on an Identity as a Service account.\n\n### User Risk-based authentication (RBA) Settings\n\nRisk-based authentication (RBA) identifies the level of risk associated with a user who tries to authenticate. This API\ncall facilitates Risk-based authentication management operations on an Identity as a Service account.\n\n### Machine authenticators\n\nMachine Authentication (MA) provides identification information on the Web browser being used to access a SAML\napplication. This API call facilitates Machine Authenticator management operations on an Identity as a Service account.\n\n### User Attributes\n\nUser attributes are the information fields listed as part of each user's Profile information. This API call facilitates\nuser attribute management operations on an Identity as a Service account.\n\n### Roles\n\nRoles control what operations a user can perform on their Identity as a Service account. These roles distinguish the\namount of access given to each account, ranging from administrators with full access to end users (who can only access\nthe user portal features).This API call facilitates role management operations on an Identity as a Service account.\n\n### Groups\n\nAn Identity as a Service group is a collection of users given access to applications based on the resource rules they\nare assigned to. This API call facilitates group management operations on an Identity as a Service account.\n\n### Reports\n\nThese APIs allow you to access the Audit Log on your Identity as a Service account. This Log lists the actions\nperformed on your account within a period of time.\n\n### Settings\n\nThese APIs provide management of the settings used to configure Identity as a Service behavior. Settings that can be\nmanaged using the administration API include General settings, OTP settings and Token settings.\n\n### Applications\n\nThese APIs provide management of authentication API applications using the administration API.\n\n### Resource Rules\n\nResource rules define what authenticators are required to authenticate to an application. The resource rules APIs\nprovide management of resource rules using the administration API.\n\n### Directories\n\nThese APIs provide directory related information using the administration API.\n\n### Tenants\n\nFor service provider accounts, the tenant APIs provide management of their child tenants as well as management of\nentitlements for those tenants. These APIs are only available for accounts that are service providers.\n\n### Account Info\n\nThe account info APIs provide functionality to fetch and modify account related information such as the company name and\nthe license acknowledged flag.\n\n### ActiveSync Access\n\nThese APIs facilitate management of Exchange ActiveSync Devices available on your Microsoft Office 365 account.\n\n### ID Proofing\n\nThese APIs are used to validate the identity of a person by performing a liveness check using a government-issued\nidentity document, such as a driver's license or a passport, and comparing the document photograph with a self-portrait\ndigital photograph (selfie) taken on a mobile device.\n\n### Entitlements\n\nThese APIs are used by child tenants to retrieve their own entitlement information.\n\n# Examples\n\nThe following are examples of Admin API calls that can be used to perform administrative actions. The examples below are\nnot an exhaustive list of possible Admin API actions.\n\n**Important:** You must execute the Authentication (Admin API) call before executing any other Admin API calls. The\nAuthentication (Admin API) call generates a token value that must be included in every other request to be successful.\n\n## Authentication (Admin API)\n\nTo perform this action, the first step is to submit a POST request to the Admin application. This is the Admin\napplication created on your Identity as a Service account. The URL address of the Admin application includes your\nIdentity as a Service account URL. The format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v1/adminapi/authenticate\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v1/adminapi/authenticate\n```\n\nThe body of this request should contain the JSON object with an Application ID and Shared Secret. This JSON file was\ngenerated during creation of Admin Application on Identity as a Service. For example:\n\n```json\n{\n  \"applicationId\": \"d3737e0f-4d8e-431c-b1d8-cd17ad4d633d\",\n  \"sharedSecret\": \"randomSharedSecret\"\n}\n```\n\nAn API response is received if the call is successful . For example:\n\n```json\n{\n  \"authToken\": \"GLb6JWz966gCayVNw4lZSSKV6W3PGgsJZ4CagZjoZNMaa2Me7F5OX+CKOVx8sOXsBEdLemVEruixXoaVsjQc1j+GPBy5Qn+KlilA9GXrSEQujsmfiJono3Gta7Uc8b3VUkEBvU193UqWPtmW1NXsSnPV2Z9B2AjZT17zNlHAyOvFpOXTI5bkmj6f2cKses6cBem5kLSbGHH9lHBv4JvXBjNxtPf7urAUkFn8cJariZyb0/q/AYqYL9do8nFrPFmSCTjYeNmxuWm5CACRi17K5XSyhZpu979b3i7MQEeOq1Pfjw7WzdKfrSvLJg/qgYeLD4aSOrQu4HAixZSFBmW9RGDxlo0J0Y1uAAy4lR57yG3p6E8H6OcV3Vakso4CT8yHAFH8xmdsUXXfyv9v+hr5QKh+7iVYro8tjjByRzj6XXAOx0vDO2yhpOd4migv33aWlFEhbgxIzNseJ8je6wauST0O+hJ5kKjl5yLBXS3iKhZJZMG2FNcU5pbD7SnUh79OWoCuOsehOM2pDFDPnMEms5ri/y0yaKIZmtz9Poy6KH1BDd+645+xX8iqW4IeqJ3zW8RZtnJgzAkUFeCjuDtbvotIcR45p8ibXF0GWLFAbxzvc5daf21bBV29A33C7mFoX4id44BZJ6OC8fztmthRzR2l0uP04STG0dgRRTNgZpoqKiMczwbOVNDv7ZQeSf/Kh3n2S1O8SZXHZT+zUvPwCLg9mnhOTYEqPjoMlqTZycttFYv3D4hKbU7NzYmFdtGYreaI2rNNue7aOzn+J8BN0j3+ZHkhimfO/ZfhF89Bn02IRzDER1ENdcwBSO8frWeAR+nCy0m4Eg==\",\n  \"expirationTime\": \"2018-05-28T19:07:50.328+0000\",\n  \"creationTime\": \"2018-05-28T18:52:50.329+0000\"\n}\n```\n\nYou must include the **auth token** value displayed in this response in subsequent API calls. Without it, other Admin\nAPI calls will fail.\n\nAn error code is displayed if the call is unsuccessful. A different error code is displayed for each type of error.\n\n## Users\n\n### Create A User\n\nSubmit a POST request to create a User on your account.\nThe format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v3/users\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n```\n\nThe body of this request must contain all the fields mentioned in the example below that are configured as mandatory:\n\n```json\n{\n  \"firstName\": \"john\",\n  \"lastName\": \"smith\",\n  \"email\": \"johnsmith@organization.com\",\n  \"userId\": \"john\",\n  \"mobile\": \"+16138561234\",\n  \"phone\": \"+161385699876\",\n  \"locale\": \"\",\n  \"state\": \"ACTIVE\",\n  \"externaId\": null,\n  \"externalSource\": null,\n  \"userAttributeValues\": [\n  ],\n  \"userAliases\": [\n    {\n      \"value\": \"johnny\",\n      \"type\": \"CUSTOM\"\n    }\n  ]\n}\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes all the details of the created user. For example:\n\n```json\n{\n  \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userId\": \"john\",\n  \"firstName\": \"john\",\n  \"lastName\": \"smith\",\n  \"email\": \"johnsmith@organization.com\",\n  \"mobile\": \"+16138561234\",\n  \"phone\": \"+161385699876\",\n  \"locale\": null,\n  \"state\": \"ACTIVE\",\n  \"externalId\": null,\n  \"externalSource\": null,\n  \"migrated\": null,\n  \"locked\": false,\n  \"lockoutExpiry\": null,\n  \"otpCreateTime\": null,\n  \"grids\": [],\n  \"tokens\": [\n    {\n      \"id\": \"9a2edcc5-46f0-4fff-89b1-13c0f73e1a5c\",\n      \"type\": \"ENTRUST_SOFT_TOKEN\",\n      \"serialNumber\": \"62461-69384\",\n      \"loadDate\": \"2018-05-29T19:12:54.000+0000\",\n      \"lastUsedDate\": null,\n      \"state\": \"ACTIVATING\",\n      \"platform\": null,\n      \"registeredForTransactions\": false,\n      \"name\": null,\n      \"allowedActions\": [\n        \"REACTIVATE\",\n        \"ACTIVATE_COMPLETE\",\n        \"DELETE\"\n      ],\n      \"description\": null,\n      \"userId\": null\n    }\n  ],\n  \"smartCredentials\": [],\n  \"tempAccessCode\": null,\n  \"userAttributeValues\": [],\n  \"userAliases\": [\n    {\n      \"id\": \"43422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"johnny\",\n      \"type\": \"CUSTOM\"\n    },\n    {\n      \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"john\",\n      \"type\": \"USERID\"\n    }\n  ],\n  \"groups\": [],\n  \"type\": \"MGMT_UI\"\n}\n```\n\n### Get a User by UserID\n\nSubmit a POST request to retrieve user details for a particular User ID. The format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v3/users/userid\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n``` \n\nThe body of this request must contain **UserID**. For example:\n\n```json\n{\n  \"userId\": \"John\"\n}\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes the user's information. For example:\n\n```json\n{\n  \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userId\": \"john\",\n  \"firstName\": \"john\",\n  \"lastName\": \"smith\",\n  \"email\": \"johnsmith@organization.com\",\n  \"mobile\": \"+16138561234\",\n  \"phone\": \"+161385699876\",\n  \"locale\": null,\n  \"state\": \"ACTIVE\",\n  \"externalId\": null,\n  \"externalSource\": null,\n  \"migrated\": null,\n  \"locked\": false,\n  \"lockoutExpiry\": null,\n  \"otpCreateTime\": null,\n  \"grids\": [],\n  \"tokens\": [\n    {\n      \"id\": \"9a2edcc5-46f0-4fff-89b1-13c0f73e1a5c\",\n      \"type\": \"ENTRUST_SOFT_TOKEN\",\n      \"serialNumber\": \"62461-69384\",\n      \"loadDate\": \"2018-05-29T19:12:54.000+0000\",\n      \"lastUsedDate\": null,\n      \"state\": \"ACTIVATING\",\n      \"platform\": null,\n      \"registeredForTransactions\": false,\n      \"name\": null,\n      \"allowedActions\": [\n        \"REACTIVATE\",\n        \"ACTIVATE_COMPLETE\",\n        \"DELETE\"\n      ],\n      \"description\": null,\n      \"userId\": null\n    }\n  ],\n  \"smartCredentials\": [],\n  \"tempAccessCode\": null,\n  \"userAttributeValues\": [],\n  \"userAliases\": [\n    {\n      \"id\": \"43422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"johnny\",\n      \"type\": \"CUSTOM\"\n    },\n    {\n      \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"john\",\n      \"type\": \"USERID\"\n    }\n  ],\n  \"groups\": [],\n  \"type\": \"MGMT_UI\"\n}\n```\n\n## Grids\n\n### Create a Grid\n\nSubmit a POST request to create a new Grid Card and assign it to a user. You must include the UUID of the user that you\nwant to assign a Grid Card in the API request. The format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v2/users/{userid}/grids\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v2/users/2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0/grids\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes the desired Grid Card information. For example:\n\n```json\n{\n  \"id\": \"6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\",\n  \"serialNumber\": 2,\n  \"createDate\": \"2018-05-29T19:48:24.249+0000\",\n  \"assignDate\": null,\n  \"expiryDate\": null,\n  \"expired\": false,\n  \"lastUsedDate\": null,\n  \"state\": \"ACTIVE\",\n  \"gridContents\": [\n    [\n      \"TP\",\n      \"0M\",\n      \"P8\",\n      \"KW\",\n      \"3D\",\n      \"KR\",\n      \"M1\",\n      \"W0\",\n      \"TJ\",\n      \"F4\"\n    ],\n    [\n      \"9M\",\n      \"MV\",\n      \"88\",\n      \"DX\",\n      \"H3\",\n      \"DV\",\n      \"44\",\n      \"PW\",\n      \"V1\",\n      \"CX\"\n    ],\n    [\n      \"F2\",\n      \"FE\",\n      \"0Q\",\n      \"XN\",\n      \"CD\",\n      \"36\",\n      \"MQ\",\n      \"PN\",\n      \"WF\",\n      \"DD\"\n    ],\n    [\n      \"WN\",\n      \"9F\",\n      \"J4\",\n      \"TF\",\n      \"7J\",\n      \"W4\",\n      \"7M\",\n      \"9Q\",\n      \"1H\",\n      \"W5\"\n    ],\n    [\n      \"QM\",\n      \"21\",\n      \"VQ\",\n      \"39\",\n      \"1N\",\n      \"EV\",\n      \"PT\",\n      \"P4\",\n      \"28\",\n      \"WY\"\n    ]\n  ],\n  \"allowedActions\": [\n    \"DELETE\",\n    \"DISABLE\"\n  ],\n  \"userId\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userName\": \"john\"\n}\n```\n\n### Get a Grid by Id\n\nSubmit a GET request to display a Grid Card's details. You must include the Grid Card's ID string in the request. The ID\nis required to identify which Grid Card's details to display. The format of the request URL is:\n\n```\nhttps://customer.region.trustedauth.com/api/web/v2/grids/{gridid}\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v2/grids/6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes Grid Card details. For example:\n\n```json\n{\n  \"id\": \"6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\",\n  \"serialNumber\": 2,\n  \"createDate\": \"2018-05-29T19:48:24.000+0000\",\n  \"assignDate\": null,\n  \"expiryDate\": null,\n  \"expired\": false,\n  \"lastUsedDate\": null,\n  \"state\": \"ACTIVE\",\n  \"gridContents\": [\n    [\n      \"TP\",\n      \"0M\",\n      \"P8\",\n      \"KW\",\n      \"3D\",\n      \"KR\",\n      \"M1\",\n      \"W0\",\n      \"TJ\",\n      \"F4\"\n    ],\n    [\n      \"9M\",\n      \"MV\",\n      \"88\",\n      \"DX\",\n      \"H3\",\n      \"DV\",\n      \"44\",\n      \"PW\",\n      \"V1\",\n      \"CX\"\n    ],\n    [\n      \"F2\",\n      \"FE\",\n      \"0Q\",\n      \"XN\",\n      \"CD\",\n      \"36\",\n      \"MQ\",\n      \"PN\",\n      \"WF\",\n      \"DD\"\n    ],\n    [\n      \"WN\",\n      \"9F\",\n      \"J4\",\n      \"TF\",\n      \"7J\",\n      \"W4\",\n      \"7M\",\n      \"9Q\",\n      \"1H\",\n      \"W5\"\n    ],\n    [\n      \"QM\",\n      \"21\",\n      \"VQ\",\n      \"39\",\n      \"1N\",\n      \"EV\",\n      \"PT\",\n      \"P4\",\n      \"28\",\n      \"WY\"\n    ]\n  ],\n  \"allowedActions\": [\n    \"DELETE\",\n    \"DISABLE\"\n  ],\n  \"userId\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userName\": \"john\"\n}\n```\n\n## ID Proofing\n\n### Initiate an ID Proofing Transaction\n\nSubmit a POST request to initiate the transaction and obtain the mobile SDK license. You must include a device\nfingerprint in the request if the service is configured to require it. The format of the request URL is:\n\n```\nhttps://customer.region.trustedauth.com/api/web/v1/idproofing/init\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v1/idproofing/init\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n``` \n\nThe body of this request should contain **firstPartyBlackbox**. For example:\n\n```json\n{\n  \"clientIp\": \"1.2.3.4\",\n  \"firstPartyBlackbox\": \"0610Jy4JhpaIbhJOJAyOFS...CpysKGn9rI0cgfvRE=\"\n}\n```\n\n> Checking the reputation of a device using a fingerprint is not supported in this release.\n>\nIn this example, the request would succeed and generate a response that includes the license. For example:\n\n```json\n{\n  \"requestId\": \"0ba70f09-58c8-4a8e-bb87-cf98f4f4c111\",\n  \"deviceCheckResult\": \"ALLOW\",\n  \"deviceCheckReason\": \"\",\n  \"deviceCheckDetails\": {\n    \"device.alias\": \"115993746090684075\",\n    \"device.bb.age\": \"9756913\",\n    \"device.bb.timestamp\": \"2019-09-24T13:56:53Z\",\n    \"device.firstseen\": \"2019-09-19T14:01:06.004Z\",\n    \"device.flash.storage.enabled\": \"0\",\n    \"device.js.enabled\": \"0\",\n    \"device.new\": \"0\",\n    \"device.os\": \"IPHONE 12.4.1\",\n    \"device.type\": \"IPHONE\",\n    ...\n  },\n  \"subscriberId\": \"5f5edd7f-bf52-4c4e-6da3-56a278148bbe\",\n  \"subscriberAccount\": \"example@company.com\",\n  \"subscriberPassword\": \"xyz34@19fdjt&sw2\",\n  ...\n}\n```\n\nNote the requestId attribute returned. This value must be used in the following interactions with the service.\n\nIf a fingerprint is provided (firstPartyBlackbox attribute in the request) and the deviceCheckResult attribute value is\nDENY, then the transaction cannot be continued.\n\n### Upload the Front Side Image of a Document ID\n\nSubmit a PUT request to upload the front image of a supported document ID. The format of the request URL is:\n\n```\nhttps://customer.region.trustedauth.com/api/web/v1/idproofing/<requestId>/image/0\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v1/idproofing/a63b0b66-1d1d-4834-b393-38a52c5e8304/image/0\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n``` \n\nThe binary image must be submitted in the body of the HTTP request.\n> If the authentication token has expired and the image is very large, the response sometimes can be a generic Internal\n> Error (500) instead of UNAUTHORIZED (401). To prevent this, it's recommended to submit an OPTIONS request before\n> submitting the PUT request with the image. The OPTIONS request will always return UNAUTHORIZED (401) if the\n> authentication token is expired.\n>\n\nIn this example, the image is successfully classified into a well-known document class. For example:\n\n```json\n{\n  \"presentationChanged\": false,\n  \"documentClass\": \"DRIVERSLICENSE\",\n  \"countryCode\": \"USA\",\n  \"supportedFrontImage\": true,\n  \"supportedBackImage\": true\n}\n```\n\nIf the documentClass attribute value is UNKNOWN, then you need to upload a better image to continue.\n\n### Upload the Back Side Image of a Document ID\n\nIf the response after submitting a valid Front image includes the \"supportedBackImage\" attribute with value \"true\", then\nyou can submit a PUT request to upload the back image of a supported document ID. The format of the request URL is:\n\nNote that uploading the back of a document is optional as in some cases all the relevant information is available in the\nfront of the document.\n\n```\nhttps://customer.region.trustedauth.com/api/web/v1/idproofing/<requestId>/image/1\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v1/idproofing/a63b0b66-1d1d-4834-b393-38a52c5e8304/image/1\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n``` \n\nThe binary image must be submitted in the body of the HTTP request.\n> If the authentication token has expired and the image is very large, the response sometimes can be a generic Internal\n> Error (500) instead of UNAUTHORIZED (401). To prevent this, it's recommended to submit an OPTIONS request before\n> submitting the PUT request with the image. The OPTIONS request will always return UNAUTHORIZED (401) if the\n> authentication token is expired.\n>\nIn this example, the image is successfully classified into a well-known document class. For example:\n\n```json\n{\n  \"presentationChanged\": false,\n  \"documentClass\": \"DRIVERSLICENSE\",\n  \"countryCode\": \"USA\",\n  \"supportedFrontImage\": true,\n  \"supportedBackImage\": true\n}\n```\n\nIf the documentClass attribute value is UNKNOWN, then you need to upload a better image to continue.\n\n### Complete an ID Proofing Transaction using a Standard Facial Recognition License\n\nIf you are using a Standard Facial Recognition license and the document images uploaded in the previous requests\nclassified correctly, you can now submit a PUT request to upload the selfie that the mobile SDK takes.\n\n```\nhttps://customer.region.trustedauth.com/api/web/v1/idproofing/<requestId>/completeselfie\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v1/idproofing/a63b0b66-1d1d-4834-b393-38a52c5e8304/completeselfie\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n``` \n\nThe binary selfie image must be submitted in the body of the HTTP request.\n\nIn this example, the selfie matches the document ID photo (faceMatch true) but document ID authentication indicates\nATTENTION as one of the tests performed on the document didn't PASS--see documentTestResults:\n\n```json\n{\n  \"faceMatch\": true,\n  \"faceMatchScore\": 84,\n  \"documentAuthenticationResult\": \"ATTENTION\",\n  \"documentDataFields\": [\n    {\n      \"description\": \"The person's legal, residence, or mailing address\",\n      \"name\": \"Address\",\n      \"type\": \"STRING\",\n      \"value\": \"WICKENBURG AZ 85390\"\n    },\n    {\n      \"description\": \"City of the person's legal, residence, or mailing address\",\n      \"name\": \"Address City\",\n      \"type\": \"STRING\",\n      \"value\": \"WICKENBURG\"\n    },\n    {\n      \"description\": \"Postal code of the person's address\",\n      \"name\": \"Address Postal Code\",\n      \"type\": \"STRING\",\n      \"value\": \"85390\"\n    },\n    {\n      \"description\": \"State of the person's legal, residence, or mailing address\",\n      \"name\": \"Address State\",\n      \"type\": \"STRING\",\n      \"value\": \"AZ\"\n    },\n    {\n      \"description\": \"The person's date of birth\",\n      \"name\": \"Birth Date\",\n      \"type\": \"DATETIME\",\n      \"value\": \"1987-03-01T00:00:00Z\"\n    },\n    {\n      \"description\": \"The localized version of the document class of the document type\",\n      \"name\": \"Document Class Name\",\n      \"type\": \"STRING\",\n      \"value\": \"Drivers License\"\n    },\n    {\n      \"description\": \"A number that identifies a document\",\n      \"name\": \"Document Number\",\n      \"type\": \"STRING\",\n      \"value\": \"D01405395\"\n    },\n    {\n      \"description\": \"Date that the document will expire\",\n      \"name\": \"Expiration Date\",\n      \"type\": \"DATETIME\",\n      \"value\": \"2007-01-01T00:00:00Z\"\n    },\n    {\n      \"description\": \"The person's first name\",\n      \"name\": \"First Name\",\n      \"type\": \"STRING\",\n      \"value\": \"SAMANTHA\"\n    },\n    {\n      \"description\": \"The person's full name (given name plus surname)\",\n      \"name\": \"Full Name\",\n      \"type\": \"STRING\",\n      \"value\": \"SAMANTHA JANE SAMPLE\"\n    },\n    {\n      \"description\": \"The person's given name\",\n      \"name\": \"Given Name\",\n      \"type\": \"STRING\",\n      \"value\": \"SAMANTHA JANE\"\n    },\n    {\n      \"description\": \"Date that the document was issued\",\n      \"name\": \"Issue Date\",\n      \"type\": \"DATETIME\",\n      \"value\": \"2006-02-23T00:00:00Z\"\n    },\n    {\n      \"description\": \"Abbreviated ID code of the state or country that issued the document\",\n      \"name\": \"Issuing State Code\",\n      \"type\": \"STRING\",\n      \"value\": \"AZ\"\n    },\n    {\n      \"description\": \"Full name of the state or country that issued the document\",\n      \"name\": \"Issuing State Name\",\n      \"type\": \"STRING\",\n      \"value\": \"Arizona\"\n    },\n    {\n      \"description\": \"The person's middle name\",\n      \"name\": \"Middle Name\",\n      \"type\": \"STRING\",\n      \"value\": \"JANE\"\n    },\n    {\n      \"description\": \"Indicates whether the document is a form of identification that meets the increased security standards for US state-issued driver's licenses and identification cards under the REAL ID Act\",\n      \"name\": \"REAL ID Compliant\",\n      \"type\": \"STRING\",\n      \"value\": \"False\"\n    },\n    {\n      \"description\": \"A single character (translated into M/F from other languages) that identifies the person's gender\",\n      \"name\": \"Sex\",\n      \"type\": \"STRING\",\n      \"value\": \"F\"\n    },\n    {\n      \"description\": \"The person's surname or family name\",\n      \"name\": \"Surname\",\n      \"type\": \"STRING\",\n      \"value\": \"SAMPLE\"\n    }\n  ],\n  \"documentTestResults\": [\n    {\n      \"name\": \"Document Expired\",\n      \"description\": \"Checked if the document is expired.\",\n      \"disposition\": \"The document has expired\",\n      \"information\": \"Verified that the document expiration date does not occur before the current date.\",\n      \"actions\": \"The expiration date on the document may have been misread.  Confirm that it is legible and occurs on or after the current date.  Also confirm that the current date and time of the host computer is correctly set.\",\n      \"result\": \"ATTENTION\"\n    },\n    {\n      \"name\": \"Birth Date Valid\",\n      \"description\": \"Verified that the birth date is valid.\",\n      \"disposition\": \"The birth date is valid\",\n      \"information\": \"Verified that the birth date is valid, in the expected format, and occurs on or before the current date and not outside a reasonable range.\",\n      \"actions\": \"The birth date on the document may have been misread.  Confirm that it is legible.\",\n      \"result\": \"PASSED\"\n    },\n    {\n      \"name\": \"Document Classification\",\n      \"description\": \"Verified that the type of document is supported and is able to be fully authenticated.\",\n      \"disposition\": \"The document type is supported\",\n      \"information\": \"Verified that the document is recognized as a supported document type and that the type of document can be fully authenticated.\",\n      \"actions\": \"This test may fail if a document cannot be successfully classified as a supported document type.  This may occur if the document is fraudulent as some fraudulent documents differ so much from authentic documents that they will not be recognized as that type of document.  This may also occur if a valid document is significantly worn or damaged or if the document is of a new or different type that is not yet supported by the library.  The document should be examined manually.\",\n      \"result\": \"PASSED\"\n    },\n    {\n      \"name\": \"Expiration Date Valid\",\n      \"description\": \"Verified that the expiration date is valid.\",\n      \"disposition\": \"The expiration date is valid\",\n      \"information\": \"Verified that the document expiration date is valid, in the expected format, and occurs after the issue and birth dates.\",\n      \"actions\": \"The expiration date on the document may have been misread.  Confirm that it is legible and occurs after the issue and birth dates.\",\n      \"result\": \"PASSED\"\n    },\n    {\n      \"name\": \"Issue Date Valid\",\n      \"description\": \"Verified that the issue date is valid.\",\n      \"disposition\": \"The issue date is valid\",\n      \"information\": \"Verified that the document issue date is valid, in the expected format, does not occur in the future, does not occur before the date of birth, and does not occur after the expiration date.\",\n      \"actions\": \"The issue date on the document may have been misread.  Confirm that all of the dates are legible, the issue date occurs on or before the current date, and is before the expiration date.\",\n      \"result\": \"PASSED\"\n    },\n    {\n      \"name\": \"Visible Pattern\",\n      \"description\": \"Verified the presence of a pattern on the visible image.\",\n      \"disposition\": \"A visible pattern was found\",\n      \"information\": \"Verified that a security feature in the visible spectrum is present and in an expected location on the document.\",\n      \"actions\": \"Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.\",\n      \"result\": \"PASSED\"\n    }\n  ]\n}\n```\n\n### Complete an ID Proofing Transaction using an Enhanced Facial Recognition License\n\nIf you are using an Enhanced Facial Recognition license and the document images uploaded in the previous requests\nclassified correctly, you can now submit a PUT request with the liveness test result that the mobile SDK provides.\n\n```\nhttps://customer.region.trustedauth.com/api/web/v1/idproofing/<requestId>/complete\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v1/idproofing/a63b0b66-1d1d-4834-b393-38a52c5e8304/complete\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n``` \n\nThe body of this request must contain **livenessUserId** and **livenessToken**. For example:\n\n```json\n{\n  \"livenessUserId\": \"919ce7d3-1194-465d-9588-8668b8ac3bac\",\n  \"livenessToken\": \"31706131726336496d655177346e55503279616b69547344446e5258684c7542\"\n}\n```\n\nThe response from this request is identical to the one you can see in the previous section.\n",
+    "description": "This document describes how to manage your Identity as a Service account using Administration (Admin) API calls. This\nAPI allows you to seamlessly perform administrative actions on Identity as a Service without logging in to the Identity\nas a Service Administrator portal.\n\n# Prerequisites\n\nConfirm the following before executing the Admin API calls included in this guide:\n\n- An Admin API application has been created on your Identity as a Service account. The application must be configured\n  with a role that has the permissions needed by your application. Identity as a Service allows you to download a JSON\n  file once the application is created.\n- The Application ID and Shared Secret parameter values are easily accessible. They must be entered into the body of the\n  Admin APi request. The required values are displayed after creating the Administration API application on Identity as\n  a Service. Upon creation, you can either copy these values to your clipboard or download them as a JSON file.\n- The Admin API application configuration data has been downloaded and is available for use.\n\n# Identity as a Service Administration APIs\n\nIdentity as a Service administration APIs are grouped into the following categories. You can only perform the API calls\npermitted by the role assigned to your Administration API application on Identity as a Service. See the **Identity as a\nService Administrator Help** for more information on Identity as a Service roles:\n\n### Admin Authentication\n\nThese APIs facilitate authentication between your Admin API application and Identity as a Service. You must make this\ncall before making any other Admin API calls. The call generates an authentication token value that must be included in\nall other Admin API requests.\n\nThe Admin API authentication response includes the token's expiration time. For instance:\n\n```json\n{\n  \"authToken\": \"GLrKMuDGiIWPJooDRFTZIHc65RyjJBiPdy4b5xNR8fKxXfwy4tbSIvh+xiFHlJ2p6tm3FuOZ34sxjCHYbDa77eLrxFcMuwYjRMmLWsUIGfkpfg33Wb/5X01Xag4Vdjz5DpVKfCg/OL2rnd4tfCfzM9FoY+vY/sllGgRtQkGeZodsi+QvazqQS1iJ5e6i5ouR05P52YsLgmMlZ4mUfH3JiXZmkkAJvXuM3oj9msi/a4ULWeUGYW5oHM5Gs6ab37baa5xzVykzowHdIoZMVeC8+zVqDr+yXTAHVysBYQHngyckgBizDc2g49RgRTEz2k+yRIvwUU5swGzKtgt6kYtyyFM8YdeODB59Fkl8w5mQQDpxIyZcclCFv2C+MBWdnbM0kJIgNtE1ZeRA+zxwS6avE8EKw3T9Nczs6KBfycV3NxgxTvTQIxNi3kPA8XdJtAmCkUR/gyLkqJXk7bGDvFo4+rWR4uX2XxHm2NZGTNA1QezK96Y7JVjImfoHlUJnxGm207/kVPIVtSUD+6XuEl0uVvrtnTPmQnpq3P0gTYvon3Cw1caQvIydtrUv4yfs4Q/WVvSF3GQh3uet/IkUeGbkxLn43CSVz2hCQoeF8jxIoiJuSAxs1e3phylp0plijvok01Tbit6um/x4tK5UZYCRZYmeSD/ltXGtZNOoA4YHh5cDK+KcDy2tuWaexi2Hf+nJ5adqiMHwuozIH69Eqc6OZ9o86t75mIdux8zLgWt0T3SFOphtCvF0L8BdxICrEXGMDhguRRH7f+/IPU0ggFwnxsIV2a3c4oOayFfHwVSg4rGSKfWuWtkfNavA8RI5y6JOKzMrulrdg+gzuBMms2nKn38HNIRu2pKMVzQ2jU8CrtPgOT8=\",\n  \"expirationTime\": \"2020-01-23T16:30:58Z\",\n  \"creationTime\": \"2020-01-23T16:15:58Z\"\n}\n```\n\nIf you use this authentication token to make requests after it expires, the service will return an UNAUTHORIZED response\ncode (401) and you will need to reauthenticate to obtain a new token.\n\nSome workarounds to prevent this are:\n\n- Always reauthenticate before making a request; or\n- Track the expiration time and reauthenticate when you detect that it has expired; or\n- Send an OPTIONS request to the same end-point to detect whether the token has expired. This can be useful with\n  end-points receiving a large payload such as images where the token can expire before the request has completed. In\n  these cases the request may fail with a 500 error.\n\nWhen an admin API application authenticates, there is an option to enable a web session to add additional security to\nthe session. This is done by setting the enableWebSession argument passed to the authentication controller to true. When\na web session is enabled, an HTTP session cookie named Identity as a Service_SESSION_ID will be returned with the\nauthentication results. This cookie must be included with all subsequent admin API calls along with the authentication\ntoken.\n\n### Users\n\nThese APIs facilitate user management operations on an Identity as a Service account.\n\n### Smart Credentials\n\nThe Entrust® Mobile Smart Credential (MSC) application allows users to perform authentications to their Identity as a\nService account and configured applications. This API call facilitates mobile smart credential management operations on\nan Identity as a Service account.\n\n### Tokens\n\nThese APIs facilitate hardware and soft token management operations on an Identity as a Service account.\n\n### FIDO2/Passkey Tokens\n\nThese APIs facilitate management of FIDO2 tokens. FIDO2 tokens can be registered, viewed, deleted and updated.\n\n### Grid Cards\n\nGrid authentication uses cards with a grid as the authentication lookup tool. This API call facilitates Grid Card\nmanagement operations on an Identity as a Service account.\n\n### Temporary Access Codes\n\nTemporary Access Codes can be used to log in when a user cannot access their one-time passcode (OTP), Grid Card, or\ntoken authenticator. This API call facilitates Temporary Access Code management operations on an Identity as a Service\naccount.\n\n### KBA - Knowledge-based Authenticators\n\nKnowledge-based authentication (or knowledge-based authenticators) (KBA) (also known as question-and-answer (Q&A)\nauthentication) allows users to authenticate to SAML application accounts using Identity as a Service by providing the\ncorrect answer to one or more preregistered questions. This API call facilitates Knowledge-based Authenticator\nmanagement operations on an Identity as a Service account.\n\n### Passwords\n\nThere are two types of password authenticators available on Identity as a Service —Identity as a Service passwords and\nActive Directory (AD) passwords. Identity as a Service passwords are passwords that can be manually or automatically\nassigned to users on Identity as a Service. Active Directory (AD) passwords are passwords that have already been\nassigned to a user on their corporate directory - not through Identity as a Service. This API call facilitates password\nmanagement operations on an Identity as a Service account for either type of password.\n\n### OTPs\n\nThese APIs facilitate OTP management operations on an Identity as a Service account.\n\n### User Risk-based authentication (RBA) Settings\n\nRisk-based authentication (RBA) identifies the level of risk associated with a user who tries to authenticate. This API\ncall facilitates Risk-based authentication management operations on an Identity as a Service account.\n\n### Machine authenticators\n\nMachine Authentication (MA) provides identification information on the Web browser being used to access a SAML\napplication. This API call facilitates Machine Authenticator management operations on an Identity as a Service account.\n\n### User Attributes\n\nUser attributes are the information fields listed as part of each user's Profile information. This API call facilitates\nuser attribute management operations on an Identity as a Service account.\n\n### Roles\n\nRoles control what operations a user can perform on their Identity as a Service account. These roles distinguish the\namount of access given to each account, ranging from administrators with full access to end users (who can only access\nthe user portal features).This API call facilitates role management operations on an Identity as a Service account.\n\n### Groups\n\nAn Identity as a Service group is a collection of users given access to applications based on the resource rules they\nare assigned to. This API call facilitates group management operations on an Identity as a Service account.\n\n### Reports\n\nThese APIs allow you to access the Audit Log on your Identity as a Service account. This Log lists the actions\nperformed on your account within a period of time.\n\n### Settings\n\nThese APIs provide management of the settings used to configure Identity as a Service behavior. Settings that can be\nmanaged using the administration API include General settings, OTP settings and Token settings.\n\n### Applications\n\nThese APIs provide management of authentication API applications using the administration API.\n\n### Resource Rules\n\nResource rules define what authenticators are allowed to authenticate to an application. The resource rules APIs\nprovide management of resource rules and authentication flows using the administration API. An authentication flow \nwill define a list of possible authentication paths that a user can take when accessing an application. For instance, \nthe User Login flow allows access to an application after providing a user identifier (User ID) and a combination of \nfirst and/or second factor authenticators (e.g., OTP, FIDO, TOKEN). The IDP Login flow allows access to an application \nafter authenticating using an external OIDC identity provider. The Passkey Login flow allows access to an application \nusing a Passkey/FIDO token.\n\n### Identity Providers\n\nIdentity providers define external OpenID Connect (OIDC) identity providers that can be used for user authentication and user verification purposes. \nThe identity providers APIs provide management of identity providers using the administration API.\n\n### Directories\n\nThese APIs provide directory related information using the administration API.\n\n### Tenants\n\nFor service provider accounts, the tenant APIs provide management of their child tenants as well as management of\nentitlements for those tenants. These APIs are only available for accounts that are service providers.\n\n### Account Info\n\nThe account info APIs provide functionality to fetch and modify account related information such as the company name and\nthe license acknowledged flag.\n\n### ActiveSync Access\n\nThese APIs facilitate management of Exchange ActiveSync Devices available on your Microsoft Office 365 account.\n\n### ID Proofing\n\nThese APIs are used to validate the identity of a person by performing a liveness check using a government-issued\nidentity document, such as a driver's license or a passport, and comparing the document photograph with a self-portrait\ndigital photograph (selfie) taken on a mobile device.\n\n### Entitlements\n\nThese APIs are used by child tenants to retrieve their own entitlement information.\n\n# Examples\n\nThe following are examples of Admin API calls that can be used to perform administrative actions. The examples below are\nnot an exhaustive list of possible Admin API actions.\n\n**Important:** You must execute the Authentication (Admin API) call before executing any other Admin API calls. The\nAuthentication (Admin API) call generates a token value that must be included in every other request to be successful.\n\n## Authentication (Admin API)\n\nTo perform this action, the first step is to submit a POST request to the Admin application. This is the Admin\napplication created on your Identity as a Service account. The URL address of the Admin application includes your\nIdentity as a Service account URL. The format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v1/adminapi/authenticate\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v1/adminapi/authenticate\n```\n\nThe body of this request should contain the JSON object with an Application ID and Shared Secret. This JSON file was\ngenerated during creation of Admin Application on Identity as a Service. For example:\n\n```json\n{\n  \"applicationId\": \"d3737e0f-4d8e-431c-b1d8-cd17ad4d633d\",\n  \"sharedSecret\": \"randomSharedSecret\"\n}\n```\n\nAn API response is received if the call is successful . For example:\n\n```json\n{\n  \"authToken\": \"GLb6JWz966gCayVNw4lZSSKV6W3PGgsJZ4CagZjoZNMaa2Me7F5OX+CKOVx8sOXsBEdLemVEruixXoaVsjQc1j+GPBy5Qn+KlilA9GXrSEQujsmfiJono3Gta7Uc8b3VUkEBvU193UqWPtmW1NXsSnPV2Z9B2AjZT17zNlHAyOvFpOXTI5bkmj6f2cKses6cBem5kLSbGHH9lHBv4JvXBjNxtPf7urAUkFn8cJariZyb0/q/AYqYL9do8nFrPFmSCTjYeNmxuWm5CACRi17K5XSyhZpu979b3i7MQEeOq1Pfjw7WzdKfrSvLJg/qgYeLD4aSOrQu4HAixZSFBmW9RGDxlo0J0Y1uAAy4lR57yG3p6E8H6OcV3Vakso4CT8yHAFH8xmdsUXXfyv9v+hr5QKh+7iVYro8tjjByRzj6XXAOx0vDO2yhpOd4migv33aWlFEhbgxIzNseJ8je6wauST0O+hJ5kKjl5yLBXS3iKhZJZMG2FNcU5pbD7SnUh79OWoCuOsehOM2pDFDPnMEms5ri/y0yaKIZmtz9Poy6KH1BDd+645+xX8iqW4IeqJ3zW8RZtnJgzAkUFeCjuDtbvotIcR45p8ibXF0GWLFAbxzvc5daf21bBV29A33C7mFoX4id44BZJ6OC8fztmthRzR2l0uP04STG0dgRRTNgZpoqKiMczwbOVNDv7ZQeSf/Kh3n2S1O8SZXHZT+zUvPwCLg9mnhOTYEqPjoMlqTZycttFYv3D4hKbU7NzYmFdtGYreaI2rNNue7aOzn+J8BN0j3+ZHkhimfO/ZfhF89Bn02IRzDER1ENdcwBSO8frWeAR+nCy0m4Eg==\",\n  \"expirationTime\": \"2018-05-28T19:07:50.328+0000\",\n  \"creationTime\": \"2018-05-28T18:52:50.329+0000\"\n}\n```\n\nYou must include the **auth token** value displayed in this response in subsequent API calls. Without it, other Admin\nAPI calls will fail.\n\nAn error code is displayed if the call is unsuccessful. A different error code is displayed for each type of error.\n\n## Users\n\n### Create A User\n\nSubmit a POST request to create a User on your account.\nThe format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v3/users\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n```\n\nThe body of this request must contain all the fields mentioned in the example below that are configured as mandatory:\n\n```json\n{\n  \"firstName\": \"john\",\n  \"lastName\": \"smith\",\n  \"email\": \"johnsmith@organization.com\",\n  \"userId\": \"john\",\n  \"mobile\": \"+16138561234\",\n  \"phone\": \"+161385699876\",\n  \"locale\": \"\",\n  \"state\": \"ACTIVE\",\n  \"externaId\": null,\n  \"externalSource\": null,\n  \"userAttributeValues\": [\n  ],\n  \"userAliases\": [\n    {\n      \"value\": \"johnny\",\n      \"type\": \"CUSTOM\"\n    }\n  ]\n}\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes all the details of the created user. For example:\n\n```json\n{\n  \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userId\": \"john\",\n  \"firstName\": \"john\",\n  \"lastName\": \"smith\",\n  \"email\": \"johnsmith@organization.com\",\n  \"mobile\": \"+16138561234\",\n  \"phone\": \"+161385699876\",\n  \"locale\": null,\n  \"state\": \"ACTIVE\",\n  \"externalId\": null,\n  \"externalSource\": null,\n  \"migrated\": null,\n  \"locked\": false,\n  \"lockoutExpiry\": null,\n  \"otpCreateTime\": null,\n  \"grids\": [],\n  \"tokens\": [\n    {\n      \"id\": \"9a2edcc5-46f0-4fff-89b1-13c0f73e1a5c\",\n      \"type\": \"ENTRUST_SOFT_TOKEN\",\n      \"serialNumber\": \"62461-69384\",\n      \"loadDate\": \"2018-05-29T19:12:54.000+0000\",\n      \"lastUsedDate\": null,\n      \"state\": \"ACTIVATING\",\n      \"platform\": null,\n      \"registeredForTransactions\": false,\n      \"name\": null,\n      \"allowedActions\": [\n        \"REACTIVATE\",\n        \"ACTIVATE_COMPLETE\",\n        \"DELETE\"\n      ],\n      \"description\": null,\n      \"userId\": null\n    }\n  ],\n  \"smartCredentials\": [],\n  \"tempAccessCode\": null,\n  \"userAttributeValues\": [],\n  \"userAliases\": [\n    {\n      \"id\": \"43422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"johnny\",\n      \"type\": \"CUSTOM\"\n    },\n    {\n      \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"john\",\n      \"type\": \"USERID\"\n    }\n  ],\n  \"groups\": [],\n  \"type\": \"MGMT_UI\"\n}\n```\n\n### Get a User by UserID\n\nSubmit a POST request to retrieve user details for a particular User ID. The format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v3/users/userid\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n``` \n\nThe body of this request must contain **UserID**. For example:\n\n```json\n{\n  \"userId\": \"John\"\n}\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes the user's information. For example:\n\n```json\n{\n  \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userId\": \"john\",\n  \"firstName\": \"john\",\n  \"lastName\": \"smith\",\n  \"email\": \"johnsmith@organization.com\",\n  \"mobile\": \"+16138561234\",\n  \"phone\": \"+161385699876\",\n  \"locale\": null,\n  \"state\": \"ACTIVE\",\n  \"externalId\": null,\n  \"externalSource\": null,\n  \"migrated\": null,\n  \"locked\": false,\n  \"lockoutExpiry\": null,\n  \"otpCreateTime\": null,\n  \"grids\": [],\n  \"tokens\": [\n    {\n      \"id\": \"9a2edcc5-46f0-4fff-89b1-13c0f73e1a5c\",\n      \"type\": \"ENTRUST_SOFT_TOKEN\",\n      \"serialNumber\": \"62461-69384\",\n      \"loadDate\": \"2018-05-29T19:12:54.000+0000\",\n      \"lastUsedDate\": null,\n      \"state\": \"ACTIVATING\",\n      \"platform\": null,\n      \"registeredForTransactions\": false,\n      \"name\": null,\n      \"allowedActions\": [\n        \"REACTIVATE\",\n        \"ACTIVATE_COMPLETE\",\n        \"DELETE\"\n      ],\n      \"description\": null,\n      \"userId\": null\n    }\n  ],\n  \"smartCredentials\": [],\n  \"tempAccessCode\": null,\n  \"userAttributeValues\": [],\n  \"userAliases\": [\n    {\n      \"id\": \"43422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"johnny\",\n      \"type\": \"CUSTOM\"\n    },\n    {\n      \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"john\",\n      \"type\": \"USERID\"\n    }\n  ],\n  \"groups\": [],\n  \"type\": \"MGMT_UI\"\n}\n```\n\n## Grids\n\n### Create a Grid\n\nSubmit a POST request to create a new Grid Card and assign it to a user. You must include the UUID of the user that you\nwant to assign a Grid Card in the API request. The format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v2/users/{userid}/grids\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v2/users/2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0/grids\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes the desired Grid Card information. For example:\n\n```json\n{\n  \"id\": \"6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\",\n  \"serialNumber\": 2,\n  \"createDate\": \"2018-05-29T19:48:24.249+0000\",\n  \"assignDate\": null,\n  \"expiryDate\": null,\n  \"expired\": false,\n  \"lastUsedDate\": null,\n  \"state\": \"ACTIVE\",\n  \"gridContents\": [\n    [\n      \"TP\",\n      \"0M\",\n      \"P8\",\n      \"KW\",\n      \"3D\",\n      \"KR\",\n      \"M1\",\n      \"W0\",\n      \"TJ\",\n      \"F4\"\n    ],\n    [\n      \"9M\",\n      \"MV\",\n      \"88\",\n      \"DX\",\n      \"H3\",\n      \"DV\",\n      \"44\",\n      \"PW\",\n      \"V1\",\n      \"CX\"\n    ],\n    [\n      \"F2\",\n      \"FE\",\n      \"0Q\",\n      \"XN\",\n      \"CD\",\n      \"36\",\n      \"MQ\",\n      \"PN\",\n      \"WF\",\n      \"DD\"\n    ],\n    [\n      \"WN\",\n      \"9F\",\n      \"J4\",\n      \"TF\",\n      \"7J\",\n      \"W4\",\n      \"7M\",\n      \"9Q\",\n      \"1H\",\n      \"W5\"\n    ],\n    [\n      \"QM\",\n      \"21\",\n      \"VQ\",\n      \"39\",\n      \"1N\",\n      \"EV\",\n      \"PT\",\n      \"P4\",\n      \"28\",\n      \"WY\"\n    ]\n  ],\n  \"allowedActions\": [\n    \"DELETE\",\n    \"DISABLE\"\n  ],\n  \"userId\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userName\": \"john\"\n}\n```\n\n### Get a Grid by Id\n\nSubmit a GET request to display a Grid Card's details. You must include the Grid Card's ID string in the request. The ID\nis required to identify which Grid Card's details to display. The format of the request URL is:\n\n```\nhttps://customer.region.trustedauth.com/api/web/v2/grids/{gridid}\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v2/grids/6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes Grid Card details. For example:\n\n```json\n{\n  \"id\": \"6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\",\n  \"serialNumber\": 2,\n  \"createDate\": \"2018-05-29T19:48:24.000+0000\",\n  \"assignDate\": null,\n  \"expiryDate\": null,\n  \"expired\": false,\n  \"lastUsedDate\": null,\n  \"state\": \"ACTIVE\",\n  \"gridContents\": [\n    [\n      \"TP\",\n      \"0M\",\n      \"P8\",\n      \"KW\",\n      \"3D\",\n      \"KR\",\n      \"M1\",\n      \"W0\",\n      \"TJ\",\n      \"F4\"\n    ],\n    [\n      \"9M\",\n      \"MV\",\n      \"88\",\n      \"DX\",\n      \"H3\",\n      \"DV\",\n      \"44\",\n      \"PW\",\n      \"V1\",\n      \"CX\"\n    ],\n    [\n      \"F2\",\n      \"FE\",\n      \"0Q\",\n      \"XN\",\n      \"CD\",\n      \"36\",\n      \"MQ\",\n      \"PN\",\n      \"WF\",\n      \"DD\"\n    ],\n    [\n      \"WN\",\n      \"9F\",\n      \"J4\",\n      \"TF\",\n      \"7J\",\n      \"W4\",\n      \"7M\",\n      \"9Q\",\n      \"1H\",\n      \"W5\"\n    ],\n    [\n      \"QM\",\n      \"21\",\n      \"VQ\",\n      \"39\",\n      \"1N\",\n      \"EV\",\n      \"PT\",\n      \"P4\",\n      \"28\",\n      \"WY\"\n    ]\n  ],\n  \"allowedActions\": [\n    \"DELETE\",\n    \"DISABLE\"\n  ],\n  \"userId\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userName\": \"john\"\n}\n```\n\n## ID Proofing\n\n### Initiate an ID Proofing Transaction\n\nSubmit a POST request to initiate the transaction and obtain the mobile SDK license. You must include a device\nfingerprint in the request if the service is configured to require it. The format of the request URL is:\n\n```\nhttps://customer.region.trustedauth.com/api/web/v1/idproofing/init\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v1/idproofing/init\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n``` \n\nThe body of this request should contain **firstPartyBlackbox**. For example:\n\n```json\n{\n  \"clientIp\": \"1.2.3.4\",\n  \"firstPartyBlackbox\": \"0610Jy4JhpaIbhJOJAyOFS...CpysKGn9rI0cgfvRE=\"\n}\n```\n\n> Checking the reputation of a device using a fingerprint is not supported in this release.\n>\nIn this example, the request would succeed and generate a response that includes the license. For example:\n\n```json\n{\n  \"requestId\": \"0ba70f09-58c8-4a8e-bb87-cf98f4f4c111\",\n  \"deviceCheckResult\": \"ALLOW\",\n  \"deviceCheckReason\": \"\",\n  \"deviceCheckDetails\": {\n    \"device.alias\": \"115993746090684075\",\n    \"device.bb.age\": \"9756913\",\n    \"device.bb.timestamp\": \"2019-09-24T13:56:53Z\",\n    \"device.firstseen\": \"2019-09-19T14:01:06.004Z\",\n    \"device.flash.storage.enabled\": \"0\",\n    \"device.js.enabled\": \"0\",\n    \"device.new\": \"0\",\n    \"device.os\": \"IPHONE 12.4.1\",\n    \"device.type\": \"IPHONE\",\n    ...\n  },\n  \"subscriberId\": \"5f5edd7f-bf52-4c4e-6da3-56a278148bbe\",\n  \"subscriberAccount\": \"example@company.com\",\n  \"subscriberPassword\": \"xyz34@19fdjt&sw2\",\n  ...\n}\n```\n\nNote the requestId attribute returned. This value must be used in the following interactions with the service.\n\nIf a fingerprint is provided (firstPartyBlackbox attribute in the request) and the deviceCheckResult attribute value is\nDENY, then the transaction cannot be continued.\n\n### Upload the Front Side Image of a Document ID\n\nSubmit a PUT request to upload the front image of a supported document ID. The format of the request URL is:\n\n```\nhttps://customer.region.trustedauth.com/api/web/v1/idproofing/<requestId>/image/0\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v1/idproofing/a63b0b66-1d1d-4834-b393-38a52c5e8304/image/0\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n``` \n\nThe binary image must be submitted in the body of the HTTP request.\n> If the authentication token has expired and the image is very large, the response sometimes can be a generic Internal\n> Error (500) instead of UNAUTHORIZED (401). To prevent this, it's recommended to submit an OPTIONS request before\n> submitting the PUT request with the image. The OPTIONS request will always return UNAUTHORIZED (401) if the\n> authentication token is expired.\n>\n\nIn this example, the image is successfully classified into a well-known document class. For example:\n\n```json\n{\n  \"presentationChanged\": false,\n  \"documentClass\": \"DRIVERSLICENSE\",\n  \"countryCode\": \"USA\",\n  \"supportedFrontImage\": true,\n  \"supportedBackImage\": true\n}\n```\n\nIf the documentClass attribute value is UNKNOWN, then you need to upload a better image to continue.\n\n### Upload the Back Side Image of a Document ID\n\nIf the response after submitting a valid Front image includes the \"supportedBackImage\" attribute with value \"true\", then\nyou can submit a PUT request to upload the back image of a supported document ID. The format of the request URL is:\n\nNote that uploading the back of a document is optional as in some cases all the relevant information is available in the\nfront of the document.\n\n```\nhttps://customer.region.trustedauth.com/api/web/v1/idproofing/<requestId>/image/1\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v1/idproofing/a63b0b66-1d1d-4834-b393-38a52c5e8304/image/1\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n``` \n\nThe binary image must be submitted in the body of the HTTP request.\n> If the authentication token has expired and the image is very large, the response sometimes can be a generic Internal\n> Error (500) instead of UNAUTHORIZED (401). To prevent this, it's recommended to submit an OPTIONS request before\n> submitting the PUT request with the image. The OPTIONS request will always return UNAUTHORIZED (401) if the\n> authentication token is expired.\n>\nIn this example, the image is successfully classified into a well-known document class. For example:\n\n```json\n{\n  \"presentationChanged\": false,\n  \"documentClass\": \"DRIVERSLICENSE\",\n  \"countryCode\": \"USA\",\n  \"supportedFrontImage\": true,\n  \"supportedBackImage\": true\n}\n```\n\nIf the documentClass attribute value is UNKNOWN, then you need to upload a better image to continue.\n\n### Complete an ID Proofing Transaction using a Standard Facial Recognition License\n\nIf you are using a Standard Facial Recognition license and the document images uploaded in the previous requests\nclassified correctly, you can now submit a PUT request to upload the selfie that the mobile SDK takes.\n\n```\nhttps://customer.region.trustedauth.com/api/web/v1/idproofing/<requestId>/completeselfie\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v1/idproofing/a63b0b66-1d1d-4834-b393-38a52c5e8304/completeselfie\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n``` \n\nThe binary selfie image must be submitted in the body of the HTTP request.\n\nIn this example, the selfie matches the document ID photo (faceMatch true) but document ID authentication indicates\nATTENTION as one of the tests performed on the document didn't PASS--see documentTestResults:\n\n```json\n{\n  \"faceMatch\": true,\n  \"faceMatchScore\": 84,\n  \"documentAuthenticationResult\": \"ATTENTION\",\n  \"documentDataFields\": [\n    {\n      \"description\": \"The person's legal, residence, or mailing address\",\n      \"name\": \"Address\",\n      \"type\": \"STRING\",\n      \"value\": \"WICKENBURG AZ 85390\"\n    },\n    {\n      \"description\": \"City of the person's legal, residence, or mailing address\",\n      \"name\": \"Address City\",\n      \"type\": \"STRING\",\n      \"value\": \"WICKENBURG\"\n    },\n    {\n      \"description\": \"Postal code of the person's address\",\n      \"name\": \"Address Postal Code\",\n      \"type\": \"STRING\",\n      \"value\": \"85390\"\n    },\n    {\n      \"description\": \"State of the person's legal, residence, or mailing address\",\n      \"name\": \"Address State\",\n      \"type\": \"STRING\",\n      \"value\": \"AZ\"\n    },\n    {\n      \"description\": \"The person's date of birth\",\n      \"name\": \"Birth Date\",\n      \"type\": \"DATETIME\",\n      \"value\": \"1987-03-01T00:00:00Z\"\n    },\n    {\n      \"description\": \"The localized version of the document class of the document type\",\n      \"name\": \"Document Class Name\",\n      \"type\": \"STRING\",\n      \"value\": \"Drivers License\"\n    },\n    {\n      \"description\": \"A number that identifies a document\",\n      \"name\": \"Document Number\",\n      \"type\": \"STRING\",\n      \"value\": \"D01405395\"\n    },\n    {\n      \"description\": \"Date that the document will expire\",\n      \"name\": \"Expiration Date\",\n      \"type\": \"DATETIME\",\n      \"value\": \"2007-01-01T00:00:00Z\"\n    },\n    {\n      \"description\": \"The person's first name\",\n      \"name\": \"First Name\",\n      \"type\": \"STRING\",\n      \"value\": \"SAMANTHA\"\n    },\n    {\n      \"description\": \"The person's full name (given name plus surname)\",\n      \"name\": \"Full Name\",\n      \"type\": \"STRING\",\n      \"value\": \"SAMANTHA JANE SAMPLE\"\n    },\n    {\n      \"description\": \"The person's given name\",\n      \"name\": \"Given Name\",\n      \"type\": \"STRING\",\n      \"value\": \"SAMANTHA JANE\"\n    },\n    {\n      \"description\": \"Date that the document was issued\",\n      \"name\": \"Issue Date\",\n      \"type\": \"DATETIME\",\n      \"value\": \"2006-02-23T00:00:00Z\"\n    },\n    {\n      \"description\": \"Abbreviated ID code of the state or country that issued the document\",\n      \"name\": \"Issuing State Code\",\n      \"type\": \"STRING\",\n      \"value\": \"AZ\"\n    },\n    {\n      \"description\": \"Full name of the state or country that issued the document\",\n      \"name\": \"Issuing State Name\",\n      \"type\": \"STRING\",\n      \"value\": \"Arizona\"\n    },\n    {\n      \"description\": \"The person's middle name\",\n      \"name\": \"Middle Name\",\n      \"type\": \"STRING\",\n      \"value\": \"JANE\"\n    },\n    {\n      \"description\": \"Indicates whether the document is a form of identification that meets the increased security standards for US state-issued driver's licenses and identification cards under the REAL ID Act\",\n      \"name\": \"REAL ID Compliant\",\n      \"type\": \"STRING\",\n      \"value\": \"False\"\n    },\n    {\n      \"description\": \"A single character (translated into M/F from other languages) that identifies the person's gender\",\n      \"name\": \"Sex\",\n      \"type\": \"STRING\",\n      \"value\": \"F\"\n    },\n    {\n      \"description\": \"The person's surname or family name\",\n      \"name\": \"Surname\",\n      \"type\": \"STRING\",\n      \"value\": \"SAMPLE\"\n    }\n  ],\n  \"documentTestResults\": [\n    {\n      \"name\": \"Document Expired\",\n      \"description\": \"Checked if the document is expired.\",\n      \"disposition\": \"The document has expired\",\n      \"information\": \"Verified that the document expiration date does not occur before the current date.\",\n      \"actions\": \"The expiration date on the document may have been misread.  Confirm that it is legible and occurs on or after the current date.  Also confirm that the current date and time of the host computer is correctly set.\",\n      \"result\": \"ATTENTION\"\n    },\n    {\n      \"name\": \"Birth Date Valid\",\n      \"description\": \"Verified that the birth date is valid.\",\n      \"disposition\": \"The birth date is valid\",\n      \"information\": \"Verified that the birth date is valid, in the expected format, and occurs on or before the current date and not outside a reasonable range.\",\n      \"actions\": \"The birth date on the document may have been misread.  Confirm that it is legible.\",\n      \"result\": \"PASSED\"\n    },\n    {\n      \"name\": \"Document Classification\",\n      \"description\": \"Verified that the type of document is supported and is able to be fully authenticated.\",\n      \"disposition\": \"The document type is supported\",\n      \"information\": \"Verified that the document is recognized as a supported document type and that the type of document can be fully authenticated.\",\n      \"actions\": \"This test may fail if a document cannot be successfully classified as a supported document type.  This may occur if the document is fraudulent as some fraudulent documents differ so much from authentic documents that they will not be recognized as that type of document.  This may also occur if a valid document is significantly worn or damaged or if the document is of a new or different type that is not yet supported by the library.  The document should be examined manually.\",\n      \"result\": \"PASSED\"\n    },\n    {\n      \"name\": \"Expiration Date Valid\",\n      \"description\": \"Verified that the expiration date is valid.\",\n      \"disposition\": \"The expiration date is valid\",\n      \"information\": \"Verified that the document expiration date is valid, in the expected format, and occurs after the issue and birth dates.\",\n      \"actions\": \"The expiration date on the document may have been misread.  Confirm that it is legible and occurs after the issue and birth dates.\",\n      \"result\": \"PASSED\"\n    },\n    {\n      \"name\": \"Issue Date Valid\",\n      \"description\": \"Verified that the issue date is valid.\",\n      \"disposition\": \"The issue date is valid\",\n      \"information\": \"Verified that the document issue date is valid, in the expected format, does not occur in the future, does not occur before the date of birth, and does not occur after the expiration date.\",\n      \"actions\": \"The issue date on the document may have been misread.  Confirm that all of the dates are legible, the issue date occurs on or before the current date, and is before the expiration date.\",\n      \"result\": \"PASSED\"\n    },\n    {\n      \"name\": \"Visible Pattern\",\n      \"description\": \"Verified the presence of a pattern on the visible image.\",\n      \"disposition\": \"A visible pattern was found\",\n      \"information\": \"Verified that a security feature in the visible spectrum is present and in an expected location on the document.\",\n      \"actions\": \"Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.\",\n      \"result\": \"PASSED\"\n    }\n  ]\n}\n```\n\n### Complete an ID Proofing Transaction using an Enhanced Facial Recognition License\n\nIf you are using an Enhanced Facial Recognition license and the document images uploaded in the previous requests\nclassified correctly, you can now submit a PUT request with the liveness test result that the mobile SDK provides.\n\n```\nhttps://customer.region.trustedauth.com/api/web/v1/idproofing/<requestId>/complete\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v1/idproofing/a63b0b66-1d1d-4834-b393-38a52c5e8304/complete\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n``` \n\nThe body of this request must contain **livenessUserId** and **livenessToken**. For example:\n\n```json\n{\n  \"livenessUserId\": \"919ce7d3-1194-465d-9588-8668b8ac3bac\",\n  \"livenessToken\": \"31706131726336496d655177346e55503279616b69547344446e5258684c7542\"\n}\n```\n\nThe response from this request is identical to the one you can see in the previous section.\n",
     "contact": {
       "name": "Entrust Identity as a Service",
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.32.3"
+    "version": "5.33"
   },
   "servers": [
     {
@@ -91,6 +91,10 @@
     {
       "name": "Resource Rules",
       "description": "Resource Rules controllers"
+    },
+    {
+      "name": "Identity Providers",
+      "description": "Identity Providers controllers"
     },
     {
       "name": "Directories",
@@ -1488,6 +1492,451 @@
           {
             "AdminAPIAuthentication": [
               "DIRECTORIES:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/authenticationflows": {
+      "get": {
+        "tags": [
+          "Resource Rules"
+        ],
+        "summary": "Get all authentication flows",
+        "description": "Get all authentication flows. Caller requires the CONTEXTRULES:VIEW permission.",
+        "operationId": "getAuthenticationFlowsUsingGET",
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AuthenticationFlow"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "CONTEXTRULES:VIEW"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Resource Rules"
+        ],
+        "summary": "Create an authentication flow",
+        "description": "Create an authentication flow. Caller requires the CONTEXTRULES:ADD permission.",
+        "operationId": "createAuthenticationFlowUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticationFlowParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationFlow"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "CONTEXTRULES:ADD"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/authenticationflows/{id}": {
+      "get": {
+        "tags": [
+          "Resource Rules"
+        ],
+        "summary": "Get an authentication flow",
+        "description": "Get the specified authentication flow. Caller requires the CONTEXTRULES:VIEW permission.",
+        "operationId": "getAuthenticationFlowUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the authentication flow to be returned.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationFlow"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "CONTEXTRULES:VIEW"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Resource Rules"
+        ],
+        "summary": "Update an authentication flow",
+        "description": "Update the specified authentication flow. Caller requires the CONTEXTRULES:EDIT permission.",
+        "operationId": "updateAuthenticationFlowUsingPUT",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the authentication flow to be modified.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticationFlowParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationFlow"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "CONTEXTRULES:EDIT"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Resource Rules"
+        ],
+        "summary": "Delete an authentication flow",
+        "description": "Delete the specified authentication flow. Caller requires the CONTEXTRULES:REMOVE permission.",
+        "operationId": "removeAuthenticationFlowUsingDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the authentication flow to be removed.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteAuthenticationFlowResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "CONTEXTRULES:REMOVE"
             ]
           }
         ]
@@ -4198,6 +4647,533 @@
         ]
       }
     },
+    "/api/web/v1/identityproviders/oidc": {
+      "get": {
+        "tags": [
+          "Identity Providers"
+        ],
+        "summary": "Lists OIDC identity providers",
+        "description": "Lists OIDC identity providers. Caller requires the IDENTITYPROVIDERS:VIEW permission.",
+        "operationId": "listOidcIdentityProvidersUsingGET",
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OidcIdentityProvider"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "IDENTITYPROVIDERS:VIEW"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Identity Providers"
+        ],
+        "summary": "Create an OIDC identity provider",
+        "description": "Create an OIDC identity provider. Caller requires the IDENTITYPROVIDERS:ADD permission.",
+        "operationId": "createOidcIdentityProviderUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OidcIdentityProviderParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OidcIdentityProvider"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "IDENTITYPROVIDERS:ADD"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/identityproviders/oidc/configuration": {
+      "post": {
+        "tags": [
+          "Identity Providers"
+        ],
+        "summary": "Fetch OIDC Configuration for an OIDC identity provider",
+        "description": "Fetch OIDC Configuration for an OIDC identity provider. Caller requires the IDENTITYPROVIDERS:VIEW permission.",
+        "operationId": "fetchOidcConfigurationUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OidcConfigurationParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OidcConfigurationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "IDENTITYPROVIDERS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/identityproviders/oidc/{id}": {
+      "get": {
+        "tags": [
+          "Identity Providers"
+        ],
+        "summary": "Get an OIDC identity provider",
+        "description": "Get an OIDC identity provider. Caller requires the IDENTITYPROVIDERS:VIEW permission.",
+        "operationId": "getOidcIdentityProviderUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the OIDC Identity Provider to get.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OidcIdentityProvider"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "IDENTITYPROVIDERS:VIEW"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Identity Providers"
+        ],
+        "summary": "Update an OIDC identity provider",
+        "description": "Update an OIDC identity provider. Caller requires the IDENTITYPROVIDERS:EDIT permission.",
+        "operationId": "updateOidcIdentityProviderUsingPUT",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the OIDC Identity Provider to update.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OidcIdentityProviderParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OidcIdentityProvider"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "IDENTITYPROVIDERS:EDIT"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Identity Providers"
+        ],
+        "summary": "Delete an OIDC identity provider",
+        "description": "Delete an OIDC identity provider. Caller requires the IDENTITYPROVIDERS:REMOVE permission.",
+        "operationId": "deleteOidcIdentityProviderUsingDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the OIDC Identity Provider to delete.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "IDENTITYPROVIDERS:REMOVE"
+            ]
+          }
+        ]
+      }
+    },
     "/api/web/v1/idproofing": {
       "post": {
         "tags": [
@@ -5035,530 +6011,6 @@
           {
             "AdminAPIAuthentication": [
               "OTPS:ADD"
-            ]
-          }
-        ]
-      }
-    },
-    "/api/web/v1/resourcerules": {
-      "get": {
-        "tags": [
-          "Resource Rules"
-        ],
-        "summary": "Get all resource rules",
-        "description": "Get all resource rules. Caller requires the CONTEXTRULES:VIEW permission.",
-        "operationId": "getResourceRulesUsingGET",
-        "responses": {
-          "200": {
-            "description": "Successful",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ResourceRule"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Access denied",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "AdminAPIAuthentication": [
-              "CONTEXTRULES:VIEW"
-            ]
-          }
-        ]
-      },
-      "post": {
-        "tags": [
-          "Resource Rules"
-        ],
-        "summary": "Create a resource rule",
-        "description": "Create a resource rule for a specified resource. Caller requires the CONTEXTRULES:ADD permission.",
-        "operationId": "createResourceRuleUsingPOST",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ResourceRuleParms"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ResourceRule"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Access denied",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "AdminAPIAuthentication": [
-              "CONTEXTRULES:ADD"
-            ]
-          }
-        ]
-      }
-    },
-    "/api/web/v1/resourcerules/resource/{id}": {
-      "get": {
-        "tags": [
-          "Resource Rules"
-        ],
-        "summary": "Get all resource rules for a resource",
-        "description": "Get all resource rules for the specified resource. Caller requires the CONTEXTRULES:VIEW permission.",
-        "operationId": "getResourceRulesForResourceUsingGET",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "The UUID of the resource whose resource rules are to be returned.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ResourceRule"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Access denied",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "AdminAPIAuthentication": [
-              "CONTEXTRULES:VIEW"
-            ]
-          }
-        ]
-      }
-    },
-    "/api/web/v1/resourcerules/{id}": {
-      "get": {
-        "tags": [
-          "Resource Rules"
-        ],
-        "summary": "Get a resource rule",
-        "description": "Get the specified resource rule. Caller requires the CONTEXTRULES:VIEW permission.",
-        "operationId": "getResourceRuleUsingGET",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "The UUID of the resource rule to be returned.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ResourceRule"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Access denied",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "AdminAPIAuthentication": [
-              "CONTEXTRULES:VIEW"
-            ]
-          }
-        ]
-      },
-      "put": {
-        "tags": [
-          "Resource Rules"
-        ],
-        "summary": "Update a resource rule",
-        "description": "Update the specified resource rule. Caller requires the CONTEXTRULES:EDIT permission.",
-        "operationId": "updateResourceRuleUsingPUT",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "The UUID of the resource rule to be modified.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ResourceRuleParms"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful"
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Access denied",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "AdminAPIAuthentication": [
-              "CONTEXTRULES:EDIT"
-            ]
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "Resource Rules"
-        ],
-        "summary": "Delete a resource rule",
-        "description": "Delete the specified resource rule. Caller requires the CONTEXTRULES:REMOVE permission.",
-        "operationId": "removeResourceRuleUsingDELETE",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "The UUID of the resource rule to be removed.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful"
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Access denied",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "AdminAPIAuthentication": [
-              "CONTEXTRULES:REMOVE"
             ]
           }
         ]
@@ -14818,6 +15270,530 @@
         ]
       }
     },
+    "/api/web/v2/resourcerules": {
+      "get": {
+        "tags": [
+          "Resource Rules"
+        ],
+        "summary": "Get all resource rules",
+        "description": "Get all resource rules. Caller requires the CONTEXTRULES:VIEW permission.",
+        "operationId": "getResourceRulesUsingGET",
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResourceRule"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "CONTEXTRULES:VIEW"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Resource Rules"
+        ],
+        "summary": "Create a resource rule",
+        "description": "Create a resource rule for a specified resource. Caller requires the CONTEXTRULES:ADD permission.",
+        "operationId": "createResourceRuleUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourceRuleParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceRule"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "CONTEXTRULES:ADD"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v2/resourcerules/resource/{id}": {
+      "get": {
+        "tags": [
+          "Resource Rules"
+        ],
+        "summary": "Get all resource rules for a resource",
+        "description": "Get all resource rules for the specified resource. Caller requires the CONTEXTRULES:VIEW permission.",
+        "operationId": "getResourceRulesForResourceUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the resource whose resource rules are to be returned.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResourceRule"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "CONTEXTRULES:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v2/resourcerules/{id}": {
+      "get": {
+        "tags": [
+          "Resource Rules"
+        ],
+        "summary": "Get a resource rule",
+        "description": "Get the specified resource rule. Caller requires the CONTEXTRULES:VIEW permission.",
+        "operationId": "getResourceRuleUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the resource rule to be returned.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceRule"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "CONTEXTRULES:VIEW"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Resource Rules"
+        ],
+        "summary": "Update a resource rule",
+        "description": "Update the specified resource rule. Caller requires the CONTEXTRULES:EDIT permission.",
+        "operationId": "updateResourceRuleUsingPUT",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the resource rule to be modified.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourceRuleParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "CONTEXTRULES:EDIT"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Resource Rules"
+        ],
+        "summary": "Delete a resource rule",
+        "description": "Delete the specified resource rule. Caller requires the CONTEXTRULES:REMOVE permission.",
+        "operationId": "removeResourceRuleUsingDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the resource rule to be removed.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "CONTEXTRULES:REMOVE"
+            ]
+          }
+        ]
+      }
+    },
     "/api/web/v2/users/{userid}/grids": {
       "post": {
         "tags": [
@@ -17634,6 +18610,30 @@
           }
         }
       },
+      "ApplicationResourceRule": {
+        "required": [
+          "resourceRules"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The UUID of the application."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the application."
+          },
+          "resourceRules": {
+            "type": "array",
+            "description": "List of resource rules associated to this application.",
+            "items": {
+              "$ref": "#/components/schemas/ResourceRuleNameId"
+            }
+          }
+        },
+        "description": "An ApplicationResourceRule defines the resource rules used by an application."
+      },
       "ApplicationTemplate": {
         "required": [
           "authenticationMethod",
@@ -17789,7 +18789,8 @@
           },
           "passkeyEnabled": {
             "type": "boolean",
-            "description": "Flag indicating if passkey authentication is allowed for this application."
+            "description": "Flag indicating if passkey authentication is allowed for this application. This flag has been deprecated and is no longer used.",
+            "deprecated": true
           },
           "protectedOfflineSettings": {
             "$ref": "#/components/schemas/ProtectedOfflineSettings"
@@ -17869,6 +18870,153 @@
         },
         "description": "Parameters for the new application."
       },
+      "AuthenticationFlow": {
+        "required": [
+          "id",
+          "loginFlows",
+          "name",
+          "readOnly"
+        ],
+        "type": "object",
+        "properties": {
+          "applications": {
+            "type": "array",
+            "description": "List of applications using this authentication flow.",
+            "items": {
+              "$ref": "#/components/schemas/ApplicationResourceRule"
+            }
+          },
+          "id": {
+            "type": "string",
+            "description": "The unique UUID assigned to the authentication flow when it is created."
+          },
+          "loginFlows": {
+            "type": "array",
+            "description": "List of login flows.",
+            "items": {
+              "$ref": "#/components/schemas/LoginFlow"
+            }
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the authentication flow."
+          },
+          "oidcIdentityProviders": {
+            "type": "array",
+            "description": "The OIDC identity providers supported when the IDP login flow is enabled--limited info is returned.",
+            "items": {
+              "$ref": "#/components/schemas/OidcIdentityProvider"
+            }
+          },
+          "readOnly": {
+            "type": "boolean",
+            "description": "A flag indicating if the authentication flow can be modified or deleted."
+          },
+          "userLoginFirstStep": {
+            "type": "string",
+            "description": "The authenticator type to use in the first step of a two-step authentication scenario when the  User Login flow is enabled.",
+            "enum": [
+              "NONE",
+              "EXTERNAL",
+              "PASSWORD",
+              "KBA",
+              "OTP",
+              "TOKEN",
+              "TOKENPUSH",
+              "SMARTCREDENTIALPUSH",
+              "IDP",
+              "PASSKEY",
+              "SMART_LOGIN",
+              "DENY"
+            ]
+          },
+          "userLoginSecondStep": {
+            "type": "array",
+            "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the User Login flow is enabled.",
+            "items": {
+              "type": "string",
+              "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the User Login flow is enabled.",
+              "enum": [
+                "NONE",
+                "KBA",
+                "TEMP_ACCESS_CODE",
+                "OTP",
+                "GRID",
+                "TOKEN",
+                "TOKENPUSH",
+                "FIDO",
+                "SMARTCREDENTIALPUSH"
+              ]
+            }
+          }
+        },
+        "description": "An AuthenticationFlow defines the authentication options available for a given risk level."
+      },
+      "AuthenticationFlowParms": {
+        "required": [
+          "loginFlows"
+        ],
+        "type": "object",
+        "properties": {
+          "loginFlows": {
+            "type": "array",
+            "description": "List of enabled login flows--at least one must be enabled. If a login flow is not provided, then it's treated as disabled. Enabled login flows must be supported by the account entitlement.",
+            "items": {
+              "$ref": "#/components/schemas/LoginFlow"
+            }
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the authentication flow."
+          },
+          "oidcIdentityProviderIds": {
+            "type": "array",
+            "description": "The UUIDs of the OIDC identity providers supported when the IDP login flow is enabled--at least one is required.",
+            "items": {
+              "type": "string",
+              "description": "The UUIDs of the OIDC identity providers supported when the IDP login flow is enabled--at least one is required."
+            }
+          },
+          "userLoginFirstStep": {
+            "type": "string",
+            "description": "The authenticator type to use in the first step of a two-step authentication scenario when the  User Login flow is enabled.",
+            "enum": [
+              "NONE",
+              "EXTERNAL",
+              "PASSWORD",
+              "KBA",
+              "OTP",
+              "TOKEN",
+              "TOKENPUSH",
+              "SMARTCREDENTIALPUSH",
+              "IDP",
+              "PASSKEY",
+              "SMART_LOGIN",
+              "DENY"
+            ]
+          },
+          "userLoginSecondStep": {
+            "type": "array",
+            "description": "The list of authenticator types to use in the second step of a two-step authentication scenario when the User Login flow is enabled. Use an empty array when none is required.",
+            "items": {
+              "type": "string",
+              "description": "The list of authenticator types to use in the second step of a two-step authentication scenario when the User Login flow is enabled. Use an empty array when none is required.",
+              "enum": [
+                "NONE",
+                "KBA",
+                "TEMP_ACCESS_CODE",
+                "OTP",
+                "GRID",
+                "TOKEN",
+                "TOKENPUSH",
+                "FIDO",
+                "SMARTCREDENTIALPUSH"
+              ]
+            }
+          }
+        },
+        "description": "Parameters defining the new authentication flow."
+      },
       "ChangeStateParms": {
         "required": [
           "state"
@@ -17938,7 +19086,7 @@
           },
           "processingTime": {
             "type": "integer",
-            "description": "How long the operation took to complete processing.",
+            "description": "How long the operation took to complete processing in milliseconds.",
             "format": "int64"
           },
           "state": {
@@ -18114,6 +19262,31 @@
           }
         },
         "description": "The DateTimeContext context specifies an allowed or disallowed date or time range. Only a date range or a time range can be specified. Risk is applied to the authentication if the current time is outside an allowed range or inside a disallowed range. A date range specifies a start and end date.  For example 2019/01/01 to 2019/03/01. A time range species a start and end time and days of the week.  For example Monday to Friday, 8am to 5pm."
+      },
+      "DeleteAuthenticationFlowResult": {
+        "required": [
+          "deleted"
+        ],
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean",
+            "description": "Indicates if the authentication flow was deleted.",
+            "example": true
+          },
+          "error": {
+            "$ref": "#/components/schemas/ErrorInfo"
+          },
+          "resourceRules": {
+            "type": "array",
+            "description": "List of resource rules using the authentication flow if the delete fails because the authentication flow is in use. It will be null in any other case.",
+            "items": {
+              "type": "string",
+              "description": "List of resource rules using the authentication flow if the delete fails because the authentication flow is in use. It will be null in any other case."
+            }
+          }
+        },
+        "description": "The DeleteAuthenticationFlowResult contains the outcome of an authentication flow delete operation. It will indicate if the operation succeeded and, if it failed, it will include error information describing why the operation failed."
       },
       "DeleteUserParms": {
         "required": [
@@ -18410,6 +19583,14 @@
           "id": {
             "type": "string",
             "description": "The UUID of the Digital Id Config Cert Template."
+          },
+          "keyType": {
+            "type": "string",
+            "description": "The key type of the Digital Id Config Cert Template.",
+            "enum": [
+              "RSA_2048",
+              "EC_P_256"
+            ]
           },
           "name": {
             "type": "string",
@@ -19073,6 +20254,15 @@
             "items": {
               "$ref": "#/components/schemas/ServiceBundle"
             }
+          },
+          "usersBillingType": {
+            "type": "string",
+            "description": "The billing type for user entitlements. Defaults to PRE_PAID if not provided.",
+            "example": "PRE_PAID",
+            "enum": [
+              "PRE_PAID",
+              "PAY_PER_USE"
+            ]
           }
         }
       },
@@ -19183,6 +20373,15 @@
             "items": {
               "$ref": "#/components/schemas/ServiceBundle"
             }
+          },
+          "usersBillingType": {
+            "type": "string",
+            "description": "The billing type for user entitlements. Defaults to PRE_PAID if not provided.",
+            "example": "PRE_PAID",
+            "enum": [
+              "PRE_PAID",
+              "PAY_PER_USE"
+            ]
           }
         },
         "description": "Parameters passed when setting the entitlements of a tenant. Entitlements are required."
@@ -19521,6 +20720,10 @@
           "origin": {
             "type": "string",
             "description": "The origin of where the FIDO token was generated."
+          },
+          "relyingPartyId": {
+            "type": "string",
+            "description": "The relying party ID of where the FIDO token was generated."
           },
           "state": {
             "type": "string",
@@ -20924,6 +22127,31 @@
         },
         "description": "Location history checks to see if the location of the current IP address matches a location from a previous authentication. If the current location does not match history, risk is applied."
       },
+      "LoginFlow": {
+        "required": [
+          "enabled",
+          "loginFlowType"
+        ],
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the login flow is enabled or not.",
+            "example": true
+          },
+          "loginFlowType": {
+            "type": "string",
+            "description": "Identifies the login flow type.",
+            "enum": [
+              "USER_LOGIN",
+              "SMART_LOGIN",
+              "IDP_LOGIN",
+              "PASSKEY_LOGIN"
+            ]
+          }
+        },
+        "description": "An LoginFlow defines an authentication option available in the authentication flow."
+      },
       "MachineAuthenticator": {
         "type": "object",
         "properties": {
@@ -21014,6 +22242,11 @@
             "type": "string",
             "description": "The email to send the Magic Link to if it exists.",
             "example": "support@mycompany.com"
+          },
+          "redirectUrl": {
+            "type": "string",
+            "description": "Automatically redirect the user to an external URL after completing registration. The URL must match one of the allowed URLs.",
+            "example": "https://mycompany.com"
           }
         },
         "description": "Magic link Parameters for a user."
@@ -21422,6 +22655,562 @@
         },
         "description": "Information passed when sending contact verification challenge request"
       },
+      "OidcConfigurationParms": {
+        "required": [
+          "issuerUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "issuerUrl": {
+            "type": "string",
+            "description": "The issuer URL of the OIDC/OAuth identity provider.",
+            "example": "https://entrust.us.trustedauth.com/api/oidc"
+          }
+        },
+        "description": "OidcConfigurationParms"
+      },
+      "OidcConfigurationResponse": {
+        "type": "object",
+        "properties": {
+          "authorizationEndpoint": {
+            "type": "string",
+            "description": "The authorization endpoint of the external OIDC identity provider.",
+            "example": "https://account.mycompany.com/oauth/authorize"
+          },
+          "claimsSupported": {
+            "type": "array",
+            "description": "A list of claims supported by the external OIDC identity provider.",
+            "items": {
+              "type": "string",
+              "description": "A list of claims supported by the external OIDC identity provider."
+            }
+          },
+          "jwksUri": {
+            "type": "string",
+            "description": "The JWKS URI endpoint of the external OIDC identity provider used to verify a token signature.",
+            "example": "https://account.mycompany.com/oauth/keys"
+          },
+          "requireUserinfoSignature": {
+            "type": "boolean",
+            "description": "A flag indicating if the user information endpoint of the external OIDC identity provider should be signed and verified.",
+            "example": true
+          },
+          "revocationEndpoint": {
+            "type": "string",
+            "description": "The revocation endpoint of the external OIDC identity provider.",
+            "example": "https://account.mycompany.com/oauth/revoke"
+          },
+          "scopesSupported": {
+            "type": "array",
+            "description": "A list of scopes supported by the external OIDC identity provider.",
+            "example": "openid email profile",
+            "items": {
+              "type": "string",
+              "description": "A list of scopes supported by the external OIDC identity provider.",
+              "example": "openid email profile"
+            }
+          },
+          "tokenEndpoint": {
+            "type": "string",
+            "description": "The token endpoint of the external OIDC identity provider.",
+            "example": "https://account.mycompany.com/oauth/token"
+          },
+          "userinfoEndpoint": {
+            "type": "string",
+            "description": "The user information endpoint of the external OIDC identity provider.",
+            "example": "https://account.mycompany.com/oauth/userinfo"
+          }
+        },
+        "description": "An OidcConfigurationResponse defines the external OpenID Connect identity provider configuration."
+      },
+      "OidcIdentityProvider": {
+        "type": "object",
+        "properties": {
+          "amrValues": {
+            "type": "string",
+            "description": "The space separated list of authentication method request values to request as part of the external OIDC identity provider user authentication or user verification request.",
+            "example": "level1 level2"
+          },
+          "authenticationEnabled": {
+            "type": "boolean",
+            "description": "A flag indicating if the external OIDC identity provider can be used for user authentication.",
+            "example": true
+          },
+          "authorizationEndpoint": {
+            "type": "string",
+            "description": "The authorization endpoint for the external OIDC identity provider.",
+            "example": "https://account.mycompany.com/oauth/authorize"
+          },
+          "buttonImage": {
+            "type": "string",
+            "description": "The URI of the logo to display on the login button for this external OIDC identity provider.",
+            "example": "https://account.mycompany.com/images/logo.png"
+          },
+          "buttonText": {
+            "type": "string",
+            "description": "The unique text to display on the login button for this external OIDC identity provider.",
+            "example": "Sign in With MyCompany Co."
+          },
+          "clientAuthenticationMethod": {
+            "type": "string",
+            "description": "The client authentication method to use with the external OIDC identity provider.",
+            "example": "client_secret_basic",
+            "enum": [
+              "CLIENT_SECRET_BASIC",
+              "CLIENT_SECRET_POST"
+            ]
+          },
+          "clientId": {
+            "type": "string",
+            "description": "The client identifier provided by the external OIDC identity provider.",
+            "example": "client123"
+          },
+          "clientSecret": {
+            "type": "string",
+            "description": "The client secret provided by the external OIDC identity provider. Currently this value is not returned.",
+            "example": "cl1en7S3cr3t!"
+          },
+          "createUser": {
+            "type": "boolean",
+            "description": "A flag indicating if the user should be created after authenticating to the external OIDC identity provider if it doesn't exist. The user attributes specified by the userAttributeMappings attribute are used to populate the user in IDaaS.",
+            "example": true
+          },
+          "fields": {
+            "type": "string",
+            "description": "The value of user fields that need to be set the external OIDC identity provider when acquiring user information. This is used with TWITTER IDP type.",
+            "example": "email,name,first_name,last_name"
+          },
+          "groupIds": {
+            "type": "array",
+            "description": "The UUIDs of groups that will be assigned to users created after an external OIDC identity provider user authentication when create user is enabled. An empty list means the user will be assigned to All Groups. If configured, the full set of groups must be configured.",
+            "items": {
+              "type": "string",
+              "description": "The UUIDs of groups that will be assigned to users created after an external OIDC identity provider user authentication when create user is enabled. An empty list means the user will be assigned to All Groups. If configured, the full set of groups must be configured."
+            }
+          },
+          "groupMapping": {
+            "type": "string",
+            "description": "The association between a specified claim returned from the external OIDC identity provider and IDaaS groups. This mapping is used to associated IDaaS groups when a user is created or modified based on an external OIDC identity provider user authentication or when it is modified based on an external OIDC identity provider user verification."
+          },
+          "id": {
+            "type": "string",
+            "description": "The UUID of the external OIDC identity provider.",
+            "example": "6784549d-433c-44ea-a42f-4701458dg245"
+          },
+          "idTokenClaims": {
+            "type": "string",
+            "description": "The space separated list of id token claims to request as part of the external OIDC identity provider user authentication or user verification request.",
+            "example": "groups upn"
+          },
+          "issuer": {
+            "type": "string",
+            "description": "The issuer URI for the external OIDC identity provider.",
+            "example": "https://accounts.mycompany.com"
+          },
+          "jwksUri": {
+            "type": "string",
+            "description": "The JWKS URI endpoint for the external OIDC identity provider used to verify a token signature.",
+            "example": "https://account.mycompany.com/oauth/discovery/keys"
+          },
+          "maxAge": {
+            "maximum": 2592000,
+            "minimum": -1,
+            "type": "integer",
+            "description": "The max age to request as part of the external OIDC identity provider user authentication or user verification request. If -1, the value will not be included in the request.",
+            "format": "int32",
+            "example": 300
+          },
+          "name": {
+            "type": "string",
+            "description": "The unique name of the external OIDC identity provider.",
+            "example": "MyCompany Co."
+          },
+          "requireUserinfoSignature": {
+            "type": "boolean",
+            "description": "A flag indicating if the user information endpoint of the external OIDC identity provider should be signed and verified.",
+            "example": true
+          },
+          "revocationEndpoint": {
+            "type": "string",
+            "description": "The revocation endpoint for the external OIDC identity provider.",
+            "example": "https://account.mycompany.com/oauth/revoke"
+          },
+          "roleMapping": {
+            "type": "string",
+            "description": "The association between a specified claim returned from the external OIDC identity provider and an IDaaS role. This mapping is used to associated an IDaaS role when a user is created or modified based on an external OIDC identity provider user authentication or when it is modified based on an external OIDC identity provider user verification."
+          },
+          "scopes": {
+            "type": "string",
+            "description": "The space separated list of scopes to request as part of the external OIDC identity provider user authentication or user verification request.",
+            "example": "openid email"
+          },
+          "tokenEndpoint": {
+            "type": "string",
+            "description": "The token endpoint for the external OIDC identity provider.",
+            "example": "https://account.mycompany.com/oauth/token"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of the external OIDC identity provider. Once created, this value cannot be updated.",
+            "example": "FACEBOOK",
+            "enum": [
+              "FACEBOOK",
+              "GENERIC",
+              "GOOGLE",
+              "IDV",
+              "MICROSOFT",
+              "SP",
+              "TWITTER"
+            ]
+          },
+          "updateUser": {
+            "type": "boolean",
+            "description": "A flag indicating if the user should be updated after authenticating to the external OIDC identity provider if it exists. The user attributes specified by the userAttributeMappings attribute are used to populate the user in IDaaS.",
+            "example": true
+          },
+          "updateUserVerification": {
+            "type": "boolean",
+            "description": "A flag indicating if the user should be updated after user verification to the external OIDC identity provider if it exists. The user attributes specified by the userAttributeMappings attribute are used to populate the user in IDaaS.",
+            "example": true
+          },
+          "userAttributeId": {
+            "type": "string",
+            "description": "The IDaaS user attribute ID used to find IDaaS users associated with an external OIDC identity provider user authentication."
+          },
+          "userAttributeMappings": {
+            "type": "array",
+            "description": "The association between the claims returned from the external OIDC identity provider and IDaaS user attributes. These attributes are used to populate user attributes when it is created or modified based on an external OIDC identity provider user authentication or when it is modified based on an external OIDC identity provider user verification. If configured, the full set of mappings must be configured.",
+            "items": {
+              "$ref": "#/components/schemas/OidcIdentityProviderAttributeMapping"
+            }
+          },
+          "userAuthMatchMappings": {
+            "type": "array",
+            "description": "The association between the claims returned from the external OIDC identity provider and IDaaS user attributes. These attributes are used to match an existing IDaaS user based on an external OIDC identity provider user authentication. If configured, the full set of mappings must be configured.",
+            "items": {
+              "$ref": "#/components/schemas/OidcIdentityProviderUserAuthMatchMapping"
+            }
+          },
+          "userClaim": {
+            "type": "string",
+            "description": "The external OIDC identity provider claim used to find IDaaS users associated with an external OIDC identity provider user authentication."
+          },
+          "userVerMatchMappings": {
+            "type": "array",
+            "description": "The association between the claims returned from the external OIDC identity provider and IDaaS user attributes. These attributes are used to match an existing IDaaS user based on an external OIDC identity provider user verification. If configured, the full set of mappings must be configured.",
+            "items": {
+              "$ref": "#/components/schemas/OidcIdentityProviderUserVerMatchMapping"
+            }
+          },
+          "userinfoClaims": {
+            "type": "string",
+            "description": "The space separated list of user information claims to request as part of the external OIDC identity provider user authentication or user verification request.",
+            "example": "groups upn"
+          },
+          "userinfoEndpoint": {
+            "type": "string",
+            "description": "The user information endpoint for the external OIDC identity provider.",
+            "example": "https://account.mycompany.com/oauth/userinfo"
+          },
+          "verificationEnabled": {
+            "type": "boolean",
+            "description": "A flag indicating if the external OIDC identity provider can be used for user verification.",
+            "example": true
+          }
+        },
+        "description": "An OidcIdentityProvider defines the information returned about an external OpenID Connect identity provider."
+      },
+      "OidcIdentityProviderAttributeMapping": {
+        "required": [
+          "claim",
+          "userAttributeId"
+        ],
+        "type": "object",
+        "properties": {
+          "claim": {
+            "type": "string",
+            "description": "The name of the claim being mapped. This value must be provided when creating or modifying an attribute mapping.",
+            "example": "email"
+          },
+          "id": {
+            "type": "string",
+            "description": "The UUID of the OIDC identity provider attribute mapping.",
+            "example": "6781549d-433c-44ea-a42f-4705c26f3245"
+          },
+          "oidcIdentityProviderId": {
+            "type": "string",
+            "description": "The UUID of the OIDC identity provider the attribute mapping belongs to.",
+            "example": "6881549d-433c-44ea-a42f-4705c26f3245"
+          },
+          "userAttribute": {
+            "$ref": "#/components/schemas/UserAttribute"
+          },
+          "userAttributeId": {
+            "type": "string",
+            "description": "The UUID of the IDaaS user attribute being mapped to. This value must be provided when creating or modifying an attribute mapping.",
+            "example": "6981549d-433c-44ea-a42f-4705c26f3245"
+          }
+        },
+        "description": "An OidcIdentityProviderAttributeMapping maps a claim returned from an external OIDC identity provider user authentication or user verification to an IDaaS user attribute."
+      },
+      "OidcIdentityProviderParms": {
+        "type": "object",
+        "properties": {
+          "amrValues": {
+            "type": "string",
+            "description": "The space separated list of authentication method request values to request as part of the external OIDC identity provider user authentication or user verification request.",
+            "example": "level1 level2"
+          },
+          "authenticationEnabled": {
+            "type": "boolean",
+            "description": "A flag indicating if the external OIDC identity provider can be used for user authentication.",
+            "example": true
+          },
+          "authorizationEndpoint": {
+            "type": "string",
+            "description": "The authorization endpoint for the external OIDC identity provider.",
+            "example": "https://account.mycompany.com/oauth/authorize"
+          },
+          "buttonImage": {
+            "type": "string",
+            "description": "The URI of the logo to display on the login button for this external OIDC identity provider.",
+            "example": "https://account.mycompany.com/images/logo.png"
+          },
+          "buttonText": {
+            "type": "string",
+            "description": "The unique text to display on the login button for this external OIDC identity provider.",
+            "example": "Sign in With MyCompany Co."
+          },
+          "clientAuthenticationMethod": {
+            "type": "string",
+            "description": "The client authentication method to use with the external OIDC identity provider.",
+            "example": "client_secret_basic",
+            "enum": [
+              "CLIENT_SECRET_BASIC",
+              "CLIENT_SECRET_POST"
+            ]
+          },
+          "clientId": {
+            "type": "string",
+            "description": "The client identifier provided by the external OIDC identity provider.",
+            "example": "client123"
+          },
+          "clientSecret": {
+            "type": "string",
+            "description": "The client secret provided by the external OIDC identity provider.",
+            "example": "cl1en7S3cr3t!"
+          },
+          "createUser": {
+            "type": "boolean",
+            "description": "A flag indicating if the user should be created after authenticating to the external OIDC identity provider if it doesn't exist. The user attributes specified by the userAttributeMappings attribute are used to populate the user in IDaaS.",
+            "example": true
+          },
+          "fields": {
+            "type": "string",
+            "description": "The value of user fields that need to be set the external OIDC identity provider when acquiring user information. This is used with TWITTER IDP type.",
+            "example": "email,name,first_name,last_name"
+          },
+          "groupIds": {
+            "type": "array",
+            "description": "The UUIDs of groups that will be assigned to users created after an external OIDC identity provider user authentication. An empty list means the user will be assigned to All Groups.",
+            "items": {
+              "type": "string",
+              "description": "The UUIDs of groups that will be assigned to users created after an external OIDC identity provider user authentication. An empty list means the user will be assigned to All Groups."
+            }
+          },
+          "groupMapping": {
+            "type": "string",
+            "description": "The association between a specified claim returned from the external OIDC identity provider and IDaaS groups. This mapping is used to associated IDaaS groups when a user is created or modified based on an external OIDC identity provider user authentication or when it is modified based on an external OIDC identity provider user verification."
+          },
+          "idTokenClaims": {
+            "type": "string",
+            "description": "The space separated list of id token claims to request as part of the external OIDC identity provider user authentication or user verification request.",
+            "example": "groups upn"
+          },
+          "issuer": {
+            "type": "string",
+            "description": "The issuer URI for the external OIDC identity provider.",
+            "example": "https://accounts.mycompany.com"
+          },
+          "jwksUri": {
+            "type": "string",
+            "description": "The JWKS URI endpoint for the external OIDC identity provider used to verify a token signature.",
+            "example": "https://account.mycompany.com/oauth/discovery/keys"
+          },
+          "maxAge": {
+            "maximum": 2592000,
+            "minimum": -1,
+            "type": "integer",
+            "description": "The max age to request as part of the external OIDC identity provider user authentication or user verification request. If -1, the value will not be included in the request.",
+            "format": "int32",
+            "example": 300
+          },
+          "name": {
+            "type": "string",
+            "description": "The unique name of the external OIDC identity provider.",
+            "example": "MyCompany Co."
+          },
+          "requireUserinfoSignature": {
+            "type": "boolean",
+            "description": "A flag indicating if the user information endpoint of the external OIDC identity provider should be signed and verified.",
+            "example": true
+          },
+          "revocationEndpoint": {
+            "type": "string",
+            "description": "The revocation endpoint for the external OIDC identity provider.",
+            "example": "https://account.mycompany.com/oauth/revoke"
+          },
+          "roleMapping": {
+            "type": "string",
+            "description": "The association between a specified claim returned from the external OIDC identity provider and an IDaaS role. This mapping is used to associated an IDaaS role when a user is created or modified based on an external OIDC identity provider user authentication or when it is modified based on an external OIDC identity provider user verification."
+          },
+          "scopes": {
+            "type": "string",
+            "description": "The space separated list of scopes to request as part of the external OIDC identity provider user authentication or user verification request.",
+            "example": "openid email"
+          },
+          "tokenEndpoint": {
+            "type": "string",
+            "description": "The token endpoint for the external OIDC identity provider.",
+            "example": "https://account.mycompany.com/oauth/token"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of the external OIDC identity provider. Once created, this value cannot be updated.",
+            "example": "FACEBOOK",
+            "enum": [
+              "FACEBOOK",
+              "GENERIC",
+              "GOOGLE",
+              "IDV",
+              "MICROSOFT",
+              "SP",
+              "TWITTER"
+            ]
+          },
+          "updateUser": {
+            "type": "boolean",
+            "description": "A flag indicating if the user should be updated after authenticating to the external OIDC identity provider if it exists. The user attributes specified by the userAttributeMappings attribute are used to populate the user in IDaaS.",
+            "example": true
+          },
+          "updateUserVerification": {
+            "type": "boolean",
+            "description": "A flag indicating if the user should be updated after user verification to the external OIDC identity provider if it exists. The user attributes specified by the userAttributeMappings attribute are used to populate the user in IDaaS.",
+            "example": true
+          },
+          "userAttributeId": {
+            "type": "string",
+            "description": "The IDaaS user attribute ID used to find IDaaS users associated with an external OIDC identity provider user authentication."
+          },
+          "userAttributeMappings": {
+            "type": "array",
+            "description": "The association between the claims returned from the external OIDC identity provider and IDaaS user attributes. These attributes are used to populate user attributes when it is created or modified based on an external OIDC identity provider user authentication or when it is modified based on an external OIDC identity provider user verification.",
+            "items": {
+              "$ref": "#/components/schemas/OidcIdentityProviderAttributeMapping"
+            }
+          },
+          "userAuthMatchMappings": {
+            "type": "array",
+            "description": "The association between the claims returned from the external OIDC identity provider and IDaaS user attributes. These attributes are used to match an existing IDaaS user based on an external OIDC identity provider user authentication.",
+            "items": {
+              "$ref": "#/components/schemas/OidcIdentityProviderUserAuthMatchMapping"
+            }
+          },
+          "userClaim": {
+            "type": "string",
+            "description": "The external OIDC identity provider claim used to find IDaaS users associated with an external OIDC identity provider user authentication."
+          },
+          "userVerMatchMappings": {
+            "type": "array",
+            "description": "The association between the claims returned from the external OIDC identity provider and IDaaS user attributes. These attributes are used to match an existing IDaaS user based on an external OIDC identity provider user verification.",
+            "items": {
+              "$ref": "#/components/schemas/OidcIdentityProviderUserVerMatchMapping"
+            }
+          },
+          "userinfoClaims": {
+            "type": "string",
+            "description": "The space separated list of user information claims to request as part of the external OIDC identity provider user authentication or user verification request.",
+            "example": "groups upn"
+          },
+          "userinfoEndpoint": {
+            "type": "string",
+            "description": "The user information endpoint for the external OIDC identity provider.",
+            "example": "https://account.mycompany.com/oauth/userinfo"
+          },
+          "verificationEnabled": {
+            "type": "boolean",
+            "description": "A flag indicating if the external OIDC identity provider can be used for user verification.",
+            "example": true
+          }
+        },
+        "description": "An OidcIdentityProviderParms defines the information passed to Identity as a Service when creating or modifying an external OpenID Connect identity provider for use with user authentication or user verification."
+      },
+      "OidcIdentityProviderUserAuthMatchMapping": {
+        "required": [
+          "claim",
+          "userAttributeId"
+        ],
+        "type": "object",
+        "properties": {
+          "claim": {
+            "type": "string",
+            "description": "The name of the claim being mapped. This value must be provided when creating or modifying a user authentication match mapping.",
+            "example": "email"
+          },
+          "id": {
+            "type": "string",
+            "description": "The UUID of the OIDC identity provider user authentication match mapping.",
+            "example": "6781549d-433c-44ea-a42f-4705c26f3245"
+          },
+          "oidcIdentityProviderId": {
+            "type": "string",
+            "description": "The UUID of the OIDC identity provider the user authentication match mapping belongs to.",
+            "example": "6881549d-433c-44ea-a42f-4705c26f3245"
+          },
+          "userAttribute": {
+            "$ref": "#/components/schemas/UserAttribute"
+          },
+          "userAttributeId": {
+            "type": "string",
+            "description": "The UUID of the IDaaS user attribute being mapped to. This value must be provided when creating or modifying a user authentication match mapping.",
+            "example": "6981549d-433c-44ea-a42f-4705c26f3245"
+          }
+        },
+        "description": "An OidcIdentityProviderUserAuthMatchMapping maps a claim returned from an external OIDC identity provide uesr authentication to an IDaaS User user attribute for matching purposes."
+      },
+      "OidcIdentityProviderUserVerMatchMapping": {
+        "required": [
+          "claim",
+          "userAttributeId"
+        ],
+        "type": "object",
+        "properties": {
+          "claim": {
+            "type": "string",
+            "description": "The name of the claim being mapped. This value must be provided when creating or modifying a user verification match mapping.",
+            "example": "email"
+          },
+          "id": {
+            "type": "string",
+            "description": "The UUID of the OIDC identity provider user verification match mapping.",
+            "example": "6781549d-433c-44ea-a42f-4705c26f3245"
+          },
+          "oidcIdentityProviderId": {
+            "type": "string",
+            "description": "The UUID of the OIDC identity provider the user verification match mapping belongs to.",
+            "example": "6881549d-433c-44ea-a42f-4705c26f3245"
+          },
+          "userAttribute": {
+            "$ref": "#/components/schemas/UserAttribute"
+          },
+          "userAttributeId": {
+            "type": "string",
+            "description": "The UUID of the IDaaS user attribute being mapped to. This value must be provided when creating or modifying a user verification match mapping.",
+            "example": "6981549d-433c-44ea-a42f-4705c26f3245"
+          }
+        },
+        "description": "An OidcIdentityProviderUserVerMatchMapping maps a claim returned from an external OIDC identity provide user verification to an IDaaS User user attribute for matching purposes."
+      },
       "OrderByAttribute": {
         "required": [
           "ascending",
@@ -21490,7 +23279,10 @@
                 "TOKENPUSH",
                 "FIDO",
                 "SMARTCREDENTIALPUSH",
-                "PASSWORD_AND_SECONDFACTOR"
+                "PASSWORD_AND_SECONDFACTOR",
+                "SMART_LOGIN",
+                "IDP",
+                "PASSKEY"
               ]
             }
           },
@@ -21726,7 +23518,8 @@
               "CONTACTVERIFICATION",
               "HOSTNAMESETTINGS",
               "MAGICLINKS",
-              "MAGICLINKCONTENTS"
+              "MAGICLINKCONTENTS",
+              "AUTHENTICATIONFLOWS"
             ]
           },
           "id": {
@@ -21825,19 +23618,22 @@
         "required": [
           "disableSSO",
           "groups",
-          "highRiskFirstStep",
-          "highRiskSecondStep",
-          "lowRiskFirstStep",
-          "lowRiskSecondStep",
-          "lowRiskThreshold",
-          "mediumRiskFirstStep",
-          "mediumRiskSecondStep",
-          "mediumRiskThreshold",
           "name",
-          "skipSecondFactorIfUserNotExist"
+          "skipSecondFactorIfUserNotExist",
+          "strictAccess"
         ],
         "type": "object",
         "properties": {
+          "apiVersion": {
+            "type": "integer",
+            "description": "The resource rules API version used to create or last update this resource rule. If the resource rule is at version 2, then it cannot be updated using a version 1 API.",
+            "format": "int32",
+            "readOnly": true,
+            "enum": [
+              1,
+              2
+            ]
+          },
           "dateTimeContext": {
             "$ref": "#/components/schemas/DateTimeContext"
           },
@@ -21863,13 +23659,18 @@
               "$ref": "#/components/schemas/Group"
             }
           },
+          "highRiskAuthenticationFlow": {
+            "$ref": "#/components/schemas/AuthenticationFlow"
+          },
           "highRiskEnableSmartLogin": {
             "type": "boolean",
-            "description": "A flag indicating if Smart Login is enabled for High risk."
+            "description": "A flag indicating if Smart Login is enabled for High risk. This parameter is deprecated, use the highRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true
           },
           "highRiskFirstStep": {
             "type": "string",
-            "description": "The authenticator type to use in the first step of a two-step authentication scenario when the risk score is High.",
+            "description": "The authenticator type to use in the first step of a two-step authentication scenario when the risk score is High. This parameter is deprecated, use the highRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true,
             "enum": [
               "NONE",
               "EXTERNAL",
@@ -21879,15 +23680,20 @@
               "TOKEN",
               "TOKENPUSH",
               "SMARTCREDENTIALPUSH",
+              "IDP",
+              "PASSKEY",
+              "SMART_LOGIN",
               "DENY"
             ]
           },
           "highRiskSecondStep": {
             "type": "array",
-            "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is High.",
+            "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is High. This parameter is deprecated, use the highRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true,
             "items": {
               "type": "string",
-              "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is High.",
+              "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is High. This parameter is deprecated, use the highRiskAuthenticationFlow attribute with v2 APIs.",
+              "deprecated": true,
               "enum": [
                 "NONE",
                 "KBA",
@@ -21917,13 +23723,18 @@
           "locationHistoryContext": {
             "$ref": "#/components/schemas/LocationHistoryContext"
           },
+          "lowRiskAuthenticationFlow": {
+            "$ref": "#/components/schemas/AuthenticationFlow"
+          },
           "lowRiskEnableSmartLogin": {
             "type": "boolean",
-            "description": "A flag indicating if Smart Login is enabled for Low risk."
+            "description": "A flag indicating if Smart Login is enabled for Low risk. This parameter is deprecated, use the lowRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true
           },
           "lowRiskFirstStep": {
             "type": "string",
-            "description": "The authenticator type to use in the first step of a two-step authentication scenario when the risk score is Low.",
+            "description": "The authenticator type to use in the first step of a two-step authentication scenario when the risk score is Low. This parameter is deprecated, use the lowRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true,
             "enum": [
               "NONE",
               "EXTERNAL",
@@ -21933,15 +23744,20 @@
               "TOKEN",
               "TOKENPUSH",
               "SMARTCREDENTIALPUSH",
+              "IDP",
+              "PASSKEY",
+              "SMART_LOGIN",
               "DENY"
             ]
           },
           "lowRiskSecondStep": {
             "type": "array",
-            "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is Low.",
+            "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is Low. This parameter is deprecated, use the lowRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true,
             "items": {
               "type": "string",
-              "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is Low.",
+              "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is Low. This parameter is deprecated, use the lowRiskAuthenticationFlow attribute with v2 APIs.",
+              "deprecated": true,
               "enum": [
                 "NONE",
                 "KBA",
@@ -21965,13 +23781,18 @@
           "machineContext": {
             "$ref": "#/components/schemas/MachineContext"
           },
+          "mediumRiskAuthenticationFlow": {
+            "$ref": "#/components/schemas/AuthenticationFlow"
+          },
           "mediumRiskEnableSmartLogin": {
             "type": "boolean",
-            "description": "A flag indicating if Smart Login is enabled for Medium risk."
+            "description": "A flag indicating if Smart Login is enabled for Medium risk. This parameter is deprecated, use the mediumRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true
           },
           "mediumRiskFirstStep": {
             "type": "string",
-            "description": "The authenticator type to use in the first step of a two-step authentication scenario when the risk score is Medium.",
+            "description": "The authenticator type to use in the first step of a two-step authentication scenario when the risk score is Medium. This parameter is deprecated, use the mediumRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true,
             "enum": [
               "NONE",
               "EXTERNAL",
@@ -21981,15 +23802,20 @@
               "TOKEN",
               "TOKENPUSH",
               "SMARTCREDENTIALPUSH",
+              "IDP",
+              "PASSKEY",
+              "SMART_LOGIN",
               "DENY"
             ]
           },
           "mediumRiskSecondStep": {
             "type": "array",
-            "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is Medium.",
+            "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is Medium. This parameter is deprecated, use the mediumRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true,
             "items": {
               "type": "string",
-              "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is Medium.",
+              "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is Medium. This parameter is deprecated, use the mediumRiskAuthenticationFlow attribute with v2 APIs.",
+              "deprecated": true,
               "enum": [
                 "NONE",
                 "KBA",
@@ -22033,6 +23859,11 @@
             "type": "boolean",
             "description": "A flag indicating if second factor can be skipped if the user does not exist and the first factor is EXTERNAL."
           },
+          "strictAccess": {
+            "type": "boolean",
+            "description": "A flag indicating if this resource rule enforces strict access. Strict access means that if this rule denies access, the user is denied access even if other resource rules allow access.",
+            "example": true
+          },
           "systemResourceContext": {
             "type": "boolean",
             "description": "A flag indicating if this resource rule is associated with a system resource including the Admin and User portals. A resource rule for a system resource cannot be deleted.  They can only be disabled if there is at least one enabled resource rule for the resource."
@@ -22049,6 +23880,24 @@
           }
         },
         "description": "A ResourceRule defines the information returned about a resource rule. A resource rule is used to determine what authentication is used to authenticate to the specified resource (aka application)."
+      },
+      "ResourceRuleNameId": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique UUID assigned to the resource rule when it is created."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the resource rule."
+          }
+        },
+        "description": "A ResourceRuleNameId contains a resource rule name and unique id."
       },
       "ResourceRuleParms": {
         "type": "object",
@@ -22087,13 +23936,19 @@
               "$ref": "#/components/schemas/Group"
             }
           },
+          "highRiskAuthenticationFlow": {
+            "type": "string",
+            "description": "The UUID of the authentication flow to use when the risk score is High. Required with v2 APIs."
+          },
           "highRiskEnableSmartLogin": {
             "type": "boolean",
-            "description": "A flag indicating if Smart Login is enabled for High risk."
+            "description": "A flag indicating if Smart Login is enabled for High risk.This parameter is deprecated, use the highRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true
           },
           "highRiskFirstStep": {
             "type": "string",
-            "description": "The authenticator type to use in the first step of a two-step authentication scenario when the risk score is High. Only the values NONE, EXTERNAL, PASSWORD or DENY should be used for highRiskFirstStep. Other values are defined for backwards compatibility. Some values are not supported by all application types.",
+            "description": "The authenticator type to use in the first step of a two-step authentication scenario when the risk score is High. Only the values NONE, EXTERNAL, PASSWORD or DENY should be used for highRiskFirstStep. Other values are defined for backwards compatibility. Some values are not supported by all application types.This parameter is deprecated, use the highRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true,
             "enum": [
               "NONE",
               "EXTERNAL",
@@ -22103,15 +23958,20 @@
               "TOKEN",
               "TOKENPUSH",
               "SMARTCREDENTIALPUSH",
+              "IDP",
+              "PASSKEY",
+              "SMART_LOGIN",
               "DENY"
             ]
           },
           "highRiskSecondStep": {
             "type": "array",
-            "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is High. Some values are not supported by all application types.",
+            "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is High. Some values are not supported by all application types.This parameter is deprecated, use the highRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true,
             "items": {
               "type": "string",
-              "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is High. Some values are not supported by all application types.",
+              "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is High. Some values are not supported by all application types.This parameter is deprecated, use the highRiskAuthenticationFlow attribute with v2 APIs.",
+              "deprecated": true,
               "enum": [
                 "NONE",
                 "KBA",
@@ -22137,13 +23997,19 @@
           "locationHistoryContext": {
             "$ref": "#/components/schemas/LocationHistoryContext"
           },
+          "lowRiskAuthenticationFlow": {
+            "type": "string",
+            "description": "The UUID of the authentication flow to use when the risk score is Low. Required with v2 APIs."
+          },
           "lowRiskEnableSmartLogin": {
             "type": "boolean",
-            "description": "A flag indicating if Smart Login is enabled for Low risk."
+            "description": "A flag indicating if Smart Login is enabled for Low risk.This parameter is deprecated, use the lowhRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true
           },
           "lowRiskFirstStep": {
             "type": "string",
-            "description": "The authenticator type to use in the first step of a two-step authentication scenario when the risk score is Low.  Only the values NONE, EXTERNAL, PASSWORD should be used for lowRiskFirstStep.  The value DENY can only be specified for low risk authentication when using Smart Login, otherwise DENY can only be specified for medium or high risk values. Other values are defined for backwards compatibility. Some values are not supported by all application types.",
+            "description": "The authenticator type to use in the first step of a two-step authentication scenario when the risk score is Low.  Only the values NONE, EXTERNAL, PASSWORD should be used for lowRiskFirstStep.  The value DENY can only be specified for low risk authentication when using Smart Login, otherwise DENY can only be specified for medium or high risk values. Other values are defined for backwards compatibility. Some values are not supported by all application types. This parameter is deprecated, use the lowRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true,
             "enum": [
               "NONE",
               "EXTERNAL",
@@ -22153,15 +24019,20 @@
               "TOKEN",
               "TOKENPUSH",
               "SMARTCREDENTIALPUSH",
+              "IDP",
+              "PASSKEY",
+              "SMART_LOGIN",
               "DENY"
             ]
           },
           "lowRiskSecondStep": {
             "type": "array",
-            "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is Low. Some values are not supported by all application types.",
+            "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is Low. Some values are not supported by all application types. This parameter is deprecated, use the lowRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true,
             "items": {
               "type": "string",
-              "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is Low. Some values are not supported by all application types.",
+              "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is Low. Some values are not supported by all application types. This parameter is deprecated, use the lowRiskAuthenticationFlow attribute with v2 APIs.",
+              "deprecated": true,
               "enum": [
                 "NONE",
                 "KBA",
@@ -22185,13 +24056,19 @@
           "machineContext": {
             "$ref": "#/components/schemas/MachineContext"
           },
+          "mediumRiskAuthenticationFlow": {
+            "type": "string",
+            "description": "The UUID of the authentication flow to use when the risk score is Medium. Required with v2 APIs."
+          },
           "mediumRiskEnableSmartLogin": {
             "type": "boolean",
-            "description": "A flag indicating if Smart Login is enabled for Medium risk."
+            "description": "A flag indicating if Smart Login is enabled for Medium risk.This parameter is deprecated, use the mediumRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true
           },
           "mediumRiskFirstStep": {
             "type": "string",
-            "description": "The authenticator type to use in the first step of a two-step authentication scenario when the risk score is Medium. Only the values NONE, EXTERNAL, PASSWORD or DENY should be used for mediumRiskFirstStep. Other values are defined for backwards compatibility.  Some values are not supported by all application types..",
+            "description": "The authenticator type to use in the first step of a two-step authentication scenario when the risk score is Medium. Only the values NONE, EXTERNAL, PASSWORD or DENY should be used for mediumRiskFirstStep. Other values are defined for backwards compatibility.  Some values are not supported by all application types. This parameter is deprecated, use the mediumRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true,
             "enum": [
               "NONE",
               "EXTERNAL",
@@ -22201,15 +24078,20 @@
               "TOKEN",
               "TOKENPUSH",
               "SMARTCREDENTIALPUSH",
+              "IDP",
+              "PASSKEY",
+              "SMART_LOGIN",
               "DENY"
             ]
           },
           "mediumRiskSecondStep": {
             "type": "array",
-            "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is Medium. Some values are not supported by all application types.",
+            "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is Medium. Some values are not supported by all application types.This parameter is deprecated, use the mediumRiskAuthenticationFlow attribute with v2 APIs.",
+            "deprecated": true,
             "items": {
               "type": "string",
-              "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is Medium. Some values are not supported by all application types.",
+              "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the risk score is Medium. Some values are not supported by all application types.This parameter is deprecated, use the mediumRiskAuthenticationFlow attribute with v2 APIs.",
+              "deprecated": true,
               "enum": [
                 "NONE",
                 "KBA",
@@ -22280,6 +24162,11 @@
           "skipSecondFactorIfUserNotExist": {
             "type": "boolean",
             "description": "A flag indicating if second factor will be skipped if user doesn't exist when the first factor was EXTERNAL."
+          },
+          "strictAccess": {
+            "type": "boolean",
+            "description": "A flag indicating if this resource rule enforces strict access. Strict access means that if this rule denies access, the user is denied access even if other resource rules allow access.",
+            "example": true
           },
           "transactionContexts": {
             "type": "array",
@@ -24246,7 +26133,10 @@
                 "TOKENPUSH",
                 "FIDO",
                 "SMARTCREDENTIALPUSH",
-                "PASSWORD_AND_SECONDFACTOR"
+                "PASSWORD_AND_SECONDFACTOR",
+                "SMART_LOGIN",
+                "IDP",
+                "PASSKEY"
               ]
             }
           },
@@ -24638,7 +26528,10 @@
               "TOKENPUSH",
               "FIDO",
               "SMARTCREDENTIALPUSH",
-              "PASSWORD_AND_SECONDFACTOR"
+              "PASSWORD_AND_SECONDFACTOR",
+              "SMART_LOGIN",
+              "IDP",
+              "PASSKEY"
             ]
           }
         },
