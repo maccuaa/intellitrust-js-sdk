@@ -116,7 +116,7 @@ npm install ${npmName} --save
 **NOTE:** Make sure to replace the configuration values in the examples with the values from your Identity as a Service account!
 
 \`\`\`javascript
-import * as ${sdkVar}$ from "${npmName}";
+import * as ${sdkVar} from "${npmName}";
 
 ${example}
 \`\`\`
