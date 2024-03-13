@@ -17,7 +17,7 @@ jobs:
       - uses: oven-sh/setup-bun@d3603274aca5625baad52ec06108517a089cdd00 # v1
       - run: bun i --frozen-lockfile
       - run: bun run download
-      - uses: peter-evans/create-pull-request@a4f52f8033a6168103c2538976c07b467e8163bc # v6
+      - uses: peter-evans/create-pull-request@70a41aba780001da0a30141984ae2a0c95d8704e # v6
         with:
           token: ${{ secrets.PAT }}
           title: New IDaaS API version
