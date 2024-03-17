@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.34"
+    "version": "5.33.3"
   },
   "servers": [
     {
@@ -200,8 +200,7 @@
                 "PASSWORD_AND_SECONDFACTOR",
                 "SMART_LOGIN",
                 "IDP",
-                "PASSKEY",
-                "IDV"
+                "PASSKEY"
               ]
             }
           },
@@ -949,8 +948,7 @@
                 "PASSWORD_AND_SECONDFACTOR",
                 "SMART_LOGIN",
                 "IDP",
-                "PASSKEY",
-                "IDV"
+                "PASSKEY"
               ]
             }
           }
@@ -2033,8 +2031,7 @@
               "PASSWORD_AND_SECONDFACTOR",
               "SMART_LOGIN",
               "IDP",
-              "PASSKEY",
-              "IDV"
+              "PASSKEY"
             ]
           },
           "tokenProtectedOfflineParms": {
@@ -2164,8 +2161,7 @@
                 "PASSWORD_AND_SECONDFACTOR",
                 "SMART_LOGIN",
                 "IDP",
-                "PASSKEY",
-                "IDV"
+                "PASSKEY"
               ]
             }
           },
@@ -2197,14 +2193,17 @@
                 "PASSWORD_AND_SECONDFACTOR",
                 "SMART_LOGIN",
                 "IDP",
-                "PASSKEY",
-                "IDV"
+                "PASSKEY"
               ]
             }
           },
           "deviceCertAuthDesired": {
             "type": "boolean",
             "description": "Flag to indicate if the user has to attempt device certificate authentication."
+          },
+          "expires": {
+            "type": "integer",
+            "format": "int64"
           },
           "fidoChallenge": {
             "$ref": "#/components/schemas/FIDOChallenge"
@@ -2316,8 +2315,7 @@
               "PASSWORD_AND_SECONDFACTOR",
               "SMART_LOGIN",
               "IDP",
-              "PASSKEY",
-              "IDV"
+              "PASSKEY"
             ]
           }
         },
@@ -2407,8 +2405,7 @@
               "PASSWORD_AND_SECONDFACTOR",
               "SMART_LOGIN",
               "IDP",
-              "PASSKEY",
-              "IDV"
+              "PASSKEY"
             ]
           },
           "summary": {
