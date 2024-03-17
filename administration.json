@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.33"
+    "version": "5.33.3"
   },
   "servers": [
     {
@@ -20122,6 +20122,9 @@
             "format": "int32"
           },
           "negative": {
+            "type": "boolean"
+          },
+          "positive": {
             "type": "boolean"
           },
           "seconds": {
