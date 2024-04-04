@@ -5,16 +5,19 @@ const GENERATOR = "typescript-axios";
 const TEMPLATES = "templates";
 const AUTH = "auth";
 const ADMIN = "admin";
+const ISSUANCE = "issuance";
 const README = "README.md";
 const ADMIN_EXAMPLE = "admin-example.ts";
 const AUTH_EXAMPLE = "auth-example.ts";
+const ISSUANCE_EXAMPLE = "issuance-example.ts";
 
 const generateReadme = async (config: string, output: string, type: string) => {
   const isAdmin = type === "admin";
+  const isAuth = type === "auth";
 
-  const sdkType = isAdmin ? "Administration" : "Authentication";
-  const sdkVar = isAdmin ? "AdminSDK" : "AuthSDK";
-  const examplePath = isAdmin ? ADMIN_EXAMPLE : AUTH_EXAMPLE;
+  const sdkType = isAdmin ? "Administration" : isAuth ? "Authentication" : "Issuance";
+  const sdkVar = isAdmin ? "AdminSDK" : isAuth ? "AuthSDK" : "IssuanceSDK";
+  const examplePath = isAdmin ? ADMIN_EXAMPLE : isAuth ? AUTH_EXAMPLE : ISSUANCE_EXAMPLE;
 
   const options = await Bun.file(config).text();
 
@@ -43,9 +46,9 @@ const generateReadme = async (config: string, output: string, type: string) => {
 
   const sdkType = args.pop();
 
-  if (sdkType !== "auth" && sdkType !== "admin") {
+  if (sdkType !== "auth" && sdkType !== "admin" && sdkType !== "issuance") {
     console.error(
-      `Invalid type provided. Exected '${ADMIN}' or '${AUTH}', received`,
+      `Invalid type provided. Expected '${ADMIN}' or '${AUTH}' or '${ISSUANCE}, received`,
       sdkType
     );
     process.exit(1);

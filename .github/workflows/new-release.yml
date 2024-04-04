@@ -8,6 +8,8 @@ env:
   AUTH_APP_ID: ${{ secrets.AUTH_APP_ID }}
   ADMIN_APP_ID: ${{ secrets.ADMIN_APP_ID }}
   ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}
+  ISSUANCE_APP_ID: ${{ secrets.ISSUANCE_APP_ID }}
+  ISSUANCE_SECRET: ${{ secrets.ISSUANCE_SECRET }}
 jobs:
   update:
     name: API Update Check

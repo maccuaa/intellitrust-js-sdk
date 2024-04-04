@@ -8,7 +8,7 @@ interface GeneratorOptions {
 }
 
 export const getGeneratorOptions = (
-  type: "admin" | "auth"
+  type: "admin" | "auth" | "issuance"
 ): GeneratorOptions => {
   let input: string = "";
   let output: string = "";
@@ -24,6 +24,12 @@ export const getGeneratorOptions = (
     input = "authentication.json";
     output = "auth-sdk";
     config = "config-auth.json";
+  }
+
+  if (type === "issuance") {
+    input = "issuance.json";
+    output = "issuance-sdk";
+    config = "config-issuance.json";
   }
 
   return {
