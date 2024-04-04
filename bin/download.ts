@@ -34,7 +34,7 @@ const formatVersion = (version: string) => {
 /**
  * Download and save Swagger file.
  */
-const downloadFile = async (type: "auth" | "admin") => {
+const downloadFile = async (type: "auth" | "admin" | "issuance") => {
   const { config: genConfig, input } = getGeneratorOptions(type);
 
   const configFile = Bun.file(genConfig);
@@ -88,4 +88,5 @@ const downloadFile = async (type: "auth" | "admin") => {
 (async () => {
   await downloadFile("admin");
   await downloadFile("auth");
+  await downloadFile("issuance");
 })();

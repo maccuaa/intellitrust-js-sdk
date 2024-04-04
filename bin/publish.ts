@@ -2,6 +2,7 @@ import { prompt } from "./lib";
 
 const ADMIN_PATH = "admin-sdk";
 const AUTH_PATH = "auth-sdk";
+const ISSUANCE_PATH = "issuance-sdk";
 
 /**
  * Main function.
@@ -27,5 +28,6 @@ const AUTH_PATH = "auth-sdk";
   if (otp) {
     await publish(ADMIN_PATH, otp);
     await publish(AUTH_PATH, otp);
+    await publish(ISSUANCE_PATH, otp);
   }
 })();
