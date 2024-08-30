@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.33.3"
+    "version": "5.36"
   },
   "servers": [
     {
@@ -137,6 +137,89 @@
             }
           }
         }
+      }
+    },
+    "/api/web/v1/applicationinfo": {
+      "get": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "List application information",
+        "description": "List application information. Caller requires the APPLICATIONS:VIEW permission.",
+        "operationId": "listApplicationInfoUsingGET",
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ApplicationInfo"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": true,
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "APPLICATIONS:VIEW"
+            ]
+          }
+        ]
       }
     },
     "/api/web/v1/applications/adminapi": {
@@ -2752,7 +2835,7 @@
             "description": "The unique 32-36 character id obtained from the Get All Printers request. Example - 0b0db90a-6091-416f-8559-2f2181e941c3",
             "required": true,
             "schema": {
-              "pattern": "[a-fA-F0-9]{16}",
+              "pattern": "[a-fA-F0-9-]{32,36}",
               "type": "string"
             }
           }
@@ -2830,7 +2913,7 @@
             "description": "The unique 32-36 character id obtained from the Get All Printers request. Example - 0b0db90a-6091-416f-8559-2f2181e941c3",
             "required": true,
             "schema": {
-              "pattern": "[a-fA-F0-9]{16}",
+              "pattern": "[a-fA-F0-9-]{32,36}",
               "type": "string"
             }
           }
@@ -2911,7 +2994,7 @@
             "description": "The unique 32-36 character id obtained from the Get All Printers request. Example - 0b0db90a-6091-416f-8559-2f2181e941c3",
             "required": true,
             "schema": {
-              "pattern": "[a-fA-F0-9]{16}",
+              "pattern": "[a-fA-F0-9-]{32,36}",
               "type": "string"
             }
           }
@@ -2984,7 +3067,7 @@
             "description": "The unique 32-36 character id obtained from the Get All Printers request. Example - 0b0db90a-6091-416f-8559-2f2181e941c3",
             "required": true,
             "schema": {
-              "pattern": "[a-fA-F0-9]{16}",
+              "pattern": "[a-fA-F0-9-]{32,36}",
               "type": "string"
             }
           }
@@ -3062,7 +3145,7 @@
             "description": "The unique 32-36 character id obtained from the Get All Printers request. Example - 0b0db90a-6091-416f-8559-2f2181e941c3",
             "required": true,
             "schema": {
-              "pattern": "[a-fA-F0-9]{16}",
+              "pattern": "[a-fA-F0-9-]{32,36}",
               "type": "string"
             }
           }
@@ -3145,7 +3228,7 @@
             "description": "The unique 32-36 character id obtained from the Get All Printers request. Example - 0b0db90a-6091-416f-8559-2f2181e941c3",
             "required": true,
             "schema": {
-              "pattern": "[a-fA-F0-9]{16}",
+              "pattern": "[a-fA-F0-9-]{32,36}",
               "type": "string"
             }
           }
@@ -4364,6 +4447,78 @@
         ]
       }
     },
+    "/api/web/v2/enrollments/enrollmentDesigns": {
+      "get": {
+        "tags": [
+          "EnrollmentOperations"
+        ],
+        "summary": "Read enrollment designs name",
+        "description": "Read enrollment designs name. Caller requires the ENROLLMENTS:VIEW permission.",
+        "operationId": "readEnrollmentsDesignNames",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnrollmentDesignName"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "ENROLLMENTS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
     "/api/web/v2/enrollments/read/{enrollmentDesignName}": {
       "post": {
         "tags": [
@@ -5105,95 +5260,6 @@
         ]
       }
     },
-    "/api/web/v4/async/tenants": {
-      "post": {
-        "tags": [
-          "Tenants"
-        ],
-        "summary": "Create a tenant asynchronously",
-        "description": "Create a new tenant for a service provider. Caller requires the TENANTS:ADD permission from a service provider role.<br/>Notes on CreateTenantParms attributes: <br/><b>adminUser</b> (UserParms):<ul><li>The locale attribute is ignored if provided. It defaults to English for the first super administrator.</li><li>The status attributes is ignored if provided. It defaults to ACTIVE for the first super administrator.</li><li>The userId is required.</li></ul> <br/><b>adminApiApplication</b> (AdminApiApplicationParms):<ul><li>The spRoleId attribute is not supported. An error is returned if provided.</li></ul> <br/><b>entitlements</b> (EntitlementParms):<ul><li>The contractMode attribute is required. It must be either TRIAL or PRODUCTION.</li><li>The quantity attribute is required.</li><li><b>entitlements.issuance</b> (EntitlementParms.IssuanceParms):<ul><li>The entitlements.issuance attribute is required if you are creating an Issuance tenant.</li><li>The serviceBundles attribute is required. One service bundle (of those  supported by the service provider contract) must be defined.</li></ul></li></ul><br/>",
-        "operationId": "createTenantAsyncUsingPOST",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateTenantParms"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateTenantAsyncStatus"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Access denied",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "AdminAPIAuthentication": [
-              "TENANTS:ADD"
-            ]
-          }
-        ]
-      }
-    },
     "/api/web/v4/async/tenants/{id}/createresult": {
       "get": {
         "tags": [
@@ -5380,7 +5446,7 @@
           "Tenants"
         ],
         "summary": "Create a tenant",
-        "description": "Create a new tenant for a service provider. Caller requires the TENANTS:ADD permission from a service provider role.<br/>Notes on CreateTenantParms attributes: <br/><b>adminUser</b> (UserParms):<ul><li>The locale attribute is ignored if provided. It defaults to English for the first super administrator.</li><li>The status attributes is ignored if provided. It defaults to ACTIVE for the first super administrator.</li><li>The userId is required.</li></ul> <br/><b>adminApiApplication</b> (AdminApiApplicationParms):<ul><li>The spRoleId attribute is not supported. An error is returned if provided.</li></ul> <br/><b>entitlements</b> (EntitlementParms):<ul><li>The contractMode attribute is required. It must be either TRIAL or PRODUCTION.</li><li>The quantity attribute is required.</li><li><b>entitlements.issuance</b> (EntitlementParms.IssuanceParms):<ul><li>The entitlements.issuance attribute is required if you are creating an Issuance tenant.</li><li>The serviceBundles attribute is required. One service bundle (of those  supported by the service provider contract) must be defined.</li></ul></li></ul><br/>",
+        "description": "Create a new tenant for a service provider. Caller requires the TENANTS:ADD permission from a service provider role.<br/>Notes on CreateTenantParms attributes: <br/><b>adminUser</b> (UserParms):<ul>    <li>The locale attribute is ignored if provided. It defaults to English for the first super administrator.</li>    <li>The status attributes is ignored if provided. It defaults to ACTIVE for the first super administrator.</li>    <li>The userId is required.</li></ul><b>adminApiApplication</b> (AdminApiApplicationParms):<ul>    <li>The spRoleId attribute is not supported. An error is returned if provided.</li></ul><b>entitlements</b> (EntitlementParms):<ul>    <li>The contractMode attribute is required. It must be either TRIAL or PRODUCTION.</li>    <li>The quantity attribute is required.</li>    <li><b>entitlements.issuance</b> (EntitlementParms.IssuanceParms):</li>    <li>The entitlements.issuance attribute is required if you are creating an Issuance tenant.</li>    <li>The serviceBundles attribute is required. One service bundle (of those supported by the service provider contract) must be defined.</li></ul>",
         "operationId": "createTenantUsingPOST",
         "requestBody": {
           "content": {
@@ -6265,6 +6331,95 @@
           }
         ]
       }
+    },
+    "/api/web/v5/async/tenants": {
+      "post": {
+        "tags": [
+          "Tenants"
+        ],
+        "summary": "Create a tenant asynchronously",
+        "description": "<p>Create a new tenant for a service provider. Caller requires the TENANTS:ADD permission from a service provider role.</p><p>Notes on CreateTenantParms attributes: </p><b>adminUser</b> (UserParms):<ul>    <li>The locale attribute is ignored if provided. It defaults to English for the first super administrator.</li>    <li>The status attributes is ignored if provided. It defaults to ACTIVE for the first super administrator.</li>    <li>The userId is required.</li></ul><b>adminApiApplication</b> (AdminApiApplicationParms):<ul>    <li>The spRoleId attribute is not supported. An error is returned if provided.</li></ul><b>entitlements</b> (EntitlementParms):<ul>    <li>The contractMode attribute is required. It must be either TRIAL or PRODUCTION.</li>    <li>The quantity attribute is required.</li>    <li><b>entitlements.issuance</b> (EntitlementParms.IssuanceParms):</li>    <li>The entitlements.issuance attribute is required if you are creating an Issuance tenant.</li>    <li>The serviceBundles attribute is required. One service bundle (of those supported by the service provider contract) must be defined.</li></ul>",
+        "operationId": "createTenantAsyncUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTenantParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateTenantAsyncStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "TENANTS:ADD"
+            ]
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -6440,6 +6595,31 @@
             "description": "Expiry time of the authentication token.",
             "format": "date-time",
             "example": "2019-02-19T14:15:27Z"
+          }
+        }
+      },
+      "ApplicationInfo": {
+        "type": "object",
+        "properties": {
+          "applicationTemplate": {
+            "type": "string",
+            "description": "The template the application was created from."
+          },
+          "applicationTemplateId": {
+            "type": "string",
+            "description": "The UUID of the template the application was created from."
+          },
+          "authenticationMethod": {
+            "type": "string",
+            "description": "The application authentication method."
+          },
+          "id": {
+            "type": "string",
+            "description": "The UUID of the application."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the application."
           }
         }
       },
@@ -6690,7 +6870,8 @@
               "DELETE_ENROLLMENTS",
               "PROVISION_SCIM",
               "CREATE_TENANT",
-              "REVOKE_MFP"
+              "REVOKE_MFP",
+              "DELETE_GRIDS"
             ]
           }
         }
@@ -6807,9 +6988,9 @@
             "example": 1
           },
           "printerId": {
-            "pattern": "[a-fA-F0-9]{16}",
+            "pattern": "[a-fA-F0-9-]{32,36}",
             "type": "string",
-            "example": "F71523262A998271"
+            "example": "aa123-bb456-cc789-dd890-ee123-fffee4"
           }
         }
       },
@@ -7190,6 +7371,17 @@
         },
         "description": "Ids of the enrollments to be deleted (In Base64 string format)"
       },
+      "EnrollmentDesignName": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
       "EnrollmentMultiFlashPassApiRequestV1": {
         "type": "object",
         "properties": {
@@ -7558,9 +7750,6 @@
           },
           "issuance": {
             "$ref": "#/components/schemas/IssuanceParms"
-          },
-          "payToPrint": {
-            "$ref": "#/components/schemas/PayToPrintParms"
           },
           "printer": {
             "$ref": "#/components/schemas/PrinterParms"
@@ -8234,7 +8423,8 @@
               "DELETE_ENROLLMENTS",
               "PROVISION_SCIM",
               "CREATE_TENANT",
-              "REVOKE_MFP"
+              "REVOKE_MFP",
+              "DELETE_GRIDS"
             ]
           }
         }
@@ -8455,7 +8645,8 @@
               "DELETE_ENROLLMENTS",
               "PROVISION_SCIM",
               "CREATE_TENANT",
-              "REVOKE_MFP"
+              "REVOKE_MFP",
+              "DELETE_GRIDS"
             ]
           }
         }
@@ -8540,6 +8731,38 @@
         },
         "description": "An attribute used to sort the result from a search."
       },
+      "Organization": {
+        "required": [
+          "displayName",
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "The description of the organization."
+          },
+          "displayName": {
+            "type": "string",
+            "description": "The display name of the organization."
+          },
+          "id": {
+            "type": "string",
+            "description": "The unique UUID assigned to the organization when it is created."
+          },
+          "logoUri": {
+            "type": "string",
+            "description": "The URI of the logo to display when showing organizations.",
+            "example": "https://account.mycompany.com/images/logo.png"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the organization."
+          }
+        },
+        "description": "Organization defines the attributes of an organization used in B2B scenarios."
+      },
       "Paging": {
         "required": [
           "limit"
@@ -8596,10 +8819,6 @@
           }
         },
         "description": "PayToPrint entitlements of a tenant."
-      },
-      "PayToPrintParms": {
-        "type": "object",
-        "description": "Parameters passed when setting the Pay to print entitlements of a tenant."
       },
       "Permission": {
         "required": [
@@ -8741,7 +8960,10 @@
               "HOSTNAMESETTINGS",
               "MAGICLINKS",
               "MAGICLINKCONTENTS",
-              "AUTHENTICATIONFLOWS"
+              "AUTHENTICATIONFLOWS",
+              "TOKENACTIVATIONCONTENTS",
+              "POLICYOVERRIDE",
+              "ORGANIZATIONS"
             ]
           },
           "id": {
@@ -9141,7 +9363,8 @@
               "DELETE_ENROLLMENTS",
               "PROVISION_SCIM",
               "CREATE_TENANT",
-              "REVOKE_MFP"
+              "REVOKE_MFP",
+              "DELETE_GRIDS"
             ]
           }
         }
@@ -9149,6 +9372,11 @@
       "Printer": {
         "type": "object",
         "properties": {
+          "cardsPrinted": {
+            "type": "integer",
+            "description": "Total cards successfully printed by printer.",
+            "format": "int32"
+          },
           "cardsRemaining": {
             "type": "integer",
             "description": "number of cards remaining before cleaning",
@@ -9234,6 +9462,11 @@
           "ptpReady": {
             "type": "boolean",
             "description": "A flag used to determine if the printer has PTP ribbon or not (Ignore this field in the API request or response)"
+          },
+          "retransferRollRemaining": {
+            "type": "number",
+            "description": "percentage of retransfer roll remaining in printer",
+            "format": "double"
           },
           "ribbonId": {
             "type": "string",
@@ -10247,7 +10480,6 @@
       },
       "TenantParms": {
         "required": [
-          "companyCountry",
           "companyName",
           "domain"
         ],
@@ -10260,7 +10492,7 @@
           },
           "companyCountry": {
             "type": "string",
-            "description": "The country two-letter code (ISO 3166-1) of the location of the company that will own this account.  This value is required",
+            "description": "The country two-letter code (ISO 3166-1) of the location of the company that will own this account.",
             "example": "ca"
           },
           "companyName": {
@@ -10270,7 +10502,7 @@
           },
           "companyState": {
             "type": "string",
-            "description": "The province/state two-letter code (postal abbreviation) of the location of the company that will own this account.  This value is required for companies in the United States or Canada.",
+            "description": "The province/state two-letter code (postal abbreviation) of the location of the company that will own this account. This value is required for companies in the United States or Canada when the companyCountry attribute is provided.",
             "example": "ON"
           },
           "domain": {
@@ -10678,7 +10910,9 @@
                 "PASSWORD_AND_SECONDFACTOR",
                 "SMART_LOGIN",
                 "IDP",
-                "PASSKEY"
+                "PASSKEY",
+                "IDP_AND_SECONDFACTOR",
+                "USER_CERTIFICATE"
               ]
             }
           },
@@ -10704,6 +10938,7 @@
                 "HARDWARE_TOKEN",
                 "FIDO",
                 "SMARTCREDENTIALPUSH",
+                "USER_CERTIFICATE",
                 "MACHINE"
               ]
             }
@@ -10732,6 +10967,13 @@
             "description": "A list of all oauth roles to which this user belongs.",
             "items": {
               "$ref": "#/components/schemas/OAuthRole"
+            }
+          },
+          "organizations": {
+            "type": "array",
+            "description": "A list of the user organizations.",
+            "items": {
+              "$ref": "#/components/schemas/Organization"
             }
           },
           "otpCreateTime": {
@@ -10787,7 +11029,7 @@
           },
           "securityId": {
             "type": "string",
-            "description": "The security ID of this user.  This value is a UUID like string which is used to enhance the strong authentication for Microsoft AD users.",
+            "description": "The security ID of this user. The security ID is a unique value used to identity the user when performing smart card login to Microsoft Windows.",
             "example": "8c35d5f2-a18a-11ed-a8fc-0242ac120002"
           },
           "showNotification": {
@@ -11044,7 +11286,9 @@
               "PASSWORD_AND_SECONDFACTOR",
               "SMART_LOGIN",
               "IDP",
-              "PASSKEY"
+              "PASSKEY",
+              "IDP_AND_SECONDFACTOR",
+              "USER_CERTIFICATE"
             ]
           }
         },
@@ -11168,6 +11412,14 @@
             "items": {
               "type": "string",
               "description": "A list of oauth role UUIDs to be assigned to this user.  If specified, these oauth roles replace existing oauth roles."
+            }
+          },
+          "organizations": {
+            "type": "array",
+            "description": "A list of organization UUIDs to be assigned to this user.  If specified, these organizations replace existing organizations.",
+            "items": {
+              "type": "string",
+              "description": "A list of organization UUIDs to be assigned to this user.  If specified, these organizations replace existing organizations."
             }
           },
           "phone": {
