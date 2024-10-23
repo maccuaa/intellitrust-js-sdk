@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.36"
+    "version": "5.36.1"
   },
   "servers": [
     {
@@ -4452,7 +4452,7 @@
         "tags": [
           "EnrollmentOperations"
         ],
-        "summary": "Read enrollment designs name",
+        "summary": "Read Enrollment designs name",
         "description": "Read enrollment designs name. Caller requires the ENROLLMENTS:VIEW permission.",
         "operationId": "readEnrollmentsDesignNames",
         "responses": {
@@ -7375,10 +7375,12 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "Id of the Enrollment Design"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Name of the Enrollment Design"
           }
         }
       },
@@ -8961,6 +8963,7 @@
               "MAGICLINKS",
               "MAGICLINKCONTENTS",
               "AUTHENTICATIONFLOWS",
+              "FACE",
               "TOKENACTIVATIONCONTENTS",
               "POLICYOVERRIDE",
               "ORGANIZATIONS"
@@ -10912,7 +10915,8 @@
                 "IDP",
                 "PASSKEY",
                 "IDP_AND_SECONDFACTOR",
-                "USER_CERTIFICATE"
+                "USER_CERTIFICATE",
+                "FACE"
               ]
             }
           },
@@ -10939,7 +10943,8 @@
                 "FIDO",
                 "SMARTCREDENTIALPUSH",
                 "USER_CERTIFICATE",
-                "MACHINE"
+                "MACHINE",
+                "FACE"
               ]
             }
           },
@@ -11288,7 +11293,8 @@
               "IDP",
               "PASSKEY",
               "IDP_AND_SECONDFACTOR",
-              "USER_CERTIFICATE"
+              "USER_CERTIFICATE",
+              "FACE"
             ]
           }
         },
