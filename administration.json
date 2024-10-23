@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.36"
+    "version": "5.36.1"
   },
   "servers": [
     {
@@ -28781,11 +28781,11 @@
           "passwordFormat": {
             "type": "string",
             "description": "Define the password format of new password, it's BCRYPT when importing BCrypted password, it defaults to CLEARTEXT if not provided.When passwordFormat is BCRYPT, the following restrictions must be enforced:<ul><li>1.the user must be an IDaaS local user.</li><li>2.currentPassword must be null.</li><li>3.generatePassword must be false.</li><li>4.emailPassword must be false.</li><li>5.returnPassword must be false.</li></ul>",
+            "default": "CLEARTEXT",
             "enum": [
               "CLEARTEXT",
               "BCRYPT"
-            ],
-            "default": "CLEARTEXT"
+            ]
           },
           "returnPassword": {
             "type": "boolean",
