@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.36"
+    "version": "5.37"
   },
   "servers": [
     {
@@ -97,79 +97,6 @@
             }
           }
         }
-      }
-    },
-    "/api/web/v1/authentication/passkey": {
-      "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "summary": "Request Passkey Challenge",
-        "description": "Request passkey challenge. This API is deprecated, use /api/web/v2/authentication/users/authenticate/PASSKEY instead.",
-        "operationId": "requestPasskeyChallengeUsingPOST",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PasskeyChallengeParameters"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Authenticators retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PasskeyChallengeResult"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Access denied",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          }
-        },
-        "deprecated": true
       }
     },
     "/api/web/v1/authentication/users/authenticate/{authenticator}/complete": {
@@ -1089,6 +1016,10 @@
               "VOICE"
             ]
           },
+          "pushMutualChallenge": {
+            "type": "string",
+            "description": "Push authentication mutual challenge."
+          },
           "redirectUrl": {
             "type": "string",
             "description": "The redirect URL when using a Magic Link."
@@ -1136,7 +1067,8 @@
           },
           "tokenPushMutualChallenge": {
             "type": "string",
-            "description": "The token push authentication mutual challenge."
+            "description": "The token push authentication mutual challenge.",
+            "deprecated": true
           },
           "transactionReceipt": {
             "$ref": "#/components/schemas/TransactionReceipt"
@@ -1250,6 +1182,14 @@
             "items": {
               "type": "string",
               "description": "The IDs of FIDO tokens already registered to this user.  These values are base-64 encoded."
+            }
+          },
+          "registeredCredentialsNames": {
+            "type": "array",
+            "description": "The names of FIDO tokens already registered to this user.",
+            "items": {
+              "type": "string",
+              "description": "The names of FIDO tokens already registered to this user."
             }
           },
           "registrationAuthenticatorAttachment": {
@@ -1446,9 +1386,21 @@
       "FaceChallenge": {
         "type": "object",
         "properties": {
-          "applicantId": {
+          "device": {
             "type": "string",
-            "description": "Applicant ID associated with the user."
+            "description": "Which device to use for registration and authentication.",
+            "enum": [
+              "WEB",
+              "MOBILE"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "description": "The ID of the Face Biometric to get."
+          },
+          "qrCode": {
+            "type": "string",
+            "description": "QR Code to use to launch the mobile flow."
           },
           "sdkToken": {
             "type": "string",
@@ -1811,36 +1763,6 @@
         },
         "description": "Organization defines the attributes of an organization used in B2B scenarios."
       },
-      "PasskeyChallengeParameters": {
-        "type": "object",
-        "properties": {
-          "applicationId": {
-            "type": "string",
-            "description": "Unique identifier of the Identity as a Service Authentication API application",
-            "example": "6781549d-433c-44ea-a42f-4705c26f3245"
-          }
-        },
-        "description": "Request parameters for obtaining a passkey challenge."
-      },
-      "PasskeyChallengeResult": {
-        "type": "object",
-        "properties": {
-          "expires": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "fidoChallenge": {
-            "$ref": "#/components/schemas/FIDOChallenge"
-          },
-          "time": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "token": {
-            "type": "string"
-          }
-        }
-      },
       "RequestDetail": {
         "type": "object",
         "properties": {
@@ -2191,6 +2113,11 @@
             "description": "Defines an identifier to retrieve customized SDK push message configuration. Used only if a challenge is required for authentication when returnDefaultChallenge is true.",
             "example": "generic"
           },
+          "pushMutualChallengeEnabled": {
+            "type": "boolean",
+            "description": "A flag indicating if push mutual authentication is supported for tokens or Face Biometric. Used only if a challenge is required for authentication when returnDefaultChallenge is true.",
+            "example": true
+          },
           "requestDetail": {
             "$ref": "#/components/schemas/RequestDetail"
           },
@@ -2213,7 +2140,8 @@
           "tokenPushMutualChallengeEnabled": {
             "type": "boolean",
             "description": "A flag indicating if the token push mutual authentication is supported. Used only if a challenge is required for authentication when returnDefaultChallenge is true.",
-            "example": true
+            "example": true,
+            "deprecated": true
           },
           "transactionDetails": {
             "type": "array",
@@ -2343,6 +2271,10 @@
             "type": "boolean",
             "description": "Flag to indicate if the user can initiate a password reset flow."
           },
+          "pushMutualChallenge": {
+            "type": "string",
+            "description": "Push authentication mutual challenge for token or Face Biometric."
+          },
           "registrationRequired": {
             "type": "boolean",
             "description": "Flag to indicate if the user has to register authenticators."
@@ -2374,7 +2306,8 @@
           },
           "tokenPushMutualChallenge": {
             "type": "string",
-            "description": "The token push authentication mutual challenge."
+            "description": "The token push authentication mutual challenge.",
+            "deprecated": true
           },
           "userMachineSettings": {
             "$ref": "#/components/schemas/UserMachineSettings"
@@ -2525,6 +2458,11 @@
             "description": "Defines an identifier to retrieve customized SDK push message configuration",
             "example": "generic"
           },
+          "pushMutualChallengeEnabled": {
+            "type": "boolean",
+            "description": "A flag indicating if push mutual authentication is supported for tokens or Face Biometric",
+            "example": true
+          },
           "requestDetail": {
             "$ref": "#/components/schemas/RequestDetail"
           },
@@ -2561,7 +2499,8 @@
           "tokenPushMutualChallengeEnabled": {
             "type": "boolean",
             "description": "A flag indicating if the token push mutual authentication is supported",
-            "example": true
+            "example": true,
+            "deprecated": true
           },
           "transactionDetails": {
             "type": "array",
