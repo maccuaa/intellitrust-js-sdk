@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.36"
+    "version": "5.37"
   },
   "servers": [
     {
@@ -4452,7 +4452,7 @@
         "tags": [
           "EnrollmentOperations"
         ],
-        "summary": "Read enrollment designs name",
+        "summary": "Read Enrollment designs name",
         "description": "Read enrollment designs name. Caller requires the ENROLLMENTS:VIEW permission.",
         "operationId": "readEnrollmentsDesignNames",
         "responses": {
@@ -6241,6 +6241,96 @@
             ]
           }
         ]
+      },
+      "delete": {
+        "tags": [
+          "Tenants"
+        ],
+        "summary": "Delete an entitlement",
+        "description": "Delete the entitlement for the specified tenant. Caller requires the SPENTITLEMENTS:REMOVE permission from a service provider role.",
+        "operationId": "deleteTenantEntitlementUsingDELETE",
+        "parameters": [
+          {
+            "name": "tenantid",
+            "in": "path",
+            "description": "The UUID of the tenant whose entitlement is to be set.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "path",
+            "description": "The type of entitlement. Allowed values: SMSVOICE).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "SPENTITLEMENTS:REMOVE"
+            ]
+          }
+        ]
       }
     },
     "/api/web/v4/tenantspaged": {
@@ -7375,10 +7465,12 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "Id of the Enrollment Design"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Name of the Enrollment Design"
           }
         }
       },
@@ -7676,6 +7768,10 @@
               "TERMINATED"
             ]
           },
+          "subscriptionLineId": {
+            "type": "string",
+            "description": "The subscription line ID."
+          },
           "type": {
             "type": "string",
             "description": "The type of this entitlement.",
@@ -7782,6 +7878,10 @@
               "INACTIVE",
               "TERMINATED"
             ]
+          },
+          "subscriptionLineId": {
+            "type": "string",
+            "description": "The subscription line ID."
           },
           "type": {
             "type": "string",
@@ -8961,6 +9061,7 @@
               "MAGICLINKS",
               "MAGICLINKCONTENTS",
               "AUTHENTICATIONFLOWS",
+              "FACE",
               "TOKENACTIVATIONCONTENTS",
               "POLICYOVERRIDE",
               "ORGANIZATIONS"
@@ -10912,7 +11013,8 @@
                 "IDP",
                 "PASSKEY",
                 "IDP_AND_SECONDFACTOR",
-                "USER_CERTIFICATE"
+                "USER_CERTIFICATE",
+                "FACE"
               ]
             }
           },
@@ -10939,7 +11041,8 @@
                 "FIDO",
                 "SMARTCREDENTIALPUSH",
                 "USER_CERTIFICATE",
-                "MACHINE"
+                "MACHINE",
+                "FACE"
               ]
             }
           },
@@ -11288,7 +11391,8 @@
               "IDP",
               "PASSKEY",
               "IDP_AND_SECONDFACTOR",
-              "USER_CERTIFICATE"
+              "USER_CERTIFICATE",
+              "FACE"
             ]
           }
         },

@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.36"
+    "version": "5.37"
   },
   "servers": [
     {
@@ -55,6 +55,10 @@
     {
       "name": "OTPs",
       "description": "OTP controllers"
+    },
+    {
+      "name": "Face",
+      "description": "Face Biometric controllers"
     },
     {
       "name": "User RBA Settings",
@@ -123,10 +127,6 @@
     {
       "name": "Entitlements",
       "description": "Entitlement controllers"
-    },
-    {
-      "name": "Face",
-      "description": "Face Biometric Controllers"
     },
     {
       "name": "Organizations",
@@ -2534,8 +2534,8 @@
         "tags": [
           "Face"
         ],
-        "summary": "Delete the Face Biometric by a given ID",
-        "description": "Delete the Face Biometric by the specified ID. Caller requires the FACE:REMOVE permission.",
+        "summary": "Delete a Face Biometric",
+        "description": "Delete a Face Biometric by the specified ID. Caller requires the FACE:REMOVE permission.",
         "operationId": "deleteFaceUsingDELETE",
         "parameters": [
           {
@@ -2607,6 +2607,89 @@
           {
             "AdminAPIAuthentication": [
               "FACE:REMOVE"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/face/{faceid}/activation": {
+      "put": {
+        "tags": [
+          "Face"
+        ],
+        "summary": "Send an activation email for the Face Biometric",
+        "description": "Send an activation email for the Face Biometric specified by ID. Caller requires the FACE:ADD permission.",
+        "operationId": "sendFaceActivationEmailUsingPUT",
+        "parameters": [
+          {
+            "name": "faceid",
+            "in": "path",
+            "description": "The ID of the Face Biometric.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "FACE:ADD"
             ]
           }
         ]
@@ -14120,7 +14203,7 @@
         "tags": [
           "Face"
         ],
-        "summary": "Gets a user Face Biometric settings",
+        "summary": "Gets a users Face Biometric settings",
         "description": "Get Face Biometric settings information for the specified user. Caller requires the FACE:VIEW permission.",
         "operationId": "getUserFaceSettingsUsingGET",
         "parameters": [
@@ -19206,6 +19289,96 @@
             ]
           }
         ]
+      },
+      "delete": {
+        "tags": [
+          "Tenants"
+        ],
+        "summary": "Delete an entitlement",
+        "description": "Delete the entitlement for the specified tenant. Caller requires the SPENTITLEMENTS:REMOVE permission from a service provider role.",
+        "operationId": "deleteTenantEntitlementUsingDELETE",
+        "parameters": [
+          {
+            "name": "tenantid",
+            "in": "path",
+            "description": "The UUID of the tenant whose entitlement is to be deleted.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "path",
+            "description": "The type of entitlement. Allowed values: SMSVOICE.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "SPENTITLEMENTS:REMOVE"
+            ]
+          }
+        ]
       }
     },
     "/api/web/v4/tenantspaged": {
@@ -21716,6 +21889,10 @@
               "TERMINATED"
             ]
           },
+          "subscriptionLineId": {
+            "type": "string",
+            "description": "The subscription line ID."
+          },
           "type": {
             "type": "string",
             "description": "The type of this entitlement.",
@@ -21823,6 +22000,10 @@
               "TERMINATED"
             ]
           },
+          "subscriptionLineId": {
+            "type": "string",
+            "description": "The subscription line ID."
+          },
           "type": {
             "type": "string",
             "description": "The type of entitlement.  Currently this value must be USERS.  If not specified, this value defaults to USERS.",
@@ -21894,6 +22075,10 @@
                 "OFFLINE"
               ]
             }
+          },
+          "allowDeviceBiometric": {
+            "type": "boolean",
+            "description": "A boolean value that specifies whether device biometric is allowed. Default is true."
           },
           "allowUnsecureDevice": {
             "type": "boolean",
@@ -22080,6 +22265,14 @@
               "description": "The IDs of FIDO tokens already registered to this user.  These values are base-64 encoded."
             }
           },
+          "registeredCredentialsNames": {
+            "type": "array",
+            "description": "The names of FIDO tokens already registered to this user.",
+            "items": {
+              "type": "string",
+              "description": "The names of FIDO tokens already registered to this user."
+            }
+          },
           "registrationAuthenticatorAttachment": {
             "type": "string",
             "description": "Should the token be embedded on the device or stored externally?",
@@ -22246,6 +22439,12 @@
             "type": "string",
             "description": "The ID of the applicant in Onfido."
           },
+          "created": {
+            "type": "string",
+            "description": "Date the authenticator was created.",
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
+          },
           "expiry": {
             "type": "string",
             "description": "Date the authenticator will expire.",
@@ -22256,6 +22455,20 @@
             "type": "string",
             "description": "The ID of the Face Biometric."
           },
+          "lastUsed": {
+            "type": "string",
+            "description": "Date the authenticator was last used.",
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
+          },
+          "mobile": {
+            "type": "boolean",
+            "description": "If the authenticator was registered on mobile."
+          },
+          "serialNumber": {
+            "type": "string",
+            "description": "The serial number of the Face Biometric."
+          },
           "status": {
             "type": "string",
             "description": "The status of the authenticator.",
@@ -22265,7 +22478,8 @@
               "FAILED",
               "EXPIRED",
               "REVIEW",
-              "DISABLED"
+              "DISABLED",
+              "NEW"
             ]
           }
         },
@@ -22277,6 +22491,10 @@
           "applicantId": {
             "type": "string",
             "description": "The ID of the applicant that was created in Onfido."
+          },
+          "deliverActivationEmail": {
+            "type": "boolean",
+            "description": "Send an activation email if adding a mobile authenticator."
           },
           "workflowRunId": {
             "type": "string",
@@ -22294,6 +22512,10 @@
             "format": "date-time",
             "example": "2019-02-19T13:15:27Z"
           },
+          "id": {
+            "type": "string",
+            "description": "The ID of the authenticator to update."
+          },
           "status": {
             "type": "string",
             "description": "The status of the authenticator.",
@@ -22303,7 +22525,8 @@
               "FAILED",
               "EXPIRED",
               "REVIEW",
-              "DISABLED"
+              "DISABLED",
+              "NEW"
             ]
           }
         },
@@ -22455,6 +22678,13 @@
             "minimum": 1,
             "type": "integer",
             "description": "The maximum number of FIDO tokens that a user can have.  Default is 5.",
+            "format": "int32"
+          },
+          "maxFacesPerUser": {
+            "maximum": 10,
+            "minimum": 1,
+            "type": "integer",
+            "description": "The maximum number of Face Biometrics that a user can have. Default is 5.",
             "format": "int32"
           },
           "maxGridsPerUser": {
@@ -26836,6 +27066,16 @@
             "format": "date-time",
             "example": "2020-02-19T00:00:00Z"
           },
+          "overageType": {
+            "type": "string",
+            "description": "The overage type of this entitlement.",
+            "example": "YES",
+            "enum": [
+              "YES",
+              "NO",
+              "UNLIMITED"
+            ]
+          },
           "quantity": {
             "type": "integer",
             "description": "The number of SMS/Voice credits allowed during the period.",
@@ -26860,6 +27100,10 @@
       "SmsVoiceParms": {
         "type": "object",
         "properties": {
+          "deleteEntitlement": {
+            "type": "boolean",
+            "description": "If set to true when updating an SMSVOICE entitlement, the existing entitlement is removed. This attribute is ignored when creating an SMSVOICE entitlement."
+          },
           "endDate": {
             "type": "string",
             "description": "The date when the entitlement period will end.  The value must be after the start date. ",
@@ -28781,11 +29025,11 @@
           "passwordFormat": {
             "type": "string",
             "description": "Define the password format of new password, it's BCRYPT when importing BCrypted password, it defaults to CLEARTEXT if not provided.When passwordFormat is BCRYPT, the following restrictions must be enforced:<ul><li>1.the user must be an IDaaS local user.</li><li>2.currentPassword must be null.</li><li>3.generatePassword must be false.</li><li>4.emailPassword must be false.</li><li>5.returnPassword must be false.</li></ul>",
+            "default": "CLEARTEXT",
             "enum": [
               "CLEARTEXT",
               "BCRYPT"
-            ],
-            "default": "CLEARTEXT"
+            ]
           },
           "returnPassword": {
             "type": "boolean",
