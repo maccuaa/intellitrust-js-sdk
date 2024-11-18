@@ -107,34 +107,6 @@ private {{classname}}AxiosParamCreator = (configuration?: ConfigurationParameter
             {{/isArray}}
 
     {{/queryParams}}
-    {{#headerParams}}
-            {{#isArray}}
-            if ({{paramName}}) {
-                {{#uniqueItems}}
-                let mapped = Array.from({{paramName}}).map(value => (<any>"{{{dataType}}}" !== "Set<string>") ? JSON.stringify(value) : (value || ""));
-                {{/uniqueItems}}
-                {{^uniqueItems}}
-                let mapped = {{paramName}}.map(value => (<any>"{{{dataType}}}" !== "Array<string>") ? JSON.stringify(value) : (value || ""));
-                {{/uniqueItems}}
-                localVarHeaderParameter['{{baseName}}'] = mapped.join(COLLECTION_FORMATS["{{collectionFormat}}"]);
-            }
-            {{/isArray}}
-            {{^isArray}}
-            {{! `val == null` covers for both `null` and `undefined`}}
-            if ({{paramName}} != null) {
-                {{#isString}}
-                localVarHeaderParameter['{{baseName}}'] = String({{paramName}});
-                {{/isString}}
-                {{^isString}}
-                {{! isString is falsy also for $ref that defines a string or enum type}}
-                localVarHeaderParameter['{{baseName}}'] = typeof {{paramName}} === 'string'
-                    ? {{paramName}}
-                    : JSON.stringify({{paramName}});
-                {{/isString}}
-            }
-            {{/isArray}}
-
-    {{/headerParams}}
     {{#vendorExtensions}}
     {{#formParams}}
             // XXX - form params
@@ -176,6 +148,34 @@ private {{classname}}AxiosParamCreator = (configuration?: ConfigurationParameter
             {{/consumes.0}}
 
     {{/bodyParam}}
+    {{#headerParams}}
+            {{#isArray}}
+            if ({{paramName}}) {
+                {{#uniqueItems}}
+                let mapped = Array.from({{paramName}}).map(value => (<any>"{{{dataType}}}" !== "Set<string>") ? JSON.stringify(value) : (value || ""));
+                {{/uniqueItems}}
+                {{^uniqueItems}}
+                let mapped = {{paramName}}.map(value => (<any>"{{{dataType}}}" !== "Array<string>") ? JSON.stringify(value) : (value || ""));
+                {{/uniqueItems}}
+                localVarHeaderParameter['{{baseName}}'] = mapped.join(COLLECTION_FORMATS["{{collectionFormat}}"]);
+            }
+            {{/isArray}}
+            {{^isArray}}
+            {{! `val == null` covers for both `null` and `undefined`}}
+            if ({{paramName}} != null) {
+                {{#isString}}
+                localVarHeaderParameter['{{baseName}}'] = String({{paramName}});
+                {{/isString}}
+                {{^isString}}
+                {{! isString is falsy also for $ref that defines a string or enum type}}
+                localVarHeaderParameter['{{baseName}}'] = typeof {{paramName}} === 'string'
+                    ? {{paramName}}
+                    : JSON.stringify({{paramName}});
+                {{/isString}}
+            }
+            {{/isArray}}
+
+    {{/headerParams}}
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             localVarRequestOptions.headers = {...localVarHeaderParameter, {{#hasFormParams}}{{#multipartFormData}} ...(localVarFormParams as any).getHeaders?.(),{{/multipartFormData}}{{/hasFormParams}} ...options.headers};
     {{#hasFormParams}}
