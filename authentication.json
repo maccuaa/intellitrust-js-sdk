@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.37"
+    "version": "5.38"
   },
   "servers": [
     {
@@ -1569,7 +1569,7 @@
           "fingerprint": {
             "type": "string",
             "description": "The device fingerprint if it's required during Machine authentication. It will always be null when returned from IDaaS as part of the response body.",
-            "example": "platform:web,version:1.0.2."
+            "example": "{\"platform\":\"web\",\"version\":\"2.0.0\",\"attributes\":{\"osName\":\"Mac OS\"}}"
           },
           "machineNonce": {
             "type": "string",
@@ -1593,7 +1593,7 @@
           "fingerprint": {
             "type": "string",
             "description": "The device fingerprint. It must be a valid fingerprint as produced by Entrust SDK.",
-            "example": "platform:web,version:1.0.2."
+            "example": "{\"platform\":\"web\",\"version\":\"2.0.0\",\"attributes\":{\"osName\":\"Mac OS\"}}"
           },
           "label": {
             "type": "string",
@@ -1976,7 +1976,8 @@
           },
           "faceResponse": {
             "type": "string",
-            "description": "For Face Biometric authentication, the workflow run id to check."
+            "description": "For Face Biometric authentication, the workflow run id to check.",
+            "deprecated": true
           },
           "fidoResponse": {
             "$ref": "#/components/schemas/FIDOResponse"
@@ -2017,7 +2018,7 @@
           },
           "response": {
             "type": "string",
-            "description": "API response based on Authenticator type. This is not a required field if Mobile Smart Credential, KBA, Token Push, or Smart Login authentication is being used.",
+            "description": "API response based on Authenticator type. This is not a required field if Mobile Smart Credential, KBA, Token Push, Smart Login or Face Biometric authentication is being used.",
             "example": "7569582."
           },
           "secondFactorAuthenticator": {

@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.37"
+    "version": "5.38"
   },
   "servers": [
     {
@@ -55,6 +55,10 @@
     {
       "name": "MobileFlashPassAPI",
       "description": "Issue Mobile Flash Pass"
+    },
+    {
+      "name": "Webhook",
+      "description": "Webhook Controllers"
     }
   ],
   "paths": {
@@ -4281,6 +4285,439 @@
         ]
       }
     },
+    "/api/web/v1/webhooks": {
+      "get": {
+        "tags": [
+          "Webhook"
+        ],
+        "summary": "List Webhooks",
+        "description": "Return a list of webhooks. Caller is required to have WEBHOOKS:VIEW permission.",
+        "operationId": "getWebhooks",
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Webhook"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBHOOKS:VIEW"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Webhook"
+        ],
+        "summary": "Register a Webhook",
+        "description": "Register a webhook with callback URL, webhook events etc. Caller is required to have WEBHOOKS:ADD permission.",
+        "operationId": "createWebhook",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Webhook"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBHOOKS:ADD"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/webhooks/test/{id}": {
+      "post": {
+        "tags": [
+          "Webhook"
+        ],
+        "summary": "Test a Webhook",
+        "description": "Sends a dummy payload to the registered webhook callback URL. Use this to ensure your API is ready to start accepting webhook notifications. Caller is required to have WEBHOOKS:EDIT permission.",
+        "operationId": "testWebhook",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the webhook to test.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBHOOKS:EDIT"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/webhooks/{id}": {
+      "put": {
+        "tags": [
+          "Webhook"
+        ],
+        "summary": "Update a Webhook",
+        "description": "Update a webhook with callback URL, webhook events etc. Caller is required to have WEBHOOKS:EDIT permission.",
+        "operationId": "updateWebhook",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the webhook to be updated.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Webhook"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBHOOKS:EDIT"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Webhook"
+        ],
+        "summary": "Delete a Webhook",
+        "description": "Delete a registered webhook by ID. Caller is required to have WEBHOOKS:REMOVE permission.",
+        "operationId": "deleteWebhook",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the webhook to be deleted.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBHOOKS:REMOVE"
+            ]
+          }
+        ]
+      }
+    },
     "/api/web/v2/enrollments": {
       "put": {
         "tags": [
@@ -4900,13 +5337,13 @@
           "MobileFlashPassAPI"
         ],
         "summary": "Download mobile flash pass logs V2",
-        "description": "Download logs for mobile flash pass. Caller requires the issuance view permission to access this resource.",
+        "description": "Download logs for mobile flash pass. Produces a JSON file attachment. Caller requires the issuance view permission to access this resource.",
         "operationId": "downloadMFPLogsV2",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "The request ID",
+            "description": "The bulk operation ID",
             "required": true,
             "schema": {
               "type": "string"
@@ -4915,7 +5352,15 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad request",
@@ -5536,7 +5981,7 @@
           "Tenants"
         ],
         "summary": "Lists a page of entitlement usage information",
-        "description": "Returns tenant usage information for the provided search parameters. Caller requires the TENANTS:VIEW permission. The following searchByAttributes are supported: <ul><li>startTime: a <b>mandatory</b> String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are: GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL. </li><li>endTime: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are: GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL. </li><li>tenantId: The UUID of the tenant. Allowed operators are: EQUALS.</li><li>isTrial: true or false. Allowed operator: EQUALS. </li><li>usageType: the type of entitlement: USERS, AUTHENTICATIONS, IDPROOFING, ISSUANCE. Allowed operator: EQUALS. </li></ul>The orderByAttribute supports these attribute names: startTime.",
+        "description": "Returns tenant usage information for the provided search parameters. Caller requires the TENANTS:VIEW permission. The following searchByAttributes are supported: <ul><li>startTime: a <b>mandatory</b> String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are: GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL. </li><li>endTime: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are: GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL. </li><li>tenantId: The UUID of the tenant. Allowed operators are: EQUALS.</li><li>isTrial: true or false. Allowed operator: EQUALS. </li><li>usageType: the type of entitlement: USERS, ISSUANCE. Allowed operator: EQUALS. </li></ul>The orderByAttribute supports these attribute names: startTime.",
         "operationId": "getEntitlementUsageInfoUsingPOST",
         "requestBody": {
           "content": {
@@ -6253,7 +6698,7 @@
           {
             "name": "tenantid",
             "in": "path",
-            "description": "The UUID of the tenant whose entitlement is to be set.",
+            "description": "The UUID of the tenant whose entitlement is to be deleted.",
             "required": true,
             "schema": {
               "type": "string"
@@ -6262,7 +6707,7 @@
           {
             "name": "type",
             "in": "path",
-            "description": "The type of entitlement. Allowed values: SMSVOICE).",
+            "description": "The type of entitlement. Allowed values: SMSVOICE.",
             "required": true,
             "schema": {
               "type": "string"
@@ -7718,13 +8163,6 @@
             "type": "string",
             "description": "The unique UUID of this entitlement."
           },
-          "idProofing": {
-            "type": "array",
-            "description": "The ID Proofing entitlements.",
-            "items": {
-              "$ref": "#/components/schemas/IdProofing"
-            }
-          },
           "issuance": {
             "$ref": "#/components/schemas/Issuance"
           },
@@ -7836,13 +8274,6 @@
           },
           "fleetManagement": {
             "$ref": "#/components/schemas/FleetManagementParms"
-          },
-          "idProofing": {
-            "type": "array",
-            "description": "The ID Proofing entitlements.",
-            "items": {
-              "$ref": "#/components/schemas/IdProofingParms"
-            }
           },
           "issuance": {
             "$ref": "#/components/schemas/IssuanceParms"
@@ -8242,99 +8673,6 @@
           }
         },
         "description": "Information returned about a group."
-      },
-      "IdProofing": {
-        "required": [
-          "billingType",
-          "endDate",
-          "startDate"
-        ],
-        "type": "object",
-        "properties": {
-          "billingType": {
-            "type": "string",
-            "description": "The model used for billing.",
-            "example": "PRE_PAID",
-            "enum": [
-              "PRE_PAID",
-              "PAY_PER_USE"
-            ]
-          },
-          "consumed": {
-            "maximum": 50000000,
-            "minimum": 1,
-            "type": "integer",
-            "description": "The entitlements consumed since start date (percent over quantity for PRE_PAID accounts) or in the current month (PAY_PER_USE accounts).",
-            "format": "int32"
-          },
-          "endDate": {
-            "type": "string",
-            "description": "The date this entitlement will end in UTC time.  The value must be after the start date.",
-            "format": "date-time",
-            "example": "2020-02-18T23:59:59Z"
-          },
-          "faceRecognitionType": {
-            "type": "string",
-            "description": "The face recognitation type licensed.",
-            "example": "ENHANCED",
-            "enum": [
-              "ENHANCED",
-              "STANDARD"
-            ]
-          },
-          "quantity": {
-            "maximum": 50000000,
-            "minimum": 1,
-            "type": "integer",
-            "description": "The number of entitlements assigned to the tenant (required during creation if billingType is PRE_PAID).",
-            "format": "int32"
-          },
-          "startDate": {
-            "type": "string",
-            "description": "The date this entitlement will start in UTC time.",
-            "format": "date-time",
-            "example": "2019-02-19T00:00:00Z"
-          }
-        },
-        "description": "ID Proofing-specific entitlements of a tenant."
-      },
-      "IdProofingParms": {
-        "required": [
-          "billingType",
-          "endDate"
-        ],
-        "type": "object",
-        "properties": {
-          "billingType": {
-            "type": "string",
-            "description": "The model used for billing.",
-            "example": "PRE_PAID",
-            "enum": [
-              "PRE_PAID",
-              "PAY_PER_USE"
-            ]
-          },
-          "endDate": {
-            "type": "string",
-            "description": "The date this entitlement will end (required).  The value must be after the start date.",
-            "format": "date-time",
-            "example": "2019-02-19T13:15:27Z"
-          },
-          "quantity": {
-            "maximum": 50000000,
-            "minimum": 1,
-            "type": "integer",
-            "description": "The number of entitlements assigned to the tenant (required if billingType is PRE_PAID).",
-            "format": "int32"
-          },
-          "startDate": {
-            "type": "string",
-            "description": "The date this entitlement will start (required).",
-            "format": "date-time",
-            "example": "2019-02-19T13:15:27Z"
-          }
-        },
-        "description": "Parameters passed when setting the ID Proofing entitlements of a tenant."
       },
       "Issuance": {
         "required": [
@@ -9015,8 +9353,6 @@
               "ACTIVESYNC",
               "PRINTERS",
               "ISSUANCE",
-              "IDPROOFING",
-              "IDPROOFINGLICENSE",
               "OTPS",
               "AD_CONNECTOR_DIRECTORIES",
               "AZURE_DIRECTORIES",
@@ -9064,7 +9400,9 @@
               "FACE",
               "TOKENACTIVATIONCONTENTS",
               "POLICYOVERRIDE",
-              "ORGANIZATIONS"
+              "ORGANIZATIONS",
+              "WEBHOOKS",
+              "WEBHOOK_NOTIFICATION"
             ]
           },
           "id": {
@@ -10133,6 +10471,7 @@
               "ADVANCED",
               "ESSENTIALS",
               "PROFESSIONAL",
+              "ENTERPRISE",
               "API",
               "STANDARD",
               "PLUS",
@@ -10191,6 +10530,9 @@
         }
       },
       "SmartCredential": {
+        "required": [
+          "deviceVerified"
+        ],
         "type": "object",
         "properties": {
           "allowedActions": {
@@ -10244,6 +10586,10 @@
           "chipId": {
             "type": "string",
             "description": "The chip id of the smart card set when the smart credential is encoded."
+          },
+          "deviceVerified": {
+            "type": "boolean",
+            "description": "A flag indicating if the smart credential is enrolled on a verified device."
           },
           "digitalIds": {
             "type": "array",
@@ -10359,6 +10705,16 @@
             "format": "date-time",
             "example": "2020-02-19T00:00:00Z"
           },
+          "overageType": {
+            "type": "string",
+            "description": "The overage type of this entitlement.",
+            "example": "YES",
+            "enum": [
+              "YES",
+              "NO",
+              "UNLIMITED"
+            ]
+          },
           "quantity": {
             "type": "integer",
             "description": "The number of SMS/Voice credits allowed during the period.",
@@ -10383,6 +10739,10 @@
       "SmsVoiceParms": {
         "type": "object",
         "properties": {
+          "deleteEntitlement": {
+            "type": "boolean",
+            "description": "If set to true when updating an SMSVOICE entitlement, the existing entitlement is removed. This attribute is ignored when creating an SMSVOICE entitlement."
+          },
           "endDate": {
             "type": "string",
             "description": "The date when the entitlement period will end.  The value must be after the start date. ",
@@ -10644,6 +11004,9 @@
         "description": "Contains paging information and the results from a tenants search."
       },
       "Token": {
+        "required": [
+          "deviceVerified"
+        ],
         "type": "object",
         "properties": {
           "algorithmType": {
@@ -10681,6 +11044,10 @@
             "type": "string",
             "description": "Optional text describing this token."
           },
+          "deviceVerified": {
+            "type": "boolean",
+            "description": "A flag indicating if the token is activated on a verified device."
+          },
           "groups": {
             "type": "array",
             "description": "The UUIDs of groups to which this token belongs.  This value is only used for unassigned tokens. Only groups to which the current administrator has access will be returned.",
@@ -10692,6 +11059,17 @@
           "id": {
             "type": "string",
             "description": "The unique UUID assigned to the token when it is created."
+          },
+          "identityVerificationStatus": {
+            "type": "string",
+            "description": "The identity verification status of the token.",
+            "enum": [
+              "NOT_REQUIRED",
+              "REQUIRED",
+              "PENDING",
+              "VERIFIED",
+              "FAILED"
+            ]
           },
           "label": {
             "type": "string",
@@ -10845,7 +11223,6 @@
             "example": "USERS",
             "enum": [
               "USERS",
-              "IDPROOFING",
               "ISSUANCE"
             ]
           }
@@ -11613,6 +11990,112 @@
           }
         },
         "description": "Attributes for the new user."
+      },
+      "Webhook": {
+        "required": [
+          "callbackUrl",
+          "enabled",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "callbackUrl": {
+            "type": "string",
+            "description": "The callback url of the webhook.",
+            "example": "https://mycompany.com/api"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "A flag indicating if the webhook is enabled.",
+            "example": true
+          },
+          "events": {
+            "type": "array",
+            "description": "The events of the webhook.",
+            "items": {
+              "$ref": "#/components/schemas/WebhookEvent"
+            }
+          },
+          "expired": {
+            "type": "boolean",
+            "description": "A flag indicating if the webhook has expired.",
+            "example": false
+          },
+          "expiryDate": {
+            "type": "string",
+            "description": "The timestamp of when the webhook is set to expire. If no expiry is set, this value will be NULL.",
+            "example": "2019-02-19T13:15:27"
+          },
+          "id": {
+            "type": "string",
+            "description": "The ID of the webhook. This value is generated when the webhook is created."
+          },
+          "token": {
+            "type": "string",
+            "description": "The unique webhook token.",
+            "example": "Base64 Encoded String"
+          }
+        },
+        "description": "Information returned about a webhook."
+      },
+      "WebhookEvent": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "string",
+            "description": "Subset of resource, or group IDs of the webhook event. All resources are selected by default if this parameter is not specified.",
+            "example": "[{\"enrollmentDesignId\":\"fd1d1b86-d258-4332-ad89-ead30d2dae7f\"}]"
+          },
+          "id": {
+            "type": "string",
+            "description": "The ID of the webhook event. This value is not needed when creating/updating a webhook."
+          },
+          "type": {
+            "type": "string",
+            "description": "The event type set to trigger the webhook.",
+            "example": "credential.create | credential.update | credential.delete"
+          }
+        },
+        "description": "Information returned about the events of a webhook."
+      },
+      "WebhookParms": {
+        "required": [
+          "callbackUrl",
+          "events"
+        ],
+        "type": "object",
+        "properties": {
+          "callbackUrl": {
+            "type": "string",
+            "description": "The client callback url for this webhook.",
+            "example": "https://mycompany.com/api"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "A flag indicating if the webhook is enabled.",
+            "example": true,
+            "default": true
+          },
+          "events": {
+            "type": "array",
+            "description": "The list of webhook events.",
+            "items": {
+              "$ref": "#/components/schemas/WebhookEvent"
+            }
+          },
+          "expiry": {
+            "maximum": 1000,
+            "minimum": 0,
+            "type": "integer",
+            "description": "How long to keep the webhook alive for <b>(in days)</b>. Value of 0 means no expiration. Once a webhook has reached expiry, it will be marked as <b>disabled</b>. This parameter is optional and is not set by default.",
+            "format": "int32",
+            "example": 90
+          }
+        },
+        "description": "Parameters including the callback URL and list of events to trigger the webhook."
       }
     },
     "securitySchemes": {
