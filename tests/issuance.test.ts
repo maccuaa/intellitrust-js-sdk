@@ -9,8 +9,8 @@ if (!basePath) {
 }
 
 const credentials: IssuanceSDK.AdminApiAuthentication = {
-  applicationId: process.env.ADMIN_APP_ID,
-  sharedSecret: process.env.ADMIN_SECRET,
+  applicationId: process.env.ADMIN_APP_ID ?? "",
+  sharedSecret: process.env.ADMIN_SECRET ?? "",
 };
 
 describe("Issuance API", () => {

@@ -54,10 +54,7 @@ const downloadFile = async (type: "auth" | "admin" | "issuance") => {
   if (!swagger?.info?.version) {
     console.error("Version not found in Swagger file.", swagger);
     // console.error("Request headers:", JSON.stringify(response.request))
-    console.error(
-      "Response headers:",
-      JSON.stringify(response.headers, null, 2)
-    );
+    console.error("Response headers:", JSON.stringify(response.headers, null, 2));
     process.exit(1);
   }
 

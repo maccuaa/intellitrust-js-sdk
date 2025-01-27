@@ -24,6 +24,7 @@
     "generate:admin": "bun ./bin/generate admin",
     "generate:auth": "bun ./bin/generate auth",
     "generate:issuance": "bun ./bin/generate issuance",
+    "lint": "biome ci .",
     "pack:admin": "npm pack ./admin-sdk --dry-run",
     "pack:auth": "npm pack ./auth-sdk --dry-run",
     "pack:issuance": "npm pack ./issuance-sdk --dry-run",
@@ -34,8 +35,9 @@
   "author": "Andrew MacCuaig <andrewmaccuaig@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "@openapitools/openapi-generator-cli": "^2.4.26",
-    "@types/bun": "^1.0.0",
-    "npm-run-all2": "^7.0.0"
+    "@biomejs/biome": "^1.9.4",
+    "@openapitools/openapi-generator-cli": "^2.16.3",
+    "@types/bun": "^1.2.0",
+    "npm-run-all2": "^7.0.2"
   }
 }

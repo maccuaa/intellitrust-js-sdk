@@ -1,4 +1,4 @@
-import { prompt } from "./lib";
+import { $ } from "bun";
 
 const ADMIN_PATH = "admin-sdk";
 const AUTH_PATH = "auth-sdk";
@@ -8,26 +8,11 @@ const ISSUANCE_PATH = "issuance-sdk";
  * Main function.
  */
 (async () => {
-  const publish = async (path: string, otp: string) => {
-    const subprocess = Bun.spawn(
-      ["npm", "publish", "--access", "public", "--otp", otp],
-      {
-        cwd: path,
-        stdout: "inherit",
-        stderr: "inherit",
-      }
-    );
-
-    await subprocess.exited;
+  const publish = async (path: string) => {
+    await $`bun publish --provenance --access public ${process.env.CI ? "" : '--dry-run'}`.cwd(path);
   };
 
-  const otp = await prompt("🔑 Enter OTP: ");
-
-  console.log("OTP is", otp);
-
-  if (otp) {
-    await publish(ADMIN_PATH, otp);
-    await publish(AUTH_PATH, otp);
-    await publish(ISSUANCE_PATH, otp);
-  }
+  await publish(ADMIN_PATH);
+  await publish(AUTH_PATH);
+  await publish(ISSUANCE_PATH);
 })();

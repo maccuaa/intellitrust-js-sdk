@@ -1,5 +1,5 @@
-import { getGeneratorOptions } from "./lib";
 import { join } from "node:path";
+import { getGeneratorOptions } from "./lib";
 
 const GENERATOR = "typescript-axios";
 const TEMPLATES = "templates";
@@ -37,20 +37,14 @@ const generateReadme = async (config: string, output: string, type: string) => {
   const args = process.argv.slice(2);
 
   if (args.length !== 1) {
-    console.error(
-      "Too many arguments provided. Expected 1, received",
-      args.length
-    );
+    console.error("Too many arguments provided. Expected 1, received", args.length);
     process.exit(1);
   }
 
   const sdkType = args.pop();
 
   if (sdkType !== "auth" && sdkType !== "admin" && sdkType !== "issuance") {
-    console.error(
-      `Invalid type provided. Expected '${ADMIN}' or '${AUTH}' or '${ISSUANCE}, received`,
-      sdkType
-    );
+    console.error(`Invalid type provided. Expected '${ADMIN}' or '${AUTH}' or '${ISSUANCE}, received`, sdkType);
     process.exit(1);
   }
 
@@ -79,7 +73,7 @@ const generateReadme = async (config: string, output: string, type: string) => {
       shell: true,
       stdout: "inherit",
       stderr: "inherit",
-    }
+    },
   );
 
   await subprocess.exited;
@@ -96,15 +90,14 @@ const renderReadme = (
   npmVersion: string,
   example: string,
   sdkType: string,
-  sdkVar: string
+  sdkVar: string,
 ): string => {
   return `## ${npmName}@${npmVersion}
 
 This is a JavaScript client for the Entrust Identity as a Service ${sdkType} API. This module can be used in the following environments:
 
 - Node.js
-- Webpack
-- Browserify
+- Browser
 
 It can be used in both TypeScript and JavaScript projects.
 
@@ -126,6 +119,6 @@ ${example}
 
 ### Help
 
-For more information on how to use the APIs please refer to the Identity as a Service [${sdkType} API](https://entrust.us.trustedauth.com/documentation/apiDocs/${sdkType.toLowerCase()}.html) documentation.
+For more information on how to use the APIs please refer to the Identity as a Service [${sdkType} API](https://entrust.us.trustedauth.com/help/developer/apis/${sdkType.toLowerCase()}/installation) documentation.
 `;
 };

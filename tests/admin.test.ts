@@ -9,8 +9,8 @@ if (!basePath) {
 }
 
 const credentials: AdminSDK.AdminApiAuthentication = {
-  applicationId: process.env.ADMIN_APP_ID,
-  sharedSecret: process.env.ADMIN_SECRET,
+  applicationId: process.env.ADMIN_APP_ID ?? "",
+  sharedSecret: process.env.ADMIN_SECRET ?? "",
 };
 
 describe("Administration API", () => {
@@ -47,13 +47,9 @@ describe("Administration API", () => {
     const user = getUserResponse.data;
 
     // Create a new Soft Token for the user
-    const createTokenResult = await sdk.createTokenUsingPOST(
-      user.id,
-      "ENTRUST_SOFT_TOKEN",
-      {
-        activateParms: null,
-      }
-    );
+    const createTokenResult = await sdk.createTokenUsingPOST(user.id, "ENTRUST_SOFT_TOKEN", {
+      activateParms: null,
+    });
 
     const token = createTokenResult.data;
 

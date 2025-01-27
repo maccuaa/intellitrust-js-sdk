@@ -1,18 +1,13 @@
-import { createInterface } from "node:readline/promises";
-import { stdin as input, stdout as output } from "node:process";
-
 interface GeneratorOptions {
   input: string;
   output: string;
   config: string;
 }
 
-export const getGeneratorOptions = (
-  type: "admin" | "auth" | "issuance"
-): GeneratorOptions => {
-  let input: string = "";
-  let output: string = "";
-  let config: string = "";
+export const getGeneratorOptions = (type: "admin" | "auth" | "issuance"): GeneratorOptions => {
+  let input = "";
+  let output = "";
+  let config = "";
 
   if (type === "admin") {
     input = "administration.json";
@@ -37,14 +32,4 @@ export const getGeneratorOptions = (
     output,
     config,
   };
-};
-
-export const prompt = async (question: string) => {
-  const rl = createInterface({ input, output });
-
-  const response = await rl.question(question);
-
-  rl.close();
-
-  return response.trim();
 };

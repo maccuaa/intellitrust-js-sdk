@@ -9,8 +9,8 @@ if (!basePath) {
 }
 
 const queryParms: AuthSDK.UserAuthenticateQueryParameters = {
-  userId: process.env.AUTH_USER_ID,
-  applicationId: process.env.AUTH_APP_ID,
+  userId: process.env.AUTH_USER_ID ?? "",
+  applicationId: process.env.AUTH_APP_ID ?? "",
 };
 
 describe("Authentication API", () => {
