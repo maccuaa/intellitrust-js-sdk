@@ -9,7 +9,7 @@ const ISSUANCE_PATH = "issuance-sdk";
  */
 (async () => {
   const publish = async (path: string) => {
-    await $`bun publish --provenance --access public ${process.env.CI ? "" : '--dry-run'}`.cwd(path);
+    await $`bun publish --provenance --access public ${process.env.CI ? "" : "--dry-run"}`.cwd(path);
   };
 
   await publish(ADMIN_PATH);
