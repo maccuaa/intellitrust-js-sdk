@@ -13,7 +13,7 @@ jobs:
       AUTH_APP_ID: ${{ secrets.AUTH_APP_ID }}
       ADMIN_APP_ID: ${{ secrets.ADMIN_APP_ID }}
       ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
     permissions:
       contents: read
       id-token: write
