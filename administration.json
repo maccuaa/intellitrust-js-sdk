@@ -2,13 +2,13 @@
   "openapi": "3.0.1",
   "info": {
     "title": "Entrust Identity as a Service Administration API",
-    "description": "This document describes how to manage your Identity as a Service account using Administration (Admin) API calls. This\nAPI allows you to seamlessly perform administrative actions on Identity as a Service without logging in to the Identity\nas a Service Administrator portal.\n\n# Prerequisites\n\nConfirm the following before executing the Admin API calls included in this guide:\n\n- An Admin API application has been created on your Identity as a Service account. The application must be configured\n  with a role that has the permissions needed by your application. Identity as a Service allows you to download a JSON\n  file once the application is created.\n- The Application ID and Shared Secret parameter values are easily accessible. They must be entered into the body of the\n  Admin APi request. The required values are displayed after creating the Administration API application on Identity as\n  a Service. Upon creation, you can either copy these values to your clipboard or download them as a JSON file.\n- The Admin API application configuration data has been downloaded and is available for use.\n\n# Identity as a Service Administration APIs\n\nIdentity as a Service administration APIs are grouped into the following categories. You can only perform the API calls\npermitted by the role assigned to your Administration API application on Identity as a Service. See the **Identity as a\nService Administrator Help** for more information on Identity as a Service roles:\n\n### Admin Authentication\n\nThese APIs facilitate authentication between your Admin API application and Identity as a Service. You must make this\ncall before making any other Admin API calls. The call generates an authentication token value that must be included in\nall other Admin API requests.\n\nThe Admin API authentication response includes the token's expiration time. For instance:\n\n```json\n{\n  \"authToken\": \"GLrKMuDGiIWPJooDRFTZIHc65RyjJBiPdy4b5xNR8fKxXfwy4tbSIvh+xiFHlJ2p6tm3FuOZ34sxjCHYbDa77eLrxFcMuwYjRMmLWsUIGfkpfg33Wb/5X01Xag4Vdjz5DpVKfCg/OL2rnd4tfCfzM9FoY+vY/sllGgRtQkGeZodsi+QvazqQS1iJ5e6i5ouR05P52YsLgmMlZ4mUfH3JiXZmkkAJvXuM3oj9msi/a4ULWeUGYW5oHM5Gs6ab37baa5xzVykzowHdIoZMVeC8+zVqDr+yXTAHVysBYQHngyckgBizDc2g49RgRTEz2k+yRIvwUU5swGzKtgt6kYtyyFM8YdeODB59Fkl8w5mQQDpxIyZcclCFv2C+MBWdnbM0kJIgNtE1ZeRA+zxwS6avE8EKw3T9Nczs6KBfycV3NxgxTvTQIxNi3kPA8XdJtAmCkUR/gyLkqJXk7bGDvFo4+rWR4uX2XxHm2NZGTNA1QezK96Y7JVjImfoHlUJnxGm207/kVPIVtSUD+6XuEl0uVvrtnTPmQnpq3P0gTYvon3Cw1caQvIydtrUv4yfs4Q/WVvSF3GQh3uet/IkUeGbkxLn43CSVz2hCQoeF8jxIoiJuSAxs1e3phylp0plijvok01Tbit6um/x4tK5UZYCRZYmeSD/ltXGtZNOoA4YHh5cDK+KcDy2tuWaexi2Hf+nJ5adqiMHwuozIH69Eqc6OZ9o86t75mIdux8zLgWt0T3SFOphtCvF0L8BdxICrEXGMDhguRRH7f+/IPU0ggFwnxsIV2a3c4oOayFfHwVSg4rGSKfWuWtkfNavA8RI5y6JOKzMrulrdg+gzuBMms2nKn38HNIRu2pKMVzQ2jU8CrtPgOT8=\",\n  \"expirationTime\": \"2020-01-23T16:30:58Z\",\n  \"creationTime\": \"2020-01-23T16:15:58Z\"\n}\n```\n\nIf you use this authentication token to make requests after it expires, the service will return an UNAUTHORIZED response\ncode (401) and you will need to reauthenticate to obtain a new token.\n\nSome workarounds to prevent this are:\n\n- Always reauthenticate before making a request; or\n- Track the expiration time and reauthenticate when you detect that it has expired; or\n- Send an OPTIONS request to the same end-point to detect whether the token has expired. This can be useful with\n  end-points receiving a large payload such as images where the token can expire before the request has completed. In\n  these cases the request may fail with a 500 error.\n\nWhen an admin API application authenticates, there is an option to enable a web session to add additional security to\nthe session. This is done by setting the enableWebSession argument passed to the authentication controller to true. When\na web session is enabled, an HTTP session cookie named Identity as a Service_SESSION_ID will be returned with the\nauthentication results. This cookie must be included with all subsequent admin API calls along with the authentication\ntoken.\n\n### Users\n\nThese APIs facilitate user management operations on an Identity as a Service account.\n\n### Smart Credentials\n\nThe Entrust® Mobile Smart Credential (MSC) application allows users to perform authentications to their Identity as a\nService account and configured applications. This API call facilitates mobile smart credential management operations on\nan Identity as a Service account.\n\n### Tokens\n\nThese APIs facilitate hardware and soft token management operations on an Identity as a Service account.\n\n### FIDO2/Passkey Tokens\n\nThese APIs facilitate management of FIDO2 tokens. FIDO2 tokens can be registered, viewed, deleted and updated.\n\n### Grid Cards\n\nGrid authentication uses cards with a grid as the authentication lookup tool. This API call facilitates Grid Card\nmanagement operations on an Identity as a Service account.\n\n### Temporary Access Codes\n\nTemporary Access Codes can be used to log in when a user cannot access their one-time passcode (OTP), Grid Card, or\ntoken authenticator. This API call facilitates Temporary Access Code management operations on an Identity as a Service\naccount.\n\n### KBA - Knowledge-based Authenticators\n\nKnowledge-based authentication (or knowledge-based authenticators) (KBA) (also known as question-and-answer (Q&A)\nauthentication) allows users to authenticate to SAML application accounts using Identity as a Service by providing the\ncorrect answer to one or more preregistered questions. This API call facilitates Knowledge-based Authenticator\nmanagement operations on an Identity as a Service account.\n\n### Passwords\n\nThere are two types of password authenticators available on Identity as a Service —Identity as a Service passwords and\nActive Directory (AD) passwords. Identity as a Service passwords are passwords that can be manually or automatically\nassigned to users on Identity as a Service. Active Directory (AD) passwords are passwords that have already been\nassigned to a user on their corporate directory - not through Identity as a Service. This API call facilitates password\nmanagement operations on an Identity as a Service account for either type of password.\n\n### OTPs\n\nThese APIs facilitate OTP management operations on an Identity as a Service account.\n\n### User Risk-based authentication (RBA) Settings\n\nRisk-based authentication (RBA) identifies the level of risk associated with a user who tries to authenticate. This API\ncall facilitates Risk-based authentication management operations on an Identity as a Service account.\n\n### Machine authenticators\n\nMachine Authentication (MA) provides identification information on the Web browser being used to access a SAML\napplication. This API call facilitates Machine Authenticator management operations on an Identity as a Service account.\n\n### Face Biometric\n\nFace Biometric authentication uses an Onfido account to allow users to authenticate with biometric security. Face\nBiometric can be viewed, deleted, updated and created for a user if they already exist in Onfido.\n\n### User Attributes\n\nUser attributes are the information fields listed as part of each user's Profile information. This API call facilitates\nuser attribute management operations on an Identity as a Service account.\n\n### Roles\n\nRoles control what operations a user can perform on their Identity as a Service account. These roles distinguish the\namount of access given to each account, ranging from administrators with full access to end users (who can only access\nthe user portal features).This API call facilitates role management operations on an Identity as a Service account.\n\n### Groups\n\nAn Identity as a Service group is a collection of users given access to applications based on the resource rules they\nare assigned to. This API call facilitates group management operations on an Identity as a Service account.\n\n### Reports\n\nThese APIs allow you to access the Audit Log on your Identity as a Service account. This Log lists the actions\nperformed on your account within a period of time.\n\n### Settings\n\nThese APIs provide management of the settings used to configure Identity as a Service behavior. Settings that can be\nmanaged using the administration API include General settings, OTP settings, Token settings, Password Reset settings and\nOnfido Account settings.\n\n### Applications\n\nThese APIs provide management of authentication API applications using the administration API.\n\n### Resource Rules\n\nResource rules define what authenticators are allowed to authenticate to an application. The resource rules APIs\nprovide management of resource rules and authentication flows using the administration API. An authentication flow \nwill define a list of possible authentication paths that a user can take when accessing an application. For instance, \nthe User Login flow allows access to an application after providing a user identifier (User ID) and a combination of \nfirst and/or second factor authenticators (e.g., OTP, FIDO, TOKEN). The IDP Login flow allows access to an application \nafter authenticating using an external OIDC identity provider. The Passkey Login flow allows access to an application \nusing a Passkey/FIDO token.\n\n### Identity Providers\n\nIdentity providers define external OpenID Connect (OIDC) identity providers that can be used for user authentication and user verification purposes. \nThe identity providers APIs provide management of identity providers using the administration API.\n\n### Directories\n\nThese APIs provide directory related information using the administration API.\n\n### Tenants\n\nFor service provider accounts, the tenant APIs provide management of their child tenants as well as management of\nentitlements for those tenants. These APIs are only available for accounts that are service providers.\n\n### Account Info\n\nThe account info APIs provide functionality to fetch and modify account related information such as the company name and\nthe license acknowledged flag.\n\n### ActiveSync Access\n\nThese APIs facilitate management of Exchange ActiveSync Devices available on your Microsoft Office 365 account.\n\n### Entitlements\n\nThese APIs are used by child tenants to retrieve their own entitlement information.\n\n### Organizations\n\nAn organization is a collection of users given access to applications in a business-to-business configuration using a single Identity as a Service account. These APIs provide management of organizations as well as management of user membership to organizations.\n\n# Examples\n\nThe following are examples of Admin API calls that can be used to perform administrative actions. The examples below are\nnot an exhaustive list of possible Admin API actions.\n\n**Important:** You must execute the Authentication (Admin API) call before executing any other Admin API calls. The\nAuthentication (Admin API) call generates a token value that must be included in every other request to be successful.\n\n## Authentication (Admin API)\n\nTo perform this action, the first step is to submit a POST request to the Admin application. This is the Admin\napplication created on your Identity as a Service account. The URL address of the Admin application includes your\nIdentity as a Service account URL. The format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v1/adminapi/authenticate\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v1/adminapi/authenticate\n```\n\nThe body of this request should contain the JSON object with an Application ID and Shared Secret. This JSON file was\ngenerated during creation of Admin Application on Identity as a Service. For example:\n\n```json\n{\n  \"applicationId\": \"d3737e0f-4d8e-431c-b1d8-cd17ad4d633d\",\n  \"sharedSecret\": \"randomSharedSecret\"\n}\n```\n\nAn API response is received if the call is successful . For example:\n\n```json\n{\n  \"authToken\": \"GLb6JWz966gCayVNw4lZSSKV6W3PGgsJZ4CagZjoZNMaa2Me7F5OX+CKOVx8sOXsBEdLemVEruixXoaVsjQc1j+GPBy5Qn+KlilA9GXrSEQujsmfiJono3Gta7Uc8b3VUkEBvU193UqWPtmW1NXsSnPV2Z9B2AjZT17zNlHAyOvFpOXTI5bkmj6f2cKses6cBem5kLSbGHH9lHBv4JvXBjNxtPf7urAUkFn8cJariZyb0/q/AYqYL9do8nFrPFmSCTjYeNmxuWm5CACRi17K5XSyhZpu979b3i7MQEeOq1Pfjw7WzdKfrSvLJg/qgYeLD4aSOrQu4HAixZSFBmW9RGDxlo0J0Y1uAAy4lR57yG3p6E8H6OcV3Vakso4CT8yHAFH8xmdsUXXfyv9v+hr5QKh+7iVYro8tjjByRzj6XXAOx0vDO2yhpOd4migv33aWlFEhbgxIzNseJ8je6wauST0O+hJ5kKjl5yLBXS3iKhZJZMG2FNcU5pbD7SnUh79OWoCuOsehOM2pDFDPnMEms5ri/y0yaKIZmtz9Poy6KH1BDd+645+xX8iqW4IeqJ3zW8RZtnJgzAkUFeCjuDtbvotIcR45p8ibXF0GWLFAbxzvc5daf21bBV29A33C7mFoX4id44BZJ6OC8fztmthRzR2l0uP04STG0dgRRTNgZpoqKiMczwbOVNDv7ZQeSf/Kh3n2S1O8SZXHZT+zUvPwCLg9mnhOTYEqPjoMlqTZycttFYv3D4hKbU7NzYmFdtGYreaI2rNNue7aOzn+J8BN0j3+ZHkhimfO/ZfhF89Bn02IRzDER1ENdcwBSO8frWeAR+nCy0m4Eg==\",\n  \"expirationTime\": \"2018-05-28T19:07:50.328+0000\",\n  \"creationTime\": \"2018-05-28T18:52:50.329+0000\"\n}\n```\n\nYou must include the **auth token** value displayed in this response in subsequent API calls. Without it, other Admin\nAPI calls will fail.\n\nAn error code is displayed if the call is unsuccessful. A different error code is displayed for each type of error.\n\n## Users\n\n### Create A User\n\nSubmit a POST request to create a User on your account.\nThe format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v3/users\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n```\n\nThe body of this request must contain all the fields mentioned in the example below that are configured as mandatory:\n\n```json\n{\n  \"firstName\": \"john\",\n  \"lastName\": \"smith\",\n  \"email\": \"johnsmith@organization.com\",\n  \"userId\": \"john\",\n  \"mobile\": \"+16138561234\",\n  \"phone\": \"+161385699876\",\n  \"locale\": \"\",\n  \"state\": \"ACTIVE\",\n  \"externaId\": null,\n  \"externalSource\": null,\n  \"userAttributeValues\": [\n  ],\n  \"userAliases\": [\n    {\n      \"value\": \"johnny\",\n      \"type\": \"CUSTOM\"\n    }\n  ]\n}\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes all the details of the created user. For example:\n\n```json\n{\n  \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userId\": \"john\",\n  \"firstName\": \"john\",\n  \"lastName\": \"smith\",\n  \"email\": \"johnsmith@organization.com\",\n  \"mobile\": \"+16138561234\",\n  \"phone\": \"+161385699876\",\n  \"locale\": null,\n  \"state\": \"ACTIVE\",\n  \"externalId\": null,\n  \"externalSource\": null,\n  \"migrated\": null,\n  \"locked\": false,\n  \"lockoutExpiry\": null,\n  \"otpCreateTime\": null,\n  \"grids\": [],\n  \"tokens\": [\n    {\n      \"id\": \"9a2edcc5-46f0-4fff-89b1-13c0f73e1a5c\",\n      \"type\": \"ENTRUST_SOFT_TOKEN\",\n      \"serialNumber\": \"62461-69384\",\n      \"loadDate\": \"2018-05-29T19:12:54.000+0000\",\n      \"lastUsedDate\": null,\n      \"state\": \"ACTIVATING\",\n      \"platform\": null,\n      \"registeredForTransactions\": false,\n      \"name\": null,\n      \"allowedActions\": [\n        \"REACTIVATE\",\n        \"ACTIVATE_COMPLETE\",\n        \"DELETE\"\n      ],\n      \"description\": null,\n      \"userId\": null\n    }\n  ],\n  \"smartCredentials\": [],\n  \"tempAccessCode\": null,\n  \"userAttributeValues\": [],\n  \"userAliases\": [\n    {\n      \"id\": \"43422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"johnny\",\n      \"type\": \"CUSTOM\"\n    },\n    {\n      \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"john\",\n      \"type\": \"USERID\"\n    }\n  ],\n  \"groups\": [],\n  \"type\": \"MGMT_UI\"\n}\n```\n\n### Get a User by UserID\n\nSubmit a POST request to retrieve user details for a particular User ID. The format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v3/users/userid\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n``` \n\nThe body of this request must contain **UserID**. For example:\n\n```json\n{\n  \"userId\": \"John\"\n}\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes the user's information. For example:\n\n```json\n{\n  \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userId\": \"john\",\n  \"firstName\": \"john\",\n  \"lastName\": \"smith\",\n  \"email\": \"johnsmith@organization.com\",\n  \"mobile\": \"+16138561234\",\n  \"phone\": \"+161385699876\",\n  \"locale\": null,\n  \"state\": \"ACTIVE\",\n  \"externalId\": null,\n  \"externalSource\": null,\n  \"migrated\": null,\n  \"locked\": false,\n  \"lockoutExpiry\": null,\n  \"otpCreateTime\": null,\n  \"grids\": [],\n  \"tokens\": [\n    {\n      \"id\": \"9a2edcc5-46f0-4fff-89b1-13c0f73e1a5c\",\n      \"type\": \"ENTRUST_SOFT_TOKEN\",\n      \"serialNumber\": \"62461-69384\",\n      \"loadDate\": \"2018-05-29T19:12:54.000+0000\",\n      \"lastUsedDate\": null,\n      \"state\": \"ACTIVATING\",\n      \"platform\": null,\n      \"registeredForTransactions\": false,\n      \"name\": null,\n      \"allowedActions\": [\n        \"REACTIVATE\",\n        \"ACTIVATE_COMPLETE\",\n        \"DELETE\"\n      ],\n      \"description\": null,\n      \"userId\": null\n    }\n  ],\n  \"smartCredentials\": [],\n  \"tempAccessCode\": null,\n  \"userAttributeValues\": [],\n  \"userAliases\": [\n    {\n      \"id\": \"43422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"johnny\",\n      \"type\": \"CUSTOM\"\n    },\n    {\n      \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"john\",\n      \"type\": \"USERID\"\n    }\n  ],\n  \"groups\": [],\n  \"type\": \"MGMT_UI\"\n}\n```\n\n## Grids\n\n### Create a Grid\n\nSubmit a POST request to create a new Grid Card and assign it to a user. You must include the UUID of the user that you\nwant to assign a Grid Card in the API request. The format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v2/users/{userid}/grids\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v2/users/2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0/grids\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes the desired Grid Card information. For example:\n\n```json\n{\n  \"id\": \"6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\",\n  \"serialNumber\": 2,\n  \"createDate\": \"2018-05-29T19:48:24.249+0000\",\n  \"assignDate\": null,\n  \"expiryDate\": null,\n  \"expired\": false,\n  \"lastUsedDate\": null,\n  \"state\": \"ACTIVE\",\n  \"gridContents\": [\n    [\n      \"TP\",\n      \"0M\",\n      \"P8\",\n      \"KW\",\n      \"3D\",\n      \"KR\",\n      \"M1\",\n      \"W0\",\n      \"TJ\",\n      \"F4\"\n    ],\n    [\n      \"9M\",\n      \"MV\",\n      \"88\",\n      \"DX\",\n      \"H3\",\n      \"DV\",\n      \"44\",\n      \"PW\",\n      \"V1\",\n      \"CX\"\n    ],\n    [\n      \"F2\",\n      \"FE\",\n      \"0Q\",\n      \"XN\",\n      \"CD\",\n      \"36\",\n      \"MQ\",\n      \"PN\",\n      \"WF\",\n      \"DD\"\n    ],\n    [\n      \"WN\",\n      \"9F\",\n      \"J4\",\n      \"TF\",\n      \"7J\",\n      \"W4\",\n      \"7M\",\n      \"9Q\",\n      \"1H\",\n      \"W5\"\n    ],\n    [\n      \"QM\",\n      \"21\",\n      \"VQ\",\n      \"39\",\n      \"1N\",\n      \"EV\",\n      \"PT\",\n      \"P4\",\n      \"28\",\n      \"WY\"\n    ]\n  ],\n  \"allowedActions\": [\n    \"DELETE\",\n    \"DISABLE\"\n  ],\n  \"userId\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userName\": \"john\"\n}\n```\n\n### Get a Grid by Id\n\nSubmit a GET request to display a Grid Card's details. You must include the Grid Card's ID string in the request. The ID\nis required to identify which Grid Card's details to display. The format of the request URL is:\n\n```\nhttps://customer.region.trustedauth.com/api/web/v2/grids/{gridid}\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v2/grids/6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes Grid Card details. For example:\n\n```json\n{\n  \"id\": \"6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\",\n  \"serialNumber\": 2,\n  \"createDate\": \"2018-05-29T19:48:24.000+0000\",\n  \"assignDate\": null,\n  \"expiryDate\": null,\n  \"expired\": false,\n  \"lastUsedDate\": null,\n  \"state\": \"ACTIVE\",\n  \"gridContents\": [\n    [\n      \"TP\",\n      \"0M\",\n      \"P8\",\n      \"KW\",\n      \"3D\",\n      \"KR\",\n      \"M1\",\n      \"W0\",\n      \"TJ\",\n      \"F4\"\n    ],\n    [\n      \"9M\",\n      \"MV\",\n      \"88\",\n      \"DX\",\n      \"H3\",\n      \"DV\",\n      \"44\",\n      \"PW\",\n      \"V1\",\n      \"CX\"\n    ],\n    [\n      \"F2\",\n      \"FE\",\n      \"0Q\",\n      \"XN\",\n      \"CD\",\n      \"36\",\n      \"MQ\",\n      \"PN\",\n      \"WF\",\n      \"DD\"\n    ],\n    [\n      \"WN\",\n      \"9F\",\n      \"J4\",\n      \"TF\",\n      \"7J\",\n      \"W4\",\n      \"7M\",\n      \"9Q\",\n      \"1H\",\n      \"W5\"\n    ],\n    [\n      \"QM\",\n      \"21\",\n      \"VQ\",\n      \"39\",\n      \"1N\",\n      \"EV\",\n      \"PT\",\n      \"P4\",\n      \"28\",\n      \"WY\"\n    ]\n  ],\n  \"allowedActions\": [\n    \"DELETE\",\n    \"DISABLE\"\n  ],\n  \"userId\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userName\": \"john\"\n}\n```\n",
+    "description": "This document describes how to manage your Identity as a Service account using Administration (Admin) API calls. This\nAPI allows you to seamlessly perform administrative actions on Identity as a Service without logging in to the Identity\nas a Service Administrator portal.\n\n# Prerequisites\n\nConfirm the following before executing the Admin API calls included in this guide:\n\n- An Admin API application has been created on your Identity as a Service account. The application must be configured\n  with a role that has the permissions needed by your application. Identity as a Service allows you to download a JSON\n  file once the application is created.\n- The Application ID and Shared Secret parameter values are easily accessible. They must be entered into the body of the\n  Admin APi request. The required values are displayed after creating the Administration API application on Identity as\n  a Service. Upon creation, you can either copy these values to your clipboard or download them as a JSON file.\n- The Admin API application configuration data has been downloaded and is available for use.\n\n# Identity as a Service Administration APIs\n\nIdentity as a Service administration APIs are grouped into the following categories. You can only perform the API calls\npermitted by the role assigned to your Administration API application on Identity as a Service. See the **Identity as a\nService Administrator Help** for more information on Identity as a Service roles:\n\n### Admin Authentication\n\nThese APIs facilitate authentication between your Admin API application and Identity as a Service. You must make this\ncall before making any other Admin API calls. The call generates an authentication token value that must be included in\nall other Admin API requests.\n\nThe Admin API authentication response includes the token's expiration time. For instance:\n\n```json\n{\n  \"authToken\": \"GLrKMuDGiIWPJooDRFTZIHc65RyjJBiPdy4b5xNR8fKxXfwy4tbSIvh+xiFHlJ2p6tm3FuOZ34sxjCHYbDa77eLrxFcMuwYjRMmLWsUIGfkpfg33Wb/5X01Xag4Vdjz5DpVKfCg/OL2rnd4tfCfzM9FoY+vY/sllGgRtQkGeZodsi+QvazqQS1iJ5e6i5ouR05P52YsLgmMlZ4mUfH3JiXZmkkAJvXuM3oj9msi/a4ULWeUGYW5oHM5Gs6ab37baa5xzVykzowHdIoZMVeC8+zVqDr+yXTAHVysBYQHngyckgBizDc2g49RgRTEz2k+yRIvwUU5swGzKtgt6kYtyyFM8YdeODB59Fkl8w5mQQDpxIyZcclCFv2C+MBWdnbM0kJIgNtE1ZeRA+zxwS6avE8EKw3T9Nczs6KBfycV3NxgxTvTQIxNi3kPA8XdJtAmCkUR/gyLkqJXk7bGDvFo4+rWR4uX2XxHm2NZGTNA1QezK96Y7JVjImfoHlUJnxGm207/kVPIVtSUD+6XuEl0uVvrtnTPmQnpq3P0gTYvon3Cw1caQvIydtrUv4yfs4Q/WVvSF3GQh3uet/IkUeGbkxLn43CSVz2hCQoeF8jxIoiJuSAxs1e3phylp0plijvok01Tbit6um/x4tK5UZYCRZYmeSD/ltXGtZNOoA4YHh5cDK+KcDy2tuWaexi2Hf+nJ5adqiMHwuozIH69Eqc6OZ9o86t75mIdux8zLgWt0T3SFOphtCvF0L8BdxICrEXGMDhguRRH7f+/IPU0ggFwnxsIV2a3c4oOayFfHwVSg4rGSKfWuWtkfNavA8RI5y6JOKzMrulrdg+gzuBMms2nKn38HNIRu2pKMVzQ2jU8CrtPgOT8=\",\n  \"expirationTime\": \"2020-01-23T16:30:58Z\",\n  \"creationTime\": \"2020-01-23T16:15:58Z\"\n}\n```\n\nIf you use this authentication token to make requests after it expires, the service will return an UNAUTHORIZED response\ncode (401) and you will need to reauthenticate to obtain a new token.\n\nSome workarounds to prevent this are:\n\n- Always reauthenticate before making a request; or\n- Track the expiration time and reauthenticate when you detect that it has expired; or\n- Send an OPTIONS request to the same end-point to detect whether the token has expired. This can be useful with\n  end-points receiving a large payload such as images where the token can expire before the request has completed. In\n  these cases the request may fail with a 500 error.\n\nWhen an admin API application authenticates, there is an option to enable a web session to add additional security to\nthe session. This is done by setting the enableWebSession argument passed to the authentication controller to true. When\na web session is enabled, an HTTP session cookie named Identity as a Service_SESSION_ID will be returned with the\nauthentication results. This cookie must be included with all subsequent admin API calls along with the authentication\ntoken.\n\n### Users\n\nThese APIs facilitate user management operations on an Identity as a Service account.\n\n### Smart Credentials\n\nThe Entrust® Mobile Smart Credential (MSC) application allows users to perform authentications to their Identity as a\nService account and configured applications. This API call facilitates mobile smart credential management operations on\nan Identity as a Service account.\n\n### Tokens\n\nThese APIs facilitate hardware and soft token management operations on an Identity as a Service account.\n\n### FIDO2/Passkey Tokens\n\nThese APIs facilitate management of FIDO2 tokens. FIDO2 tokens can be registered, viewed, deleted and updated.\n\n### Grid Cards\n\nGrid authentication uses cards with a grid as the authentication lookup tool. This API call facilitates Grid Card\nmanagement operations on an Identity as a Service account.\n\n### Temporary Access Codes\n\nTemporary Access Codes can be used to log in when a user cannot access their one-time passcode (OTP), Grid Card, or\ntoken authenticator. This API call facilitates Temporary Access Code management operations on an Identity as a Service\naccount.\n\n### KBA - Knowledge-based Authenticators\n\nKnowledge-based authentication (or knowledge-based authenticators) (KBA) (also known as question-and-answer (Q&A)\nauthentication) allows users to authenticate to SAML application accounts using Identity as a Service by providing the\ncorrect answer to one or more preregistered questions. This API call facilitates Knowledge-based Authenticator\nmanagement operations on an Identity as a Service account.\n\n### Passwords\n\nThere are two types of password authenticators available on Identity as a Service —Identity as a Service passwords and\nActive Directory (AD) passwords. Identity as a Service passwords are passwords that can be manually or automatically\nassigned to users on Identity as a Service. Active Directory (AD) passwords are passwords that have already been\nassigned to a user on their corporate directory - not through Identity as a Service. This API call facilitates password\nmanagement operations on an Identity as a Service account for either type of password.\n\n### OTPs\n\nThese APIs facilitate OTP management operations on an Identity as a Service account.\n\n### User Risk-based authentication (RBA) Settings\n\nRisk-based authentication (RBA) identifies the level of risk associated with a user who tries to authenticate. This API\ncall facilitates Risk-based authentication management operations on an Identity as a Service account.\n\n### Machine authenticators\n\nMachine Authentication (MA) provides identification information on the Web browser being used to access a SAML\napplication. This API call facilitates Machine Authenticator management operations on an Identity as a Service account.\n\n### Face Biometric\n\nFace Biometric authentication uses an Onfido account to allow users to authenticate with biometric security. Face\nBiometric can be viewed, deleted, updated and created for a user if they already exist in Onfido.\n\n### User Attributes\n\nUser attributes are the information fields listed as part of each user's Profile information. This API call facilitates\nuser attribute management operations on an Identity as a Service account.\n\n### Roles\n\nRoles control what operations a user can perform on their Identity as a Service account. These roles distinguish the\namount of access given to each account, ranging from administrators with full access to end users (who can only access\nthe user portal features).This API call facilitates role management operations on an Identity as a Service account.\n\n### Groups\n\nAn Identity as a Service group is a collection of users given access to applications based on the resource rules they\nare assigned to. This API call facilitates group management operations on an Identity as a Service account.\n\n### Reports\n\nThese APIs allow you to access the Audit Log on your Identity as a Service account. This Log lists the actions\nperformed on your account within a period of time.\n\n### Settings\n\nThese APIs provide management of the settings used to configure Identity as a Service behavior. Settings that can be\nmanaged using the administration API include General settings, OTP settings, Token settings, Password Reset settings and\nOnfido Account settings.\n\n### Applications\n\nThese APIs provide management of authentication API applications using the administration API.\n\n### Resource Rules\n\nResource rules define what authenticators are allowed to authenticate to an application. The resource rules APIs\nprovide management of resource rules and authentication flows using the administration API. An authentication flow \nwill define a list of possible authentication paths that a user can take when accessing an application. For instance, \nthe User Login flow allows access to an application after providing a user identifier (User ID) and a combination of \nfirst and/or second factor authenticators (e.g., OTP, FIDO, TOKEN). The IDP Login flow allows access to an application \nafter authenticating using an external identity provider. The Passkey Login flow allows access to an application \nusing a Passkey/FIDO token.\n\n### Identity Providers\n\nIdentity providers define external OpenID Connect (OIDC) or SAML identity providers that can be used for user authentication and user verification purposes. \nThe identity providers APIs provide management of identity providers using the administration API.\n\n### Directories\n\nThese APIs provide directory related information using the administration API.\n\n### Tenants\n\nFor service provider accounts, the tenant APIs provide management of their child tenants as well as management of\nentitlements for those tenants. These APIs are only available for accounts that are service providers.\n\n### Account Info\n\nThe account info APIs provide functionality to fetch and modify account related information such as the company name and\nthe license acknowledged flag.\n\n### ActiveSync Access\n\nThese APIs facilitate management of Exchange ActiveSync Devices available on your Microsoft Office 365 account.\n\n### Entitlements\n\nThese APIs are used by child tenants to retrieve their own entitlement information.\n\n### Organizations\n\nAn organization is a collection of users given access to applications in a business-to-business configuration using a single Identity as a Service account. These APIs provide management of organizations as well as management of user membership to organizations.\n\n### Webhooks\n\nThese APIs provide management of webhooks.\n\n# Examples\n\nThe following are examples of Admin API calls that can be used to perform administrative actions. The examples below are\nnot an exhaustive list of possible Admin API actions.\n\n**Important:** You must execute the Authentication (Admin API) call before executing any other Admin API calls. The\nAuthentication (Admin API) call generates a token value that must be included in every other request to be successful.\n\n## Authentication (Admin API)\n\nTo perform this action, the first step is to submit a POST request to the Admin application. This is the Admin\napplication created on your Identity as a Service account. The URL address of the Admin application includes your\nIdentity as a Service account URL. The format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v1/adminapi/authenticate\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v1/adminapi/authenticate\n```\n\nThe body of this request should contain the JSON object with an Application ID and Shared Secret. This JSON file was\ngenerated during creation of Admin Application on Identity as a Service. For example:\n\n```json\n{\n  \"applicationId\": \"d3737e0f-4d8e-431c-b1d8-cd17ad4d633d\",\n  \"sharedSecret\": \"randomSharedSecret\"\n}\n```\n\nAn API response is received if the call is successful . For example:\n\n```json\n{\n  \"authToken\": \"GLb6JWz966gCayVNw4lZSSKV6W3PGgsJZ4CagZjoZNMaa2Me7F5OX+CKOVx8sOXsBEdLemVEruixXoaVsjQc1j+GPBy5Qn+KlilA9GXrSEQujsmfiJono3Gta7Uc8b3VUkEBvU193UqWPtmW1NXsSnPV2Z9B2AjZT17zNlHAyOvFpOXTI5bkmj6f2cKses6cBem5kLSbGHH9lHBv4JvXBjNxtPf7urAUkFn8cJariZyb0/q/AYqYL9do8nFrPFmSCTjYeNmxuWm5CACRi17K5XSyhZpu979b3i7MQEeOq1Pfjw7WzdKfrSvLJg/qgYeLD4aSOrQu4HAixZSFBmW9RGDxlo0J0Y1uAAy4lR57yG3p6E8H6OcV3Vakso4CT8yHAFH8xmdsUXXfyv9v+hr5QKh+7iVYro8tjjByRzj6XXAOx0vDO2yhpOd4migv33aWlFEhbgxIzNseJ8je6wauST0O+hJ5kKjl5yLBXS3iKhZJZMG2FNcU5pbD7SnUh79OWoCuOsehOM2pDFDPnMEms5ri/y0yaKIZmtz9Poy6KH1BDd+645+xX8iqW4IeqJ3zW8RZtnJgzAkUFeCjuDtbvotIcR45p8ibXF0GWLFAbxzvc5daf21bBV29A33C7mFoX4id44BZJ6OC8fztmthRzR2l0uP04STG0dgRRTNgZpoqKiMczwbOVNDv7ZQeSf/Kh3n2S1O8SZXHZT+zUvPwCLg9mnhOTYEqPjoMlqTZycttFYv3D4hKbU7NzYmFdtGYreaI2rNNue7aOzn+J8BN0j3+ZHkhimfO/ZfhF89Bn02IRzDER1ENdcwBSO8frWeAR+nCy0m4Eg==\",\n  \"expirationTime\": \"2018-05-28T19:07:50.328+0000\",\n  \"creationTime\": \"2018-05-28T18:52:50.329+0000\"\n}\n```\n\nYou must include the **auth token** value displayed in this response in subsequent API calls. Without it, other Admin\nAPI calls will fail.\n\nAn error code is displayed if the call is unsuccessful. A different error code is displayed for each type of error.\n\n## Users\n\n### Create A User\n\nSubmit a POST request to create a User on your account.\nThe format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v3/users\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n```\n\nThe body of this request must contain all the fields mentioned in the example below that are configured as mandatory:\n\n```json\n{\n  \"firstName\": \"john\",\n  \"lastName\": \"smith\",\n  \"email\": \"johnsmith@organization.com\",\n  \"userId\": \"john\",\n  \"mobile\": \"+16138561234\",\n  \"phone\": \"+161385699876\",\n  \"locale\": \"\",\n  \"state\": \"ACTIVE\",\n  \"externaId\": null,\n  \"externalSource\": null,\n  \"userAttributeValues\": [\n  ],\n  \"userAliases\": [\n    {\n      \"value\": \"johnny\",\n      \"type\": \"CUSTOM\"\n    }\n  ]\n}\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes all the details of the created user. For example:\n\n```json\n{\n  \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userId\": \"john\",\n  \"firstName\": \"john\",\n  \"lastName\": \"smith\",\n  \"email\": \"johnsmith@organization.com\",\n  \"mobile\": \"+16138561234\",\n  \"phone\": \"+161385699876\",\n  \"locale\": null,\n  \"state\": \"ACTIVE\",\n  \"externalId\": null,\n  \"externalSource\": null,\n  \"migrated\": null,\n  \"locked\": false,\n  \"lockoutExpiry\": null,\n  \"otpCreateTime\": null,\n  \"grids\": [],\n  \"tokens\": [\n    {\n      \"id\": \"9a2edcc5-46f0-4fff-89b1-13c0f73e1a5c\",\n      \"type\": \"ENTRUST_SOFT_TOKEN\",\n      \"serialNumber\": \"62461-69384\",\n      \"loadDate\": \"2018-05-29T19:12:54.000+0000\",\n      \"lastUsedDate\": null,\n      \"state\": \"ACTIVATING\",\n      \"platform\": null,\n      \"registeredForTransactions\": false,\n      \"name\": null,\n      \"allowedActions\": [\n        \"REACTIVATE\",\n        \"ACTIVATE_COMPLETE\",\n        \"DELETE\"\n      ],\n      \"description\": null,\n      \"userId\": null\n    }\n  ],\n  \"smartCredentials\": [],\n  \"tempAccessCode\": null,\n  \"userAttributeValues\": [],\n  \"userAliases\": [\n    {\n      \"id\": \"43422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"johnny\",\n      \"type\": \"CUSTOM\"\n    },\n    {\n      \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"john\",\n      \"type\": \"USERID\"\n    }\n  ],\n  \"groups\": [],\n  \"type\": \"MGMT_UI\"\n}\n```\n\n### Get a User by UserID\n\nSubmit a POST request to retrieve user details for a particular User ID. The format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v3/users/userid\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n``` \n\nThe body of this request must contain **UserID**. For example:\n\n```json\n{\n  \"userId\": \"John\"\n}\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes the user's information. For example:\n\n```json\n{\n  \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userId\": \"john\",\n  \"firstName\": \"john\",\n  \"lastName\": \"smith\",\n  \"email\": \"johnsmith@organization.com\",\n  \"mobile\": \"+16138561234\",\n  \"phone\": \"+161385699876\",\n  \"locale\": null,\n  \"state\": \"ACTIVE\",\n  \"externalId\": null,\n  \"externalSource\": null,\n  \"migrated\": null,\n  \"locked\": false,\n  \"lockoutExpiry\": null,\n  \"otpCreateTime\": null,\n  \"grids\": [],\n  \"tokens\": [\n    {\n      \"id\": \"9a2edcc5-46f0-4fff-89b1-13c0f73e1a5c\",\n      \"type\": \"ENTRUST_SOFT_TOKEN\",\n      \"serialNumber\": \"62461-69384\",\n      \"loadDate\": \"2018-05-29T19:12:54.000+0000\",\n      \"lastUsedDate\": null,\n      \"state\": \"ACTIVATING\",\n      \"platform\": null,\n      \"registeredForTransactions\": false,\n      \"name\": null,\n      \"allowedActions\": [\n        \"REACTIVATE\",\n        \"ACTIVATE_COMPLETE\",\n        \"DELETE\"\n      ],\n      \"description\": null,\n      \"userId\": null\n    }\n  ],\n  \"smartCredentials\": [],\n  \"tempAccessCode\": null,\n  \"userAttributeValues\": [],\n  \"userAliases\": [\n    {\n      \"id\": \"43422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"johnny\",\n      \"type\": \"CUSTOM\"\n    },\n    {\n      \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"john\",\n      \"type\": \"USERID\"\n    }\n  ],\n  \"groups\": [],\n  \"type\": \"MGMT_UI\"\n}\n```\n\n## Grids\n\n### Create a Grid\n\nSubmit a POST request to create a new Grid Card and assign it to a user. You must include the UUID of the user that you\nwant to assign a Grid Card in the API request. The format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v2/users/{userid}/grids\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v2/users/2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0/grids\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes the desired Grid Card information. For example:\n\n```json\n{\n  \"id\": \"6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\",\n  \"serialNumber\": 2,\n  \"createDate\": \"2018-05-29T19:48:24.249+0000\",\n  \"assignDate\": null,\n  \"expiryDate\": null,\n  \"expired\": false,\n  \"lastUsedDate\": null,\n  \"state\": \"ACTIVE\",\n  \"gridContents\": [\n    [\n      \"TP\",\n      \"0M\",\n      \"P8\",\n      \"KW\",\n      \"3D\",\n      \"KR\",\n      \"M1\",\n      \"W0\",\n      \"TJ\",\n      \"F4\"\n    ],\n    [\n      \"9M\",\n      \"MV\",\n      \"88\",\n      \"DX\",\n      \"H3\",\n      \"DV\",\n      \"44\",\n      \"PW\",\n      \"V1\",\n      \"CX\"\n    ],\n    [\n      \"F2\",\n      \"FE\",\n      \"0Q\",\n      \"XN\",\n      \"CD\",\n      \"36\",\n      \"MQ\",\n      \"PN\",\n      \"WF\",\n      \"DD\"\n    ],\n    [\n      \"WN\",\n      \"9F\",\n      \"J4\",\n      \"TF\",\n      \"7J\",\n      \"W4\",\n      \"7M\",\n      \"9Q\",\n      \"1H\",\n      \"W5\"\n    ],\n    [\n      \"QM\",\n      \"21\",\n      \"VQ\",\n      \"39\",\n      \"1N\",\n      \"EV\",\n      \"PT\",\n      \"P4\",\n      \"28\",\n      \"WY\"\n    ]\n  ],\n  \"allowedActions\": [\n    \"DELETE\",\n    \"DISABLE\"\n  ],\n  \"userId\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userName\": \"john\"\n}\n```\n\n### Get a Grid by Id\n\nSubmit a GET request to display a Grid Card's details. You must include the Grid Card's ID string in the request. The ID\nis required to identify which Grid Card's details to display. The format of the request URL is:\n\n```\nhttps://customer.region.trustedauth.com/api/web/v2/grids/{gridid}\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v2/grids/6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes Grid Card details. For example:\n\n```json\n{\n  \"id\": \"6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\",\n  \"serialNumber\": 2,\n  \"createDate\": \"2018-05-29T19:48:24.000+0000\",\n  \"assignDate\": null,\n  \"expiryDate\": null,\n  \"expired\": false,\n  \"lastUsedDate\": null,\n  \"state\": \"ACTIVE\",\n  \"gridContents\": [\n    [\n      \"TP\",\n      \"0M\",\n      \"P8\",\n      \"KW\",\n      \"3D\",\n      \"KR\",\n      \"M1\",\n      \"W0\",\n      \"TJ\",\n      \"F4\"\n    ],\n    [\n      \"9M\",\n      \"MV\",\n      \"88\",\n      \"DX\",\n      \"H3\",\n      \"DV\",\n      \"44\",\n      \"PW\",\n      \"V1\",\n      \"CX\"\n    ],\n    [\n      \"F2\",\n      \"FE\",\n      \"0Q\",\n      \"XN\",\n      \"CD\",\n      \"36\",\n      \"MQ\",\n      \"PN\",\n      \"WF\",\n      \"DD\"\n    ],\n    [\n      \"WN\",\n      \"9F\",\n      \"J4\",\n      \"TF\",\n      \"7J\",\n      \"W4\",\n      \"7M\",\n      \"9Q\",\n      \"1H\",\n      \"W5\"\n    ],\n    [\n      \"QM\",\n      \"21\",\n      \"VQ\",\n      \"39\",\n      \"1N\",\n      \"EV\",\n      \"PT\",\n      \"P4\",\n      \"28\",\n      \"WY\"\n    ]\n  ],\n  \"allowedActions\": [\n    \"DELETE\",\n    \"DISABLE\"\n  ],\n  \"userId\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userName\": \"john\"\n}\n```\n",
     "contact": {
       "name": "Entrust Identity as a Service",
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.38"
+    "version": "5.39"
   },
   "servers": [
     {
@@ -127,6 +127,10 @@
     {
       "name": "Organizations",
       "description": "Organizations controllers"
+    },
+    {
+      "name": "Webhooks",
+      "description": "Webhook Controllers"
     }
   ],
   "paths": {
@@ -4464,6 +4468,88 @@
         ]
       }
     },
+    "/api/web/v1/identityproviders": {
+      "get": {
+        "tags": [
+          "Identity Providers"
+        ],
+        "summary": "Lists identity providers",
+        "description": "Lists identity providers. Caller requires the IDENTITYPROVIDERS:VIEW permission.",
+        "operationId": "listIdentityProvidersUsingGET",
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IdentityProvider"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "IDENTITYPROVIDERS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
     "/api/web/v1/identityproviders/oidc": {
       "get": {
         "tags": [
@@ -4921,6 +5007,444 @@
             "name": "id",
             "in": "path",
             "description": "The UUID of the OIDC Identity Provider to delete.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "IDENTITYPROVIDERS:REMOVE"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/identityproviders/saml": {
+      "get": {
+        "tags": [
+          "Identity Providers"
+        ],
+        "summary": "Lists SAML identity providers",
+        "description": "Lists SAML identity providers. Caller requires the IDENTITYPROVIDERS:VIEW permission.",
+        "operationId": "listSamlIdentityProvidersUsingGET",
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SamlIdentityProvider"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "IDENTITYPROVIDERS:VIEW"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Identity Providers"
+        ],
+        "summary": "Create a SAML identity provider",
+        "description": "Create a SAML identity provider. Caller requires the IDENTITYPROVIDERS:ADD permission.",
+        "operationId": "createSamlIdentityProviderUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SamlIdentityProviderParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SamlIdentityProvider"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "IDENTITYPROVIDERS:ADD"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/identityproviders/saml/{id}": {
+      "get": {
+        "tags": [
+          "Identity Providers"
+        ],
+        "summary": "Get a SAML identity provider",
+        "description": "Get a SAML identity provider. Caller requires the IDENTITYPROVIDERS:VIEW permission.",
+        "operationId": "getSamlIdentityProviderUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the SAML Identity Provider to get.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SamlIdentityProvider"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "IDENTITYPROVIDERS:VIEW"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Identity Providers"
+        ],
+        "summary": "Update a SAML identity provider",
+        "description": "Update a SAML identity provider. Caller requires the IDENTITYPROVIDERS:EDIT permission.",
+        "operationId": "updateSamlIdentityProviderUsingPUT",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the SAML Identity Provider to update.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SamlIdentityProviderParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SamlIdentityProvider"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "IDENTITYPROVIDERS:EDIT"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Identity Providers"
+        ],
+        "summary": "Delete a SAML identity provider",
+        "description": "Delete a SAML identity provider. Caller requires the IDENTITYPROVIDERS:REMOVE permission.",
+        "operationId": "deleteSamlIdentityProviderUsingDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the SAML Identity Provider to delete.",
             "required": true,
             "schema": {
               "type": "string"
@@ -8943,11 +9467,61 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Successful",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SpIdentityProvider"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
                 }
               }
             }
@@ -8991,11 +9565,61 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Successful",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SpIdentityProvider"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
                 }
               }
             }
@@ -15137,6 +15761,527 @@
         ]
       }
     },
+    "/api/web/v1/webhooks": {
+      "get": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "List webhooks",
+        "description": "Return a list of webhooks. Caller is required to have WEBHOOKS:VIEW permission.",
+        "operationId": "getWebhooksUsingGET",
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Webhook"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBHOOKS:VIEW"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Register a webhook",
+        "description": "Register a webhook with callback URL, webhook events etc. Caller is required to have WEBHOOKS:ADD permission.",
+        "operationId": "createWebhookUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Webhook"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBHOOKS:ADD"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/webhooks/test/{id}": {
+      "post": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Test a webhook",
+        "description": "Sends a dummy payload to the registered webhook callback URL. Use this to ensure your API is ready to start accepting webhook notifications. Caller is required to have WEBHOOKS:EDIT permission.",
+        "operationId": "testWebhookUsingPOST",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the webhook to test.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBHOOKS:EDIT"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/webhooks/{id}": {
+      "get": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Get a webhook by id",
+        "description": "Get the specified webhook. Caller is required to have WEBHOOKS:VIEW permission.",
+        "operationId": "readWebhookUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the webhook.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Webhook"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBHOOKS:VIEW"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Update a webhook",
+        "description": "Update a webhook with callback URL, webhook events etc. Caller is required to have WEBHOOKS:EDIT permission.",
+        "operationId": "updateWebhookUsingPUT",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the webhook to be updated.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Webhook"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBHOOKS:EDIT"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Delete a webhook",
+        "description": "Delete a registered webhook by ID. Caller is required to have WEBHOOKS:REMOVE permission.",
+        "operationId": "deleteWebhookUsingDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the webhook to be deleted.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBHOOKS:REMOVE"
+            ]
+          }
+        ]
+      }
+    },
     "/api/web/v2/authenticationflows": {
       "get": {
         "tags": [
@@ -20041,16 +21186,23 @@
             "type": "string",
             "description": "The unique UUID assigned to the authentication flow when it is created."
           },
+          "identityProviders": {
+            "type": "array",
+            "description": "The identity providers, both OIDC and SAML, supported when the IDP login flow is enabled--limited info is returned. This parameter should be used instead of oidcIdentityProviders.",
+            "items": {
+              "$ref": "#/components/schemas/IdentityProvider"
+            }
+          },
           "idpDomainBased": {
             "type": "boolean",
             "description": "A flag indicating if the authentication flow will be using only domain-based IDPs."
           },
           "idpLoginSecondStep": {
             "type": "array",
-            "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the OIDC identity provider Login flow is enabled and requires a second factor.",
+            "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the identity provider Login flow is enabled and requires a second factor. PASSTHROUGH is not supported.",
             "items": {
               "type": "string",
-              "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the OIDC identity provider Login flow is enabled and requires a second factor.",
+              "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the identity provider Login flow is enabled and requires a second factor. PASSTHROUGH is not supported.",
               "enum": [
                 "NONE",
                 "KBA",
@@ -20062,7 +21214,8 @@
                 "FIDO",
                 "USER_CERTIFICATE",
                 "SMARTCREDENTIALPUSH",
-                "FACE"
+                "FACE",
+                "PASSTHROUGH"
               ]
             }
           },
@@ -20079,7 +21232,8 @@
           },
           "oidcIdentityProviders": {
             "type": "array",
-            "description": "The OIDC identity providers supported when the IDP login flow is enabled--limited info is returned.",
+            "description": "The OIDC identity providers supported when the IDP login flow is enabled--limited info is returned. This parameter is deprecated, use identityProviders instead.",
+            "deprecated": true,
             "items": {
               "$ref": "#/components/schemas/OidcIdentityProvider"
             }
@@ -20125,7 +21279,8 @@
                 "FIDO",
                 "USER_CERTIFICATE",
                 "SMARTCREDENTIALPUSH",
-                "FACE"
+                "FACE",
+                "PASSTHROUGH"
               ]
             }
           }
@@ -20138,16 +21293,24 @@
         ],
         "type": "object",
         "properties": {
+          "identityProviderIds": {
+            "type": "array",
+            "description": "The UUIDs of the identity providers, both OIDC and SAML, supported when the IDP login flow is enabled--at least one is required. This parameter should be used instead of oidcIdentityProviderIds.",
+            "items": {
+              "type": "string",
+              "description": "The UUIDs of the identity providers, both OIDC and SAML, supported when the IDP login flow is enabled--at least one is required. This parameter should be used instead of oidcIdentityProviderIds."
+            }
+          },
           "idpDomainBased": {
             "type": "boolean",
             "description": "A flag indicating if the authentication flow will be using only domain-based IDPs."
           },
           "idpLoginSecondStep": {
             "type": "array",
-            "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the OIDC identity provider Login flow is enabled and requires a second factor.",
+            "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the identity provider Login flow is enabled and requires a second factor. PASSTHROUGH is not supported.",
             "items": {
               "type": "string",
-              "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the OIDC identity provider Login flow is enabled and requires a second factor.",
+              "description": "The authenticator type to use during in the second step of a two-step authentication scenario when the identity provider Login flow is enabled and requires a second factor. PASSTHROUGH is not supported.",
               "enum": [
                 "NONE",
                 "KBA",
@@ -20159,7 +21322,8 @@
                 "FIDO",
                 "USER_CERTIFICATE",
                 "SMARTCREDENTIALPUSH",
-                "FACE"
+                "FACE",
+                "PASSTHROUGH"
               ]
             }
           },
@@ -20176,10 +21340,12 @@
           },
           "oidcIdentityProviderIds": {
             "type": "array",
-            "description": "The UUIDs of the OIDC identity providers supported when the IDP login flow is enabled--at least one is required.",
+            "description": "The UUIDs of the OIDC identity providers supported when the IDP login flow is enabled--at least one is required. This parameter is deprecated, use identityProviderIds instead.",
+            "deprecated": true,
             "items": {
               "type": "string",
-              "description": "The UUIDs of the OIDC identity providers supported when the IDP login flow is enabled--at least one is required."
+              "description": "The UUIDs of the OIDC identity providers supported when the IDP login flow is enabled--at least one is required. This parameter is deprecated, use identityProviderIds instead.",
+              "deprecated": true
             }
           },
           "userLoginFirstStep": {
@@ -20219,7 +21385,8 @@
                 "FIDO",
                 "USER_CERTIFICATE",
                 "SMARTCREDENTIALPUSH",
-                "FACE"
+                "FACE",
+                "PASSTHROUGH"
               ]
             }
           }
@@ -20899,6 +22066,7 @@
           },
           "certificate": {
             "type": "string",
+            "description": "The SSL certificate to connect to the Directory with.",
             "format": "byte",
             "deprecated": true
           },
@@ -21026,6 +22194,7 @@
         "properties": {
           "certificate": {
             "type": "string",
+            "description": "The SSL certificate to connect to the Directory with.",
             "format": "byte"
           },
           "directoryId": {
@@ -21494,7 +22663,8 @@
           },
           "contractMode": {
             "type": "string",
-            "description": "The contract mode of a tenant, allowable values = 'PRODUCTION', 'TRIAL', example='TRIAL'.",
+            "description": "The contract mode of a tenant (required during creation), allowable values = 'PRODUCTION', 'TRIAL'.",
+            "example": "TRIAL",
             "enum": [
               "PRODUCTION",
               "TRIAL",
@@ -22002,8 +23172,7 @@
         "properties": {
           "apiKey": {
             "type": "string",
-            "description": "The API key to use for verification.",
-            "example": "api_live_us.Acc_6psEaUV.IDcIke99h1L-AhMbzgOZGE-CEhae3Ze8"
+            "description": "The API key to use for verification."
           },
           "id": {
             "type": "string",
@@ -22022,8 +23191,7 @@
           },
           "webhookToken": {
             "type": "string",
-            "description": "The token sent by the webhook to verify contents.",
-            "example": "XY0jzFRVtDxc9DAzqIXjoA7VaEaLDCJy"
+            "description": "The token sent by the webhook to verify contents."
           }
         },
         "description": "New settings."
@@ -22608,7 +23776,7 @@
             "format": "int32"
           }
         },
-        "description": "Properties specifing restrictions on how many unassigned grids can be created."
+        "description": "Properties specifying restrictions on how many unassigned grids can be created."
       },
       "GridsPage": {
         "required": [
@@ -22635,6 +23803,10 @@
         ],
         "type": "object",
         "properties": {
+          "attribute": {
+            "type": "string",
+            "description": "The attribute of this group."
+          },
           "created": {
             "type": "string",
             "description": "When the group was created.",
@@ -22708,6 +23880,10 @@
       "GroupParms": {
         "type": "object",
         "properties": {
+          "attribute": {
+            "type": "string",
+            "description": "The optional attribute of this group.  Specify an empty string to remove the existing value of the attribute."
+          },
           "externalId": {
             "type": "string",
             "description": "The optional externalId of this group.  Specify an empty string to remove the existing value of the externalId."
@@ -22737,6 +23913,96 @@
           }
         },
         "description": "Contains paging information and a page of groups."
+      },
+      "IdentityProvider": {
+        "type": "object",
+        "properties": {
+          "authenticationEnabled": {
+            "type": "boolean",
+            "description": "A flag indicating if the external identity provider can be used for user authentication.",
+            "example": true
+          },
+          "buttonImage": {
+            "type": "string",
+            "description": "The URI of the logo to display on the login button for this external identity provider.",
+            "example": "https://account.mycompany.com/images/logo.png"
+          },
+          "buttonText": {
+            "type": "string",
+            "description": "The unique text to display on the login button for this external identity provider.",
+            "example": "Sign in With MyCompany Co."
+          },
+          "createUser": {
+            "type": "boolean",
+            "description": "A flag indicating if the user should be created after authenticating to the external identity provider if it doesn't exist. The user attributes specified by the userAttributeMappings attribute are used to populate the user in IDaaS. This value is used if authenticationEnabled is true.",
+            "example": true
+          },
+          "domains": {
+            "type": "string",
+            "description": "The space separated list of domains associated with the external identity provider for use with user authentication.",
+            "example": "test.com sample.com"
+          },
+          "id": {
+            "type": "string",
+            "description": "The UUID of the external identity provider.",
+            "example": "6784549d-433c-44ea-a42f-4701458dg245"
+          },
+          "issuer": {
+            "type": "string",
+            "description": "The issuer URI for the external OIDC identity provider or the issuer, or IDP Entity ID, for the external SAML identity provider.",
+            "example": "https://accounts.mycompany.com"
+          },
+          "name": {
+            "type": "string",
+            "description": "The unique name of the external identity provider.",
+            "example": "MyCompany Co."
+          },
+          "protocol": {
+            "type": "string",
+            "description": "The type of the external identity provider.",
+            "example": "OIDC",
+            "enum": [
+              "OIDC",
+              "SAML"
+            ]
+          },
+          "spId": {
+            "type": "string",
+            "description": "The client identifier provided by the external OIDC identity provider or the SP entity ID provided to the external SAML identity provider.",
+            "example": "client123"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of the external identity provider.",
+            "example": "GENERIC"
+          },
+          "verificationCertificate2DN": {
+            "type": "string",
+            "description": "The verification certificate2 DN used with the external identity provider."
+          },
+          "verificationCertificate2ExpiryDate": {
+            "type": "string",
+            "description": "The verification certificate2 expiry date used with the external identity provider.",
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
+          },
+          "verificationCertificateDN": {
+            "type": "string",
+            "description": "The verification certificate DN used with the external identity provider."
+          },
+          "verificationCertificateExpiryDate": {
+            "type": "string",
+            "description": "The verification certificate expiry date used with the external identity provider.",
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
+          },
+          "verificationEnabled": {
+            "type": "boolean",
+            "description": "A flag indicating if the external identity provider can be used for user verification.",
+            "example": true
+          }
+        },
+        "description": "An IdentityProvider defines the information returned about an external identity provider for use with user authentication or user verification."
       },
       "IpContext": {
         "required": [
@@ -22885,7 +24151,7 @@
           },
           "quantity": {
             "type": "integer",
-            "description": "The number of print jobs allowed during the Trial period.",
+            "description": "The number of print jobs allowed during the Trial period (required during creation).",
             "format": "int32",
             "example": 25,
             "enum": [
@@ -24146,7 +25412,7 @@
             "example": "6981549d-433c-44ea-a42f-4705c26f3245"
           }
         },
-        "description": "An OidcIdentityProviderUserAuthMatchMapping maps a claim returned from an external OIDC identity provide uesr authentication to an IDaaS User user attribute for matching purposes."
+        "description": "An OidcIdentityProviderUserAuthMatchMapping maps a claim returned from an external OIDC identity provide user authentication to an IDaaS User user attribute for matching purposes."
       },
       "OidcIdentityProviderUserVerMatchMapping": {
         "required": [
@@ -24333,7 +25599,8 @@
                 "PASSKEY",
                 "IDP_AND_SECONDFACTOR",
                 "USER_CERTIFICATE",
-                "FACE"
+                "FACE",
+                "PASSTHROUGH"
               ]
             }
           },
@@ -24567,6 +25834,7 @@
               "AUTHENTICATIONFLOWS",
               "FACE",
               "TOKENACTIVATIONCONTENTS",
+              "PASSTHROUGH",
               "POLICYOVERRIDE",
               "ORGANIZATIONS",
               "WEBHOOKS",
@@ -24758,7 +26026,8 @@
                 "FIDO",
                 "USER_CERTIFICATE",
                 "SMARTCREDENTIALPUSH",
-                "FACE"
+                "FACE",
+                "PASSTHROUGH"
               ]
             }
           },
@@ -24826,7 +26095,8 @@
                 "FIDO",
                 "USER_CERTIFICATE",
                 "SMARTCREDENTIALPUSH",
-                "FACE"
+                "FACE",
+                "PASSTHROUGH"
               ]
             }
           },
@@ -24888,7 +26158,8 @@
                 "FIDO",
                 "USER_CERTIFICATE",
                 "SMARTCREDENTIALPUSH",
-                "FACE"
+                "FACE",
+                "PASSTHROUGH"
               ]
             }
           },
@@ -25048,7 +26319,8 @@
                 "FIDO",
                 "USER_CERTIFICATE",
                 "SMARTCREDENTIALPUSH",
-                "FACE"
+                "FACE",
+                "PASSTHROUGH"
               ]
             }
           },
@@ -25070,7 +26342,7 @@
           },
           "lowRiskEnableSmartLogin": {
             "type": "boolean",
-            "description": "A flag indicating if Smart Login is enabled for Low risk.This parameter is deprecated, use the lowhRiskAuthenticationFlow attribute with v2 APIs.",
+            "description": "A flag indicating if Smart Login is enabled for Low risk.This parameter is deprecated, use the lowRiskAuthenticationFlow attribute with v2 APIs.",
             "deprecated": true
           },
           "lowRiskFirstStep": {
@@ -25113,7 +26385,8 @@
                 "FIDO",
                 "USER_CERTIFICATE",
                 "SMARTCREDENTIALPUSH",
-                "FACE"
+                "FACE",
+                "PASSTHROUGH"
               ]
             }
           },
@@ -25176,7 +26449,8 @@
                 "FIDO",
                 "USER_CERTIFICATE",
                 "SMARTCREDENTIALPUSH",
-                "FACE"
+                "FACE",
+                "PASSTHROUGH"
               ]
             }
           },
@@ -25298,7 +26572,7 @@
           },
           "managedRoles": {
             "type": "array",
-            "description": "If allRoles is false, this attribute lists the roles and administrators in these roles thatcan be administered by administrators with this role.  Administrators will also be able to manage end users.",
+            "description": "If allRoles is false, this attribute lists the roles and administrators in these roles that can be administered by administrators with this role.  Administrators will also be able to manage end users.",
             "items": {
               "$ref": "#/components/schemas/Role"
             }
@@ -25636,6 +26910,501 @@
           }
         },
         "description": "SCVariableValues store variable values for a smart credential."
+      },
+      "SamlIdentityProvider": {
+        "type": "object",
+        "properties": {
+          "acrValues": {
+            "type": "string",
+            "description": "The space separated list of authentication context request values to request as part of the external SAML identity provider user authentication or user verification request.",
+            "example": "level1 level2"
+          },
+          "acsUrl": {
+            "type": "string",
+            "description": "The assertion consumer service URL provided to the external SAML identity provider. Leave empty to use default value.",
+            "example": "https://test.us.trustedauth.com/api/saml/SAML2/ACS"
+          },
+          "authenticationEnabled": {
+            "type": "boolean",
+            "description": "A flag indicating if the external SAML identity provider can be used for user authentication.",
+            "example": true
+          },
+          "buttonImage": {
+            "type": "string",
+            "description": "The URI of the logo to display on the login button for this external SAML identity provider.",
+            "example": "https://account.mycompany.com/images/logo.png"
+          },
+          "buttonText": {
+            "type": "string",
+            "description": "The unique text to display on the login button for this external SAML identity provider.",
+            "example": "Sign in With MyCompany Co."
+          },
+          "createUser": {
+            "type": "boolean",
+            "description": "A flag indicating if the user should be created after authenticating to the external SAML identity provider if it doesn't exist. The user attributes specified by the userAttributeMappings attribute are used to populate the user in IDaaS. This value is used if authenticationEnabled is true.",
+            "example": true
+          },
+          "domains": {
+            "type": "string",
+            "description": "The space separated list of domains associated with the external SAML identity provider for use with user authentication.",
+            "example": "test.com sample.com"
+          },
+          "forceAuthn": {
+            "type": "boolean",
+            "description": "A flag indicating if a force authentication should always be requested as part of the external SAML identity provider user authentication or user verification request.",
+            "example": false
+          },
+          "groupIds": {
+            "type": "array",
+            "description": "The UUIDs of groups that will be assigned to users created after an external SAML identity provider user authentication. An empty list means the user will be assigned to All Groups. If configured, the full set of groups must be configured. This value is used if createUser is true.",
+            "items": {
+              "type": "string",
+              "description": "The UUIDs of groups that will be assigned to users created after an external SAML identity provider user authentication. An empty list means the user will be assigned to All Groups. If configured, the full set of groups must be configured. This value is used if createUser is true."
+            }
+          },
+          "groupMapping": {
+            "type": "string",
+            "description": "The association between a specified claim returned from the external SAML identity provider and IDaaS groups. This mapping is used to associated IDaaS groups when a user is created or modified based on an external SAML identity provider user authentication or when it is modified based on an external SAML identity provider user verification. This value is used if createUser, updateUser, or updateVerificationUser is true."
+          },
+          "id": {
+            "type": "string",
+            "description": "The UUID of the external SAML identity provider.",
+            "example": "6784549d-433c-44ea-a42f-4701458dg245"
+          },
+          "issuer": {
+            "type": "string",
+            "description": "The issuer, or IDP Entity ID, for the external SAML identity provider.",
+            "example": "https://accounts.mycompany.com"
+          },
+          "name": {
+            "type": "string",
+            "description": "The unique name of the external SAML identity provider.",
+            "example": "MyCompany Co."
+          },
+          "nameIdPolicyFormat": {
+            "type": "string",
+            "description": "The name ID policy format to request as part of the external OIDC identity provider user authentication or user verification request.",
+            "example": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+          },
+          "organizationIds": {
+            "type": "array",
+            "description": "The UUIDs of organizations that will be assigned to users created after an external SAML identity provider user authentication. If configured, the full set of organizations must be configured. This value is used if createUser is true.",
+            "items": {
+              "type": "string",
+              "description": "The UUIDs of organizations that will be assigned to users created after an external SAML identity provider user authentication. If configured, the full set of organizations must be configured. This value is used if createUser is true."
+            }
+          },
+          "requireAssertionSignature": {
+            "type": "boolean",
+            "description": "A flag indicating if the SAML Assertion of the external SAML identity provider should be signed and verified.",
+            "example": true
+          },
+          "requireResponseSignature": {
+            "type": "boolean",
+            "description": "A flag indicating if the SAML Response of the external SAML identity provider should be signed and verified.",
+            "example": true
+          },
+          "roleMapping": {
+            "type": "string",
+            "description": "The association between a specified claim returned from the external SAML identity provider and an IDaaS role. This mapping is used to associated an IDaaS role when a user is created or modified based on an external SAML identity provider user authentication or when it is modified based on an external SAML identity provider user verification. This value is used if createUser, updateUser, or updateVerificationUser is true."
+          },
+          "sloEndpoint": {
+            "type": "string",
+            "description": "The single logout endpoint for the external SAML identity provider.",
+            "example": "https://account.mycompany.com/saml/slo"
+          },
+          "spEntityId": {
+            "type": "string",
+            "description": "The SP entity ID provided to the external SAML identity provider.",
+            "example": "client123"
+          },
+          "ssoEndpoint": {
+            "type": "string",
+            "description": "The single signon endpoint for the external SAML identity provider.",
+            "example": "https://account.mycompany.com/saml/sso"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of the external SAML identity provider. Once created, this value cannot be updated.",
+            "example": "GENERIC",
+            "enum": [
+              "GENERIC"
+            ]
+          },
+          "updateUser": {
+            "type": "boolean",
+            "description": "A flag indicating if the user should be updated after authenticating to the external SAML identity provider if it exists. The user attributes specified by the userAttributeMappings attribute are used to populate the user in IDaaS. This value is used if authenticationEnabled is true.",
+            "example": true
+          },
+          "updateUserVerification": {
+            "type": "boolean",
+            "description": "A flag indicating if the user should be updated after user verification to the external SAML identity provider if it exists. The user attributes specified by the userAttributeMappings attribute are used to populate the user in IDaaS. This value is used if verificationEnabled is true.",
+            "example": true
+          },
+          "userAttributeId": {
+            "type": "string",
+            "description": "The IDaaS user attribute ID used to find IDaaS users associated with an external SAML identity provider user authentication. This value is used if authenticationEnabled is true."
+          },
+          "userAttributeMappings": {
+            "type": "array",
+            "description": "The association between the claims returned from the external SAML identity provider and IDaaS user attributes. These attributes are used to populate user attributes when it is created or modified based on an external SAML identity provider user authentication or when it is modified based on an external SAML identity provider user verification. If configured, the full set of mappings must be configured. This value is used if createUser, updateUser, or updateVerificationUser is true.",
+            "items": {
+              "$ref": "#/components/schemas/SamlIdentityProviderAttributeMapping"
+            }
+          },
+          "userAuthMatchMappings": {
+            "type": "array",
+            "description": "The association between the claims returned from the external SAML identity provider and IDaaS user attributes. These attributes are used to match an existing IDaaS user based on an external SAML identity provider user authentication. If configured, the full set of mappings must be configured. This value is used if authenticationEnabled is true.",
+            "items": {
+              "$ref": "#/components/schemas/SamlIdentityProviderUserAuthMatchMapping"
+            }
+          },
+          "userClaim": {
+            "type": "string",
+            "description": "The external SAML identity provider claim (attribute) used to find IDaaS users associated with an external SAML identity provider user authentication. This value is used if authenticationEnabled is true."
+          },
+          "userNameFormat": {
+            "type": "string",
+            "description": "If user name parameter is set to NameID, the value of the format of this value.",
+            "example": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+          },
+          "userNameParameter": {
+            "type": "string",
+            "description": "The name of the parameter to include with the SAML authentication request that will contain the value of the user's userid. Set the value to NameID to pass this value as part of the SAML Request message.",
+            "example": "username"
+          },
+          "userVerMatchMappings": {
+            "type": "array",
+            "description": "The association between the claims returned from the external SAML identity provider and IDaaS user attributes. These attributes are used to match an existing IDaaS user based on an external SAML identity provider user verification. If configured, the full set of mappings must be configured. This value is used if verificationEnabled is true.",
+            "items": {
+              "$ref": "#/components/schemas/SamlIdentityProviderUserVerMatchMapping"
+            }
+          },
+          "verificationCertificate": {
+            "type": "string",
+            "description": "The verification certificate used with the external SAML identity provider.",
+            "format": "byte"
+          },
+          "verificationCertificate2": {
+            "type": "string",
+            "description": "The verification certificate2 used with the external SAML identity provider.",
+            "format": "byte"
+          },
+          "verificationCertificate2DN": {
+            "type": "string",
+            "description": "The verification certificate2 DN used with the external SAML identity provider."
+          },
+          "verificationCertificate2ExpiryDate": {
+            "type": "string",
+            "description": "The verification certificate2 expiry date used with the external SAML identity provider.",
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
+          },
+          "verificationCertificateDN": {
+            "type": "string",
+            "description": "The verification certificate DN used with the external SAML identity provider."
+          },
+          "verificationCertificateExpiryDate": {
+            "type": "string",
+            "description": "The verification certificate expiry date used with the external SAML identity provider.",
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
+          },
+          "verificationEnabled": {
+            "type": "boolean",
+            "description": "A flag indicating if the external SAML identity provider can be used for user verification.",
+            "example": true
+          }
+        },
+        "description": "An SamlIdentityProvider defines the information returned about an external SAML identity provider for use with user authentication or user verification."
+      },
+      "SamlIdentityProviderAttributeMapping": {
+        "required": [
+          "claim",
+          "userAttributeId"
+        ],
+        "type": "object",
+        "properties": {
+          "claim": {
+            "type": "string",
+            "description": "The name of the claim (attribute) being mapped. This value must be provided when creating or modifying an attribute mapping.",
+            "example": "email"
+          },
+          "id": {
+            "type": "string",
+            "description": "The UUID of the SAML identity provider attribute mapping.",
+            "example": "6781549d-433c-44ea-a42f-4705c26f3245"
+          },
+          "samlIdentityProviderId": {
+            "type": "string",
+            "description": "The UUID of the SAML identity provider the attribute mapping belongs to.",
+            "example": "6881549d-433c-44ea-a42f-4705c26f3245"
+          },
+          "userAttribute": {
+            "$ref": "#/components/schemas/UserAttribute"
+          },
+          "userAttributeId": {
+            "type": "string",
+            "description": "The UUID of the IDaaS user attribute being mapped to. This value must be provided when creating or modifying an attribute mapping.",
+            "example": "6981549d-433c-44ea-a42f-4705c26f3245"
+          }
+        },
+        "description": "An SamlIdentityProviderAttributeMapping maps a claim (attribute) returned from an external SAML identity provider user authentication or user verification to an IDaaS user attribute."
+      },
+      "SamlIdentityProviderParms": {
+        "type": "object",
+        "properties": {
+          "acrValues": {
+            "type": "string",
+            "description": "The space separated list of authentication context request values to request as part of the external SAML identity provider user authentication or user verification request.",
+            "example": "level1 level2"
+          },
+          "acsUrl": {
+            "type": "string",
+            "description": "The assertion consumer service URL provided to the external SAML identity provider. Leave empty to use default value.",
+            "example": "https://test.us.trustedauth.com/api/saml/SAML2/ACS"
+          },
+          "authenticationEnabled": {
+            "type": "boolean",
+            "description": "A flag indicating if the external SAML identity provider can be used for user authentication. If enabled, userAttributeId and userClaim are required.",
+            "example": true,
+            "default": false
+          },
+          "buttonImage": {
+            "type": "string",
+            "description": "The URI of the logo to display on the login button for this external SAML identity provider.",
+            "example": "https://account.mycompany.com/images/logo.png"
+          },
+          "buttonText": {
+            "type": "string",
+            "description": "The unique text to display on the login button for this external SAML identity provider. This value is required when creating an IDP.",
+            "example": "Sign in With MyCompany Co."
+          },
+          "createUser": {
+            "type": "boolean",
+            "description": "A flag indicating if the user should be created after authenticating to the external SAML identity provider if it doesn't exist. The user attributes specified by the userAttributeMappings attribute are used to populate the user in IDaaS. This value can only be set if authenticationEnabled is true.",
+            "example": true,
+            "default": false
+          },
+          "domains": {
+            "type": "string",
+            "description": "The space separated list of domains associated with the external SAML identity provider for use with user authentication.",
+            "example": "test.com sample.com"
+          },
+          "forceAuthn": {
+            "type": "boolean",
+            "description": "A flag indicating if a force authentication should always be requested as part of the external SAML identity provider user authentication or user verification request.",
+            "example": false
+          },
+          "groupIds": {
+            "type": "array",
+            "description": "The UUIDs of groups that will be assigned to users created after an external SAML identity provider user authentication. An empty list means the user will be assigned to All Groups. If configured, the full set of groups must be configured. This value can only be set if createUser is true.",
+            "items": {
+              "type": "string",
+              "description": "The UUIDs of groups that will be assigned to users created after an external SAML identity provider user authentication. An empty list means the user will be assigned to All Groups. If configured, the full set of groups must be configured. This value can only be set if createUser is true."
+            }
+          },
+          "groupMapping": {
+            "type": "string",
+            "description": "The association between a specified claim returned from the external SAML identity provider and IDaaS groups. This mapping is used to associated IDaaS groups when a user is created or modified based on an external SAML identity provider user authentication or when it is modified based on an external SAML identity provider user verification. This value can only be set if createUser, updateUser, or updateVerificationUser is true."
+          },
+          "issuer": {
+            "type": "string",
+            "description": "The issuer, or IDP Entity ID, for the external SAML identity provider.",
+            "example": "https://accounts.mycompany.com"
+          },
+          "name": {
+            "type": "string",
+            "description": "The unique name of the external SAML identity provider. This value is required when creating an IDP.",
+            "example": "MyCompany Co."
+          },
+          "nameIdPolicyFormat": {
+            "type": "string",
+            "description": "The name ID policy format to request as part of the external OIDC identity provider user authentication or user verification request.",
+            "example": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+          },
+          "organizationIds": {
+            "type": "array",
+            "description": "The UUIDs of organizations that will be assigned to users created after an external SAML identity provider user authentication. If configured, the full set of organizations must be configured. This value can only be set if createUser is true.",
+            "items": {
+              "type": "string",
+              "description": "The UUIDs of organizations that will be assigned to users created after an external SAML identity provider user authentication. If configured, the full set of organizations must be configured. This value can only be set if createUser is true."
+            }
+          },
+          "requireAssertionSignature": {
+            "type": "boolean",
+            "description": "A flag indicating if the SAML Assertion of the external SAML identity provider should be signed and verified.",
+            "example": true,
+            "default": false
+          },
+          "requireResponseSignature": {
+            "type": "boolean",
+            "description": "A flag indicating if the SAML Response of the external SAML identity provider should be signed and verified.",
+            "example": true,
+            "default": false
+          },
+          "roleMapping": {
+            "type": "string",
+            "description": "The association between a specified claim returned from the external SAML identity provider and an IDaaS role. This mapping is used to associated an IDaaS role when a user is created or modified based on an external SAML identity provider user authentication or when it is modified based on an external SAML identity provider user verification. This value can only be set if createUser, updateUser, or updateVerificationUser is true."
+          },
+          "sloEndpoint": {
+            "type": "string",
+            "description": "The single logout endpoint for the external SAML identity provider.",
+            "example": "https://account.mycompany.com/saml/slo"
+          },
+          "spEntityId": {
+            "type": "string",
+            "description": "The SP entity ID provided to the external SAML identity provider. This value is required when creating an IDP.",
+            "example": "client123"
+          },
+          "ssoEndpoint": {
+            "type": "string",
+            "description": "The single signon endpoint for the external SAML identity provider. This value is required when creating an IDP.",
+            "example": "https://account.mycompany.com/saml/sso"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of the external SAML identity provider. Once created, this value cannot be updated. This value is required when creating an IDP.",
+            "example": "GENERIC",
+            "enum": [
+              "GENERIC"
+            ]
+          },
+          "updateUser": {
+            "type": "boolean",
+            "description": "A flag indicating if the user should be updated after authenticating to the external SAML identity provider if it exists. The user attributes specified by the userAttributeMappings attribute are used to populate the user in IDaaS. This value can only be set if authenticationEnabled is true.",
+            "example": true,
+            "default": false
+          },
+          "updateUserVerification": {
+            "type": "boolean",
+            "description": "A flag indicating if the user should be updated after user verification to the external SAML identity provider if it exists. The user attributes specified by the userAttributeMappings attribute are used to populate the user in IDaaS. This value can only be set if verificationEnabled is true.",
+            "example": true,
+            "default": false
+          },
+          "userAttributeId": {
+            "type": "string",
+            "description": "The IDaaS user attribute ID used to find IDaaS users associated with an external SAML identity provider user authentication. This value can only be set if authenticationEnabled is true."
+          },
+          "userAttributeMappings": {
+            "type": "array",
+            "description": "The association between the claims returned from the external SAML identity provider and IDaaS user attributes. These attributes are used to populate user attributes when it is created or modified based on an external SAML identity provider user authentication or when it is modified based on an external SAML identity provider user verification. If configured, the full set of mappings must be configured. This value can only be set if createUser, updateUser, or updateVerificationUser is true.",
+            "items": {
+              "$ref": "#/components/schemas/SamlIdentityProviderAttributeMapping"
+            }
+          },
+          "userAuthMatchMappings": {
+            "type": "array",
+            "description": "The association between the claims returned from the external SAML identity provider and IDaaS user attributes. These attributes are used to match an existing IDaaS user based on an external SAML identity provider user authentication. If configured, the full set of mappings must be configured. This value can only be set if authenticationEnabled is true.",
+            "items": {
+              "$ref": "#/components/schemas/SamlIdentityProviderUserAuthMatchMapping"
+            }
+          },
+          "userClaim": {
+            "type": "string",
+            "description": "The external SAML identity provider claim (attribute) used to find IDaaS users associated with an external SAML identity provider user authentication. This value can only be set if authenticationEnabled is true."
+          },
+          "userNameFormat": {
+            "type": "string",
+            "description": "If user name parameter is set to NameID, the value of the format of this value.",
+            "example": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+          },
+          "userNameParameter": {
+            "type": "string",
+            "description": "The name of the parameter to include with the SAML authentication request that will contain the value of the user's userid. Set the value to NameID to pass this value as part of the SAML Request message.",
+            "example": "username"
+          },
+          "userVerMatchMappings": {
+            "type": "array",
+            "description": "The association between the claims returned from the external SAML identity provider and IDaaS user attributes. These attributes are used to match an existing IDaaS user based on an external SAML identity provider user verification. If configured, the full set of mappings must be configured. This value can only be set if verificationEnabled is true.",
+            "items": {
+              "$ref": "#/components/schemas/SamlIdentityProviderUserVerMatchMapping"
+            }
+          },
+          "verificationCertificate": {
+            "type": "string",
+            "description": "The verification certificate used with the external SAML identity provider.",
+            "format": "byte"
+          },
+          "verificationCertificate2": {
+            "type": "string",
+            "description": "The verification certificate2 used with the external SAML identity provider.",
+            "format": "byte"
+          },
+          "verificationEnabled": {
+            "type": "boolean",
+            "description": "A flag indicating if the external SAML identity provider can be used for user verification. If enabled, userVerMatchMappings is required.",
+            "example": true,
+            "default": false
+          }
+        },
+        "description": "An SamlIdentityProviderParms defines the information passed to Identity as a Service when creating or modifying an external SAML identity provider for use with user authentication or user verification."
+      },
+      "SamlIdentityProviderUserAuthMatchMapping": {
+        "required": [
+          "claim",
+          "userAttributeId"
+        ],
+        "type": "object",
+        "properties": {
+          "claim": {
+            "type": "string",
+            "description": "The name of the claim (attribute) being mapped. This value must be provided when creating or modifying a user authentication match mapping.",
+            "example": "email"
+          },
+          "id": {
+            "type": "string",
+            "description": "The UUID of the SAML identity provider user authentication match mapping.",
+            "example": "6781549d-433c-44ea-a42f-4705c26f3245"
+          },
+          "samlIdentityProviderId": {
+            "type": "string",
+            "description": "The UUID of the SAML identity provider the user authentication match mapping belongs to.",
+            "example": "6881549d-433c-44ea-a42f-4705c26f3245"
+          },
+          "userAttribute": {
+            "$ref": "#/components/schemas/UserAttribute"
+          },
+          "userAttributeId": {
+            "type": "string",
+            "description": "The UUID of the IDaaS user attribute being mapped to. This value must be provided when creating or modifying a user authentication match mapping.",
+            "example": "6981549d-433c-44ea-a42f-4705c26f3245"
+          }
+        },
+        "description": "An SamlIdentityProviderUserAuthMatchMapping maps a claim (attribute) returned from an external SAML identity provide user authentication to an IDaaS User user attribute for matching purposes."
+      },
+      "SamlIdentityProviderUserVerMatchMapping": {
+        "required": [
+          "claim",
+          "userAttributeId"
+        ],
+        "type": "object",
+        "properties": {
+          "claim": {
+            "type": "string",
+            "description": "The name of the claim (attribute) being mapped. This value must be provided when creating or modifying a user verification match mapping.",
+            "example": "email"
+          },
+          "id": {
+            "type": "string",
+            "description": "The UUID of the SAML identity provider user verification match mapping.",
+            "example": "6781549d-433c-44ea-a42f-4705c26f3245"
+          },
+          "samlIdentityProviderId": {
+            "type": "string",
+            "description": "The UUID of the SAML identity provider the user verification match mapping belongs to.",
+            "example": "6881549d-433c-44ea-a42f-4705c26f3245"
+          },
+          "userAttribute": {
+            "$ref": "#/components/schemas/UserAttribute"
+          },
+          "userAttributeId": {
+            "type": "string",
+            "description": "The UUID of the IDaaS user attribute being mapped to. This value must be provided when creating or modifying a user verification match mapping.",
+            "example": "6981549d-433c-44ea-a42f-4705c26f3245"
+          }
+        },
+        "description": "An SamlIdentityProviderUserVerMatchMapping maps a claim (attribute) returned from an external SAML identity provide user verification to an IDaaS User user attribute for matching purposes."
       },
       "SdpParms": {
         "required": [
@@ -26160,7 +27929,7 @@
             "description": "The smart credential unblock challenge generated from the smart credential."
           }
         },
-        "description": "Parametres for the smart credential unblock operation."
+        "description": "Parameters for the smart credential unblock operation."
       },
       "SmartCredentialUnblockResponse": {
         "type": "object",
@@ -26288,6 +28057,10 @@
           "name": {
             "type": "string",
             "description": "The name of this tenant management."
+          },
+          "signingKeyId": {
+            "type": "string",
+            "description": "The signing key of this tenant management."
           }
         },
         "description": "A tenant management configuration."
@@ -26318,6 +28091,10 @@
           "enabled": {
             "type": "boolean",
             "description": "Whether tenant management is enabled."
+          },
+          "signingKeyId": {
+            "type": "string",
+            "description": "The signing key of this tenant management."
           }
         },
         "description": "Parameters passed when setting tenant management."
@@ -27253,7 +29030,8 @@
                 "PASSKEY",
                 "IDP_AND_SECONDFACTOR",
                 "USER_CERTIFICATE",
-                "FACE"
+                "FACE",
+                "PASSTHROUGH"
               ]
             }
           },
@@ -27281,7 +29059,8 @@
                 "SMARTCREDENTIALPUSH",
                 "USER_CERTIFICATE",
                 "MACHINE",
-                "FACE"
+                "FACE",
+                "PASSTHROUGH"
               ]
             }
           },
@@ -27660,7 +29439,8 @@
               "PASSKEY",
               "IDP_AND_SECONDFACTOR",
               "USER_CERTIFICATE",
-              "FACE"
+              "FACE",
+              "PASSTHROUGH"
             ]
           }
         },
@@ -28186,11 +29966,11 @@
         "properties": {
           "adComplexity": {
             "type": "boolean",
-            "description": "A boolean flag indication if adComplexitiy is enabled."
+            "description": "A boolean flag indication if adComplexity is enabled."
           },
           "includeLowercase": {
             "type": "string",
-            "description": "includeLowercase",
+            "description": "Specifies if an lowercase character is required, allowed or not allowed in the password.",
             "enum": [
               "REQUIRED",
               "ALLOWED",
@@ -28199,7 +29979,7 @@
           },
           "includeNonalphanumeric": {
             "type": "string",
-            "description": "includeNonalphanumeric",
+            "description": "Specifies if non-alphanumeric character is required, allowed or not allowed in the password.",
             "enum": [
               "REQUIRED",
               "ALLOWED",
@@ -28208,7 +29988,7 @@
           },
           "includeNumber": {
             "type": "string",
-            "description": "includeNumber",
+            "description": "Specifies if a numeric character is required, allowed or not allowed in the password.",
             "enum": [
               "REQUIRED",
               "ALLOWED",
@@ -28217,7 +29997,7 @@
           },
           "includeUppercase": {
             "type": "string",
-            "description": "includeUppercase",
+            "description": "Specifies if an uppercase character is required, allowed or not allowed in the password.",
             "enum": [
               "REQUIRED",
               "ALLOWED",
@@ -28226,7 +30006,12 @@
           },
           "lifetimeDays": {
             "type": "integer",
-            "description": "lifetimeDays",
+            "description": "The lifetime of the password in days.",
+            "format": "int32"
+          },
+          "maximumLength": {
+            "type": "integer",
+            "description": "The maximum length of the password.",
             "format": "int32"
           },
           "maximumRepeated": {
@@ -28236,12 +30021,12 @@
           },
           "minimumLength": {
             "type": "integer",
-            "description": "minimumLength",
+            "description": "The minimum length of the password.",
             "format": "int32"
           },
           "minimumLifetime": {
             "type": "integer",
-            "description": "minimumLifetime",
+            "description": "The minimum lifetime of the password restricting how frequently the password can be changed.",
             "format": "int32"
           },
           "minimumStrength": {
@@ -28450,6 +30235,112 @@
           }
         },
         "description": "Contains paging information and the results from a user search."
+      },
+      "Webhook": {
+        "required": [
+          "callbackUrl",
+          "enabled",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "callbackUrl": {
+            "type": "string",
+            "description": "The callback url of the webhook.",
+            "example": "https://mycompany.com/api"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "A flag indicating if the webhook is enabled.",
+            "example": true
+          },
+          "events": {
+            "type": "array",
+            "description": "The events of the webhook.",
+            "items": {
+              "$ref": "#/components/schemas/WebhookEvent"
+            }
+          },
+          "expired": {
+            "type": "boolean",
+            "description": "A flag indicating if the webhook has expired.",
+            "example": false
+          },
+          "expiryDate": {
+            "type": "string",
+            "description": "The timestamp of when the webhook is set to expire. If no expiry is set, this value will be NULL.",
+            "example": "2019-02-19T13:15:27"
+          },
+          "id": {
+            "type": "string",
+            "description": "The ID of the webhook. This value is generated when the webhook is created."
+          },
+          "token": {
+            "type": "string",
+            "description": "The unique webhook token.",
+            "example": "Base64 Encoded String"
+          }
+        },
+        "description": "Information returned about a webhook."
+      },
+      "WebhookEvent": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "string",
+            "description": "Subset of resource, or group IDs of the webhook event. All resources are selected by default if this parameter is not specified.",
+            "example": "[{\"enrollmentDesignId\":\"fd1d1b86-d258-4332-ad89-ead30d2dae7f\"}]"
+          },
+          "id": {
+            "type": "string",
+            "description": "The ID of the webhook event. This value is not needed when creating/updating a webhook."
+          },
+          "type": {
+            "type": "string",
+            "description": "The event type set to trigger the webhook.",
+            "example": "credential.create | credential.update | credential.delete | user.create"
+          }
+        },
+        "description": "Information returned about the events of a webhook."
+      },
+      "WebhookParms": {
+        "required": [
+          "callbackUrl",
+          "events"
+        ],
+        "type": "object",
+        "properties": {
+          "callbackUrl": {
+            "type": "string",
+            "description": "The client callback url for this webhook.",
+            "example": "https://mycompany.com/api"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "A flag indicating if the webhook is enabled.",
+            "example": true,
+            "default": true
+          },
+          "events": {
+            "type": "array",
+            "description": "The list of webhook events.",
+            "items": {
+              "$ref": "#/components/schemas/WebhookEvent"
+            }
+          },
+          "expiry": {
+            "maximum": 1000,
+            "minimum": 0,
+            "type": "integer",
+            "description": "How long to keep the webhook alive for <b>(in days)</b>. Value of 0 means no expiration. Once a webhook has reached expiry, it will be marked as <b>disabled</b>. This parameter is optional and is not set by default.",
+            "format": "int32",
+            "example": 90
+          }
+        },
+        "description": "Parameters including the callback URL and list of events to trigger the webhook."
       },
       "ZoneId": {
         "type": "object",
