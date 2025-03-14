@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.38"
+    "version": "5.39"
   },
   "servers": [
     {
@@ -57,7 +57,7 @@
       "description": "Issue Mobile Flash Pass"
     },
     {
-      "name": "Webhook",
+      "name": "Webhooks",
       "description": "Webhook Controllers"
     }
   ],
@@ -3846,11 +3846,61 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Successful",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SpIdentityProvider"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
                 }
               }
             }
@@ -3894,11 +3944,61 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Successful",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SpIdentityProvider"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
                 }
               }
             }
@@ -4288,11 +4388,11 @@
     "/api/web/v1/webhooks": {
       "get": {
         "tags": [
-          "Webhook"
+          "Webhooks"
         ],
-        "summary": "List Webhooks",
+        "summary": "List webhooks",
         "description": "Return a list of webhooks. Caller is required to have WEBHOOKS:VIEW permission.",
-        "operationId": "getWebhooks",
+        "operationId": "getWebhooksUsingGET",
         "responses": {
           "200": {
             "description": "Successful",
@@ -4368,11 +4468,11 @@
       },
       "post": {
         "tags": [
-          "Webhook"
+          "Webhooks"
         ],
-        "summary": "Register a Webhook",
+        "summary": "Register a webhook",
         "description": "Register a webhook with callback URL, webhook events etc. Caller is required to have WEBHOOKS:ADD permission.",
-        "operationId": "createWebhook",
+        "operationId": "createWebhookUsingPOST",
         "requestBody": {
           "content": {
             "application/json": {
@@ -4457,11 +4557,11 @@
     "/api/web/v1/webhooks/test/{id}": {
       "post": {
         "tags": [
-          "Webhook"
+          "Webhooks"
         ],
-        "summary": "Test a Webhook",
+        "summary": "Test a webhook",
         "description": "Sends a dummy payload to the registered webhook callback URL. Use this to ensure your API is ready to start accepting webhook notifications. Caller is required to have WEBHOOKS:EDIT permission.",
-        "operationId": "testWebhook",
+        "operationId": "testWebhookUsingPOST",
         "parameters": [
           {
             "name": "id",
@@ -4538,13 +4638,101 @@
       }
     },
     "/api/web/v1/webhooks/{id}": {
+      "get": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Get a webhook by id",
+        "description": "Get the specified webhook. Caller is required to have WEBHOOKS:VIEW permission.",
+        "operationId": "readWebhookUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the webhook.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Webhook"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBHOOKS:VIEW"
+            ]
+          }
+        ]
+      },
       "put": {
         "tags": [
-          "Webhook"
+          "Webhooks"
         ],
-        "summary": "Update a Webhook",
+        "summary": "Update a webhook",
         "description": "Update a webhook with callback URL, webhook events etc. Caller is required to have WEBHOOKS:EDIT permission.",
-        "operationId": "updateWebhook",
+        "operationId": "updateWebhookUsingPUT",
         "parameters": [
           {
             "name": "id",
@@ -4638,11 +4826,11 @@
       },
       "delete": {
         "tags": [
-          "Webhook"
+          "Webhooks"
         ],
-        "summary": "Delete a Webhook",
+        "summary": "Delete a webhook",
         "description": "Delete a registered webhook by ID. Caller is required to have WEBHOOKS:REMOVE permission.",
-        "operationId": "deleteWebhook",
+        "operationId": "deleteWebhookUsingDELETE",
         "parameters": [
           {
             "name": "id",
@@ -7191,9 +7379,14 @@
           "billing": {
             "$ref": "#/components/schemas/Billing"
           },
+          "exceptionSlotMessage": {
+            "type": "string",
+            "description": "The message to display on the printer LCD screen when the exception slot is selected. Maximum 45 character limit for Sigma printers, and 32 character limit for older printers.",
+            "example": "Load the correct card stock type into the exception slot."
+          },
           "hopper": {
             "type": "integer",
-            "description": "The printer hopper to use",
+            "description": "The printer hopper to use. Value of 0 will use the printer exception slot.",
             "format": "int32",
             "example": 1
           },
@@ -7406,7 +7599,8 @@
               "PROVISION_SCIM",
               "CREATE_TENANT",
               "REVOKE_MFP",
-              "DELETE_GRIDS"
+              "DELETE_GRIDS",
+              "DELETE_TOKENS"
             ]
           }
         }
@@ -7516,9 +7710,14 @@
       "CredentialDesignPrintRequestPrinter": {
         "type": "object",
         "properties": {
+          "exceptionSlotMessage": {
+            "type": "string",
+            "description": "The message to display on the printer LCD screen when the exception slot is selected. Maximum 45 character limit for Sigma printers, and 32 character limit for older printers.",
+            "example": "Load the correct card stock type into the exception slot."
+          },
           "hopper": {
             "type": "integer",
-            "description": "The printer hopper to use",
+            "description": "The printer hopper to use. Value of 0 will use the printer exception slot.",
             "format": "int32",
             "example": 1
           },
@@ -7870,6 +8069,11 @@
         ],
         "type": "object",
         "properties": {
+          "exceptionSlotMessage": {
+            "type": "string",
+            "description": "Optional message to be displayed on printer's LCD screen when the exception slot is selected.",
+            "example": "Please load the correct card into the exception slot."
+          },
           "hopper": {
             "type": "integer",
             "description": "Hopper to be used (Optional), default value is 1",
@@ -8244,7 +8448,8 @@
           },
           "contractMode": {
             "type": "string",
-            "description": "The contract mode of a tenant, allowable values = 'PRODUCTION', 'TRIAL', example='TRIAL'.",
+            "description": "The contract mode of a tenant (required during creation), allowable values = 'PRODUCTION', 'TRIAL'.",
+            "example": "TRIAL",
             "enum": [
               "PRODUCTION",
               "TRIAL",
@@ -8638,6 +8843,10 @@
         ],
         "type": "object",
         "properties": {
+          "attribute": {
+            "type": "string",
+            "description": "The attribute of this group."
+          },
           "created": {
             "type": "string",
             "description": "When the group was created.",
@@ -8732,7 +8941,7 @@
           },
           "quantity": {
             "type": "integer",
-            "description": "The number of print jobs allowed during the Trial period.",
+            "description": "The number of print jobs allowed during the Trial period (required during creation).",
             "format": "int32",
             "example": 25,
             "enum": [
@@ -8862,7 +9071,8 @@
               "PROVISION_SCIM",
               "CREATE_TENANT",
               "REVOKE_MFP",
-              "DELETE_GRIDS"
+              "DELETE_GRIDS",
+              "DELETE_TOKENS"
             ]
           }
         }
@@ -9084,7 +9294,8 @@
               "PROVISION_SCIM",
               "CREATE_TENANT",
               "REVOKE_MFP",
-              "DELETE_GRIDS"
+              "DELETE_GRIDS",
+              "DELETE_TOKENS"
             ]
           }
         }
@@ -9399,6 +9610,7 @@
               "AUTHENTICATIONFLOWS",
               "FACE",
               "TOKENACTIVATIONCONTENTS",
+              "PASSTHROUGH",
               "POLICYOVERRIDE",
               "ORGANIZATIONS",
               "WEBHOOKS",
@@ -9803,7 +10015,8 @@
               "PROVISION_SCIM",
               "CREATE_TENANT",
               "REVOKE_MFP",
-              "DELETE_GRIDS"
+              "DELETE_GRIDS",
+              "DELETE_TOKENS"
             ]
           }
         }
@@ -9823,6 +10036,7 @@
           },
           "certificate": {
             "type": "string",
+            "description": "Self signed certs for legacy printers",
             "format": "byte"
           },
           "deviceId": {
@@ -10178,7 +10392,7 @@
           },
           "managedRoles": {
             "type": "array",
-            "description": "If allRoles is false, this attribute lists the roles and administrators in these roles thatcan be administered by administrators with this role.  Administrators will also be able to manage end users.",
+            "description": "If allRoles is false, this attribute lists the roles and administrators in these roles that can be administered by administrators with this role.  Administrators will also be able to manage end users.",
             "items": {
               "$ref": "#/components/schemas/Role"
             }
@@ -10801,6 +11015,10 @@
           "name": {
             "type": "string",
             "description": "The name of this tenant management."
+          },
+          "signingKeyId": {
+            "type": "string",
+            "description": "The signing key of this tenant management."
           }
         },
         "description": "A tenant management configuration."
@@ -10831,6 +11049,10 @@
           "enabled": {
             "type": "boolean",
             "description": "Whether tenant management is enabled."
+          },
+          "signingKeyId": {
+            "type": "string",
+            "description": "The signing key of this tenant management."
           }
         },
         "description": "Parameters passed when setting tenant management."
@@ -11391,7 +11613,8 @@
                 "PASSKEY",
                 "IDP_AND_SECONDFACTOR",
                 "USER_CERTIFICATE",
-                "FACE"
+                "FACE",
+                "PASSTHROUGH"
               ]
             }
           },
@@ -11419,7 +11642,8 @@
                 "SMARTCREDENTIALPUSH",
                 "USER_CERTIFICATE",
                 "MACHINE",
-                "FACE"
+                "FACE",
+                "PASSTHROUGH"
               ]
             }
           },
@@ -11769,7 +11993,8 @@
               "PASSKEY",
               "IDP_AND_SECONDFACTOR",
               "USER_CERTIFICATE",
-              "FACE"
+              "FACE",
+              "PASSTHROUGH"
             ]
           }
         },
@@ -12056,7 +12281,7 @@
           "type": {
             "type": "string",
             "description": "The event type set to trigger the webhook.",
-            "example": "credential.create | credential.update | credential.delete"
+            "example": "credential.create | credential.update | credential.delete | user.create"
           }
         },
         "description": "Information returned about the events of a webhook."
