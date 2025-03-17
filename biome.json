@@ -7,7 +7,14 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["./administration.json", "./authentication.json", "./issuance.json"]
+    "ignore": [
+      "./administration.json",
+      "./authentication.json",
+      "./issuance.json",
+      "./config-admin.json",
+      "./config-auth.json",
+      "./config-issuance.json"
+    ]
   },
   "formatter": {
     "enabled": true,
