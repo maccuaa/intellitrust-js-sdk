@@ -12,14 +12,20 @@ const ISSUANCE = "issuance";
   const args = process.argv.slice(2);
 
   if (args.length !== 1) {
-    console.error("Too many arguments provided. Expected 1, received", args.length);
+    console.error(
+      "Too many arguments provided. Expected 1, received",
+      args.length
+    );
     process.exit(1);
   }
 
   const sdkType = args.pop();
 
   if (sdkType !== "auth" && sdkType !== "admin" && sdkType !== "issuance") {
-    console.error(`Invalid type provided. Expected '${ADMIN}' or '${AUTH}' or '${ISSUANCE}, received`, sdkType);
+    console.error(
+      `Invalid type provided. Expected '${ADMIN}' or '${AUTH}' or '${ISSUANCE}, received`,
+      sdkType
+    );
     process.exit(1);
   }
 
@@ -31,7 +37,7 @@ const ISSUANCE = "issuance";
 
   console.log("Post processing files...");
 
-  await generateReadme(config, output, sdkType);
+  await generateReadme(output, sdkType);
 
-  console.log("Generated README");
+  console.log("Updated README");
 })();

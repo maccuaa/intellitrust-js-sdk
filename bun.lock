@@ -4,10 +4,10 @@
     "": {
       "name": "idaas-ts-sdk-generator",
       "dependencies": {
-        "@biomejs/biome": "latest",
-        "@openapitools/openapi-generator-cli": "latest",
-        "@types/bun": "latest",
-        "npm-run-all2": "latest",
+        "@biomejs/biome": "^1.9.4",
+        "@openapitools/openapi-generator-cli": "^2.16.3",
+        "@types/bun": "^1.2.0",
+        "npm-run-all2": "^7.0.2",
       },
     },
   },
