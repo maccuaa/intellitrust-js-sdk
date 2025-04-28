@@ -6,9 +6,7 @@ interface GeneratorOptions {
   config: string;
 }
 
-export const getGeneratorOptions = (
-  type: "admin" | "auth" | "issuance"
-): GeneratorOptions => {
+export const getGeneratorOptions = (type: "admin" | "auth" | "issuance"): GeneratorOptions => {
   let input = "";
   let output = "";
   let config = "";
@@ -46,11 +44,7 @@ export const generateReadme = async (output: string, type: string) => {
   const isAdmin = type === "admin";
   const isAuth = type === "auth";
 
-  const examplePath = isAdmin
-    ? ADMIN_EXAMPLE
-    : isAuth
-    ? AUTH_EXAMPLE
-    : ISSUANCE_EXAMPLE;
+  const examplePath = isAdmin ? ADMIN_EXAMPLE : isAuth ? AUTH_EXAMPLE : ISSUANCE_EXAMPLE;
 
   const example = await Bun.file(join("templates", examplePath)).text();
 
