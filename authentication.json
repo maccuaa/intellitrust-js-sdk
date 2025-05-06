@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.39"
+    "version": "5.40"
   },
   "servers": [
     {
@@ -122,6 +122,7 @@
                 "OTP",
                 "GRID",
                 "TOKEN",
+                "TOKENCR",
                 "TOKENPUSH",
                 "FIDO",
                 "SMARTCREDENTIALPUSH",
@@ -619,6 +620,87 @@
         ]
       }
     },
+    "/api/web/v1/self/tokens/offline": {
+      "post": {
+        "tags": [
+          "Authentication Self Admin"
+        ],
+        "summary": "Get Offline Token Responses",
+        "operationId": "getOfflineTokenResponsesUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetOfflineTokenAuthenticateParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfflineTokenAuthenticateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/web/v1/self/values": {
       "get": {
         "tags": [
@@ -874,6 +956,7 @@
                 "OTP",
                 "GRID",
                 "TOKEN",
+                "TOKENCR",
                 "TOKENPUSH",
                 "FIDO",
                 "SMARTCREDENTIALPUSH",
@@ -1016,7 +1099,9 @@
             "enum": [
               "EMAIL",
               "SMS",
-              "VOICE"
+              "VOICE",
+              "WECHAT",
+              "WHATSAPP"
             ]
           },
           "passthroughAuthenticationResponse": {
@@ -1419,6 +1504,26 @@
         },
         "description": "Parameters returned to initialize a Face Biometric authenticator."
       },
+      "GetOfflineTokenAuthenticateParms": {
+        "required": [
+          "applicationId",
+          "tokenProtectedOfflineParms",
+          "tokenSerialNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "applicationId": {
+            "type": "string"
+          },
+          "tokenProtectedOfflineParms": {
+            "$ref": "#/components/schemas/TokenProtectedOfflineParms"
+          },
+          "tokenSerialNumber": {
+            "type": "string"
+          }
+        },
+        "description": "Information used to get offline responses for a token assigned to a user."
+      },
       "GridChallenge": {
         "required": [
           "challenge",
@@ -1629,7 +1734,9 @@
             "enum": [
               "EMAIL",
               "SMS",
-              "VOICE"
+              "VOICE",
+              "WECHAT",
+              "WHATSAPP"
             ]
           },
           "value": {
@@ -1652,7 +1759,9 @@
               "enum": [
                 "EMAIL",
                 "SMS",
-                "VOICE"
+                "VOICE",
+                "WECHAT",
+                "WHATSAPP"
               ]
             }
           },
@@ -1669,7 +1778,9 @@
             "enum": [
               "EMAIL",
               "SMS",
-              "VOICE"
+              "VOICE",
+              "WECHAT",
+              "WHATSAPP"
             ]
           },
           "otpDeliveryAttribute": {
@@ -1869,9 +1980,13 @@
         ],
         "type": "object",
         "properties": {
+          "challenge": {
+            "type": "string",
+            "description": "For TOKENCR authentication, the challenge that must be entered into the token. Will be null for TOKEN and TOKENPUSH authentication."
+          },
           "token": {
             "type": "array",
-            "description": "The token challenge contains a list of TokenInfo objects for each of the token that can be used to authenticate. In the case of an offline QR code challenge, a TokenInfo object includes the QR code.",
+            "description": "The token challenge contains a list of TokenInfo objects for each of the tokens that can be used to authenticate. In the case of an offline QR code challenge, a TokenInfo object includes the QR code.",
             "items": {
               "$ref": "#/components/schemas/TokenInfo"
             }
@@ -2112,6 +2227,7 @@
               "OTP",
               "GRID",
               "TOKEN",
+              "TOKENCR",
               "TOKENPUSH",
               "FIDO",
               "SMARTCREDENTIALPUSH",
@@ -2274,6 +2390,7 @@
                 "OTP",
                 "GRID",
                 "TOKEN",
+                "TOKENCR",
                 "TOKENPUSH",
                 "FIDO",
                 "SMARTCREDENTIALPUSH",
@@ -2310,6 +2427,7 @@
                 "OTP",
                 "GRID",
                 "TOKEN",
+                "TOKENCR",
                 "TOKENPUSH",
                 "FIDO",
                 "SMARTCREDENTIALPUSH",
@@ -2360,7 +2478,9 @@
             "enum": [
               "EMAIL",
               "SMS",
-              "VOICE"
+              "VOICE",
+              "WECHAT",
+              "WHATSAPP"
             ]
           },
           "passwordResetAllowed": {
@@ -2448,6 +2568,7 @@
               "OTP",
               "GRID",
               "TOKEN",
+              "TOKENCR",
               "TOKENPUSH",
               "FIDO",
               "SMARTCREDENTIALPUSH",
@@ -2542,7 +2663,9 @@
             "enum": [
               "EMAIL",
               "SMS",
-              "VOICE"
+              "VOICE",
+              "WECHAT",
+              "WHATSAPP"
             ]
           },
           "passthroughAuthenticatorParms": {
@@ -2579,6 +2702,7 @@
               "OTP",
               "GRID",
               "TOKEN",
+              "TOKENCR",
               "TOKENPUSH",
               "FIDO",
               "SMARTCREDENTIALPUSH",
