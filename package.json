@@ -28,7 +28,6 @@
     "pack:admin": "npm pack ./admin-sdk --dry-run",
     "pack:auth": "npm pack ./auth-sdk --dry-run",
     "pack:issuance": "npm pack ./issuance-sdk --dry-run",
-    "publish": "bun ./bin/publish",
     "test": "bun test",
     "update": "OPENAPI_GENERATOR_CLI_SEARCH_URL=DEFAULT openapi-generator-cli version-manager set latest"
   },
