@@ -15,9 +15,6 @@ jobs:
       AUTH_APP_ID: ${{ secrets.AUTH_APP_ID }}
       ADMIN_APP_ID: ${{ secrets.ADMIN_APP_ID }}
       ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}
-    permissions:
-      contents: read
-      id-token: write
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2
@@ -33,6 +30,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          npm publish ./admin-sdk
-          npm publish ./auth-sdk
-          npm publish ./issuance-sdk
+          npm publish --access public ./admin-sdk
+          npm publish --access public ./auth-sdk
+          npm publish --access public ./issuance-sdk
