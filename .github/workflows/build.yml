@@ -33,6 +33,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          npm publish --provenance --access public ./admin-sdk
-          npm publish --provenance --access public ./auth-sdk
-          npm publish --provenance --access public ./issuance-sdk
+          npm publish ./admin-sdk
+          npm publish ./auth-sdk
+          npm publish ./issuance-sdk
