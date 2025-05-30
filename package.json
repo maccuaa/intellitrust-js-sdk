@@ -30,7 +30,7 @@
     "pack:issuance": "npm pack ./issuance-sdk --dry-run",
     "publish": "bun ./bin/publish",
     "test": "bun test",
-    "update": "openapi-generator-cli version-manager set latest"
+    "update": "OPENAPI_GENERATOR_CLI_SEARCH_URL=DEFAULT openapi-generator-cli version-manager set latest"
   },
   "author": "Andrew MacCuaig <andrewmaccuaig@gmail.com>",
   "license": "ISC",
