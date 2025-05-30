@@ -28,7 +28,7 @@ jobs:
       - name: 🚀 Publish to NPM
         if: startsWith(github.ref, 'refs/tags/')
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           npm publish --access public ./admin-sdk
           npm publish --access public ./auth-sdk
