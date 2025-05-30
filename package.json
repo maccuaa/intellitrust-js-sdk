@@ -25,9 +25,9 @@
     "generate:auth": "bun ./bin/generate auth",
     "generate:issuance": "bun ./bin/generate issuance",
     "lint": "biome ci .",
-    "pack:admin": "npm pack ./admin-sdk --dry-run",
-    "pack:auth": "npm pack ./auth-sdk --dry-run",
-    "pack:issuance": "npm pack ./issuance-sdk --dry-run",
+    "pack:admin": "bun pm pack ./admin-sdk --dry-run",
+    "pack:auth": "bun pm pack ./auth-sdk --dry-run",
+    "pack:issuance": "bun pm pack ./issuance-sdk --dry-run",
     "test": "bun test",
     "update": "OPENAPI_GENERATOR_CLI_SEARCH_URL=DEFAULT openapi-generator-cli version-manager set latest"
   },

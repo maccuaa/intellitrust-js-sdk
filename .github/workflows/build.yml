@@ -26,6 +26,6 @@ jobs:
       - name: 🚀 Publish to NPM
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-          bun publish --access public ./admin-sdk
-          bun publish --access public ./auth-sdk
-          bun publish --access public ./issuance-sdk
+          bun publish --access public --cwd ./admin-sdk
+          bun publish --access public --cwd ./auth-sdk
+          bun publish --access public --cwd ./issuance-sdk
