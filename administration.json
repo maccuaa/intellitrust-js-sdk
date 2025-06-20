@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.40"
+    "version": "5.41"
   },
   "servers": [
     {
@@ -15577,7 +15577,7 @@
           {
             "name": "userid",
             "in": "path",
-            "description": "The UUID of the user whose KBA infomration is to be removed.",
+            "description": "The UUID of the user whose KBA information is to be removed.",
             "required": true,
             "schema": {
               "type": "string"
@@ -21897,7 +21897,9 @@
             }
           },
           "zoneId": {
-            "$ref": "#/components/schemas/ZoneId"
+            "type": "string",
+            "description": "The time zone or fixed offset in which dates and times are interpreted. For example, a value like -05:00 to specify a fixed offset of 5 hours behind UTC, or a time zone ID like America/New_York to account for regional time zone rules, including daylight saving time. Set this value if you want to interpret times (e.g., 8 AM to 5 PM) in the customer's local time zone rather than the timezone of the service. If not specified, the default is Z (UTC).",
+            "example": "America/New_York"
           }
         },
         "description": "The DateTimeContext context specifies an allowed or disallowed date or time range. Only a date range or a time range can be specified. Risk is applied to the authentication if the current time is outside an allowed range or inside a disallowed range. A date range specifies a start and end date.  For example 2019/01/01 to 2019/03/01. A time range species a start and end time and days of the week.  For example Monday to Friday, 8am to 5pm."
@@ -22233,7 +22235,7 @@
           },
           "lifetime": {
             "type": "integer",
-            "description": "The lifetime of the certificate created with this Digital Id Config Cert Template.",
+            "description": "The lifetime (in months) of the certificate created with this Digital Id Config Cert Template.",
             "format": "int32"
           },
           "name": {
@@ -22763,34 +22765,6 @@
           }
         },
         "description": "A DirectorySyncStatusInfo defines the information returned about the status of the last directory synchronization."
-      },
-      "Duration": {
-        "type": "object",
-        "properties": {
-          "nano": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "negative": {
-            "type": "boolean"
-          },
-          "positive": {
-            "type": "boolean"
-          },
-          "seconds": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "units": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TemporalUnit"
-            }
-          },
-          "zero": {
-            "type": "boolean"
-          }
-        }
       },
       "EmailParms": {
         "type": "object",
@@ -25054,32 +25028,6 @@
         },
         "description": "A list of all oauth roles to which this user belongs."
       },
-      "OAuthRoleParms": {
-        "type": "object",
-        "properties": {
-          "description": {
-            "type": "string",
-            "description": "The description of this oauth role. To remove the existing value, set the value to an empty string."
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of this oauth role. This value is required when creating an oauth role."
-          },
-          "parentId": {
-            "type": "string",
-            "description": "The UUID of the parent of this oauth role, if one exists. To remove the existing value, set the value to an empty string."
-          },
-          "resourceServerScopeIds": {
-            "type": "array",
-            "description": "The set of oauth roles and corresponding resource server scopes associated with this oauth role. To remove the existing values, set the value to an empty collection.",
-            "items": {
-              "type": "string",
-              "description": "The set of oauth roles and corresponding resource server scopes associated with this oauth role. To remove the existing values, set the value to an empty collection."
-            }
-          }
-        },
-        "description": "Parameters including the name of the new oauth role."
-      },
       "OTP": {
         "type": "object",
         "properties": {
@@ -26375,7 +26323,8 @@
               "WEBHOOK_NOTIFICATION",
               "VCDEFNS",
               "VCS",
-              "PLAYINTEGRITYCREDENTIALS"
+              "PLAYINTEGRITYCREDENTIALS",
+              "VPDEFNS"
             ]
           },
           "id": {
@@ -28754,23 +28703,6 @@
         },
         "description": "Information returned from the service about a temporary access code."
       },
-      "TemporalUnit": {
-        "type": "object",
-        "properties": {
-          "dateBased": {
-            "type": "boolean"
-          },
-          "duration": {
-            "$ref": "#/components/schemas/Duration"
-          },
-          "durationEstimated": {
-            "type": "boolean"
-          },
-          "timeBased": {
-            "type": "boolean"
-          }
-        }
-      },
       "Tenant": {
         "required": [
           "authenticationAccount",
@@ -29609,7 +29541,8 @@
                 "USER_CERTIFICATE",
                 "MACHINE",
                 "FACE",
-                "PASSTHROUGH"
+                "PASSTHROUGH",
+                "TOKENCR"
               ]
             }
           },
@@ -30897,149 +30830,6 @@
           }
         },
         "description": "Parameters including the callback URL and list of events to trigger the webhook."
-      },
-      "ZoneId": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "rules": {
-            "$ref": "#/components/schemas/ZoneRules"
-          }
-        },
-        "description": "The timezone offset in which dates and times are considered. For example, a value like -05:00 to specify EST.  Set the timezone value if you want to allow times 8am to 5pm in the customer's time zone and not the time zone of the service.  If not specified, the default is Z for UTC."
-      },
-      "ZoneOffset": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "rules": {
-            "$ref": "#/components/schemas/ZoneRules"
-          },
-          "totalSeconds": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "ZoneOffsetTransition": {
-        "type": "object",
-        "properties": {
-          "dateTimeAfter": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2019-02-19T13:15:27Z"
-          },
-          "dateTimeBefore": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2019-02-19T13:15:27Z"
-          },
-          "duration": {
-            "$ref": "#/components/schemas/Duration"
-          },
-          "gap": {
-            "type": "boolean"
-          },
-          "instant": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2019-02-19T13:15:27Z"
-          },
-          "offsetAfter": {
-            "$ref": "#/components/schemas/ZoneOffset"
-          },
-          "offsetBefore": {
-            "$ref": "#/components/schemas/ZoneOffset"
-          },
-          "overlap": {
-            "type": "boolean"
-          }
-        }
-      },
-      "ZoneOffsetTransitionRule": {
-        "type": "object",
-        "properties": {
-          "dayOfMonthIndicator": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "dayOfWeek": {
-            "type": "string",
-            "enum": [
-              "MONDAY",
-              "TUESDAY",
-              "WEDNESDAY",
-              "THURSDAY",
-              "FRIDAY",
-              "SATURDAY",
-              "SUNDAY"
-            ]
-          },
-          "localTime": {
-            "type": "string"
-          },
-          "midnightEndOfDay": {
-            "type": "boolean"
-          },
-          "month": {
-            "type": "string",
-            "enum": [
-              "JANUARY",
-              "FEBRUARY",
-              "MARCH",
-              "APRIL",
-              "MAY",
-              "JUNE",
-              "JULY",
-              "AUGUST",
-              "SEPTEMBER",
-              "OCTOBER",
-              "NOVEMBER",
-              "DECEMBER"
-            ]
-          },
-          "offsetAfter": {
-            "$ref": "#/components/schemas/ZoneOffset"
-          },
-          "offsetBefore": {
-            "$ref": "#/components/schemas/ZoneOffset"
-          },
-          "standardOffset": {
-            "$ref": "#/components/schemas/ZoneOffset"
-          },
-          "timeDefinition": {
-            "type": "string",
-            "enum": [
-              "UTC",
-              "WALL",
-              "STANDARD"
-            ]
-          }
-        }
-      },
-      "ZoneRules": {
-        "type": "object",
-        "properties": {
-          "fixedOffset": {
-            "type": "boolean"
-          },
-          "transitionRules": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ZoneOffsetTransitionRule"
-            }
-          },
-          "transitions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ZoneOffsetTransition"
-            }
-          }
-        }
       }
     },
     "securitySchemes": {

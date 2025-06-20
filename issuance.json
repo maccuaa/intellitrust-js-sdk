@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.40"
+    "version": "5.41"
   },
   "servers": [
     {
@@ -2119,6 +2119,85 @@
           {
             "AdminAPIAuthentication": [
               "ISSUANCE:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/print/resume": {
+      "post": {
+        "tags": [
+          "PrintAPI"
+        ],
+        "summary": "Resume a print job after pre print operation",
+        "description": "Resume printing for a print job after pre print operation. Caller requires the ISSUANCE:ADD permission to access this resource.",
+        "operationId": "resumePrintJob",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResumePrintJobApiRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResumePrintJobApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "ISSUANCE:ADD"
             ]
           }
         ]
@@ -7438,7 +7517,8 @@
               "COMPLETED",
               "FAILED",
               "CANCELLED",
-              "UNKNOWN"
+              "UNKNOWN",
+              "AWAITING_PRINT"
             ]
           },
           "updatedOn": {
@@ -7953,6 +8033,11 @@
               "EC_P_256"
             ]
           },
+          "lifetime": {
+            "type": "integer",
+            "description": "The lifetime (in months) of the certificate created with this Digital Id Config Cert Template.",
+            "format": "int32"
+          },
           "name": {
             "type": "string",
             "description": "The name of the Digital Id Config Cert Template."
@@ -7967,6 +8052,10 @@
               "KeyMgmt",
               "None"
             ]
+          },
+          "useCaDefaultCertLifetime": {
+            "type": "boolean",
+            "description": "A flag indicating whether to use the CA's default certificate lifetime."
           }
         },
         "description": "Information that describes a Digital Id Config Cert Template."
@@ -8227,6 +8316,11 @@
             "type": "string",
             "description": "The primary key of the enrollment",
             "example": "'1'"
+          },
+          "printJobId": {
+            "type": "string",
+            "description": "The print job id obtained through the pre print webhook. <b>Note:</b> This parameter is not required for printing without pre print operation.",
+            "example": "85b12842-50cb-4bd5-af99-57dc0ebc6ef2"
           },
           "printerDetails": {
             "$ref": "#/components/schemas/CredentialDesignPrintRequestPrinter"
@@ -9614,7 +9708,10 @@
               "POLICYOVERRIDE",
               "ORGANIZATIONS",
               "WEBHOOKS",
-              "WEBHOOK_NOTIFICATION"
+              "WEBHOOK_NOTIFICATION",
+              "VCDEFNS",
+              "VCS",
+              "PLAYINTEGRITYCREDENTIALS"
             ]
           },
           "id": {
@@ -9757,7 +9854,8 @@
               "STARTED",
               "COMPLETED",
               "CANCELLED",
-              "FAILED"
+              "FAILED",
+              "AWAITING_PRINT"
             ]
           },
           "queueStateDetails": {
@@ -9773,7 +9871,8 @@
               "COMPLETED",
               "FAILED",
               "CANCELLED",
-              "UNKNOWN"
+              "UNKNOWN",
+              "AWAITING_PRINT"
             ]
           },
           "statusDetails": {
@@ -9854,7 +9953,8 @@
               "STARTED",
               "COMPLETED",
               "CANCELLED",
-              "FAILED"
+              "FAILED",
+              "AWAITING_PRINT"
             ]
           },
           "queueStateDetails": {
@@ -9870,7 +9970,8 @@
               "COMPLETED",
               "FAILED",
               "CANCELLED",
-              "UNKNOWN"
+              "UNKNOWN",
+              "AWAITING_PRINT"
             ]
           },
           "statusDetails": {
@@ -10347,6 +10448,30 @@
           "link": {
             "type": "string",
             "example": "http://localhost/my-resource/aa123-bb456-cc789-dd890-ee123-fffee4"
+          }
+        }
+      },
+      "ResumePrintJobApiRequest": {
+        "required": [
+          "printJobId"
+        ],
+        "type": "object",
+        "properties": {
+          "printJobId": {
+            "type": "string",
+            "description": "The print job id obtained through the pre print webhook payload. ",
+            "example": "85b12842-50cb-4bd5-af99-57dc0ebc6ef2"
+          }
+        },
+        "description": "Parameters for resuming print post pre-print operation."
+      },
+      "ResumePrintJobApiResponse": {
+        "type": "object",
+        "properties": {
+          "printJobId": {
+            "type": "string",
+            "description": "The job id of the requested print job to resume",
+            "example": "85b12842-50cb-4bd5-af99-57dc0ebc6ef2"
           }
         }
       },
@@ -11227,6 +11352,7 @@
       },
       "Token": {
         "required": [
+          "appVerified",
           "deviceVerified"
         ],
         "type": "object",
@@ -11261,6 +11387,10 @@
                 "UNASSIGN"
               ]
             }
+          },
+          "appVerified": {
+            "type": "boolean",
+            "description": "A flag indicating if the token was activated on a verified app."
           },
           "description": {
             "type": "string",
@@ -11604,6 +11734,7 @@
                 "OTP",
                 "GRID",
                 "TOKEN",
+                "TOKENCR",
                 "TOKENPUSH",
                 "FIDO",
                 "SMARTCREDENTIALPUSH",
@@ -11643,7 +11774,8 @@
                 "USER_CERTIFICATE",
                 "MACHINE",
                 "FACE",
-                "PASSTHROUGH"
+                "PASSTHROUGH",
+                "TOKENCR"
               ]
             }
           },
@@ -11902,7 +12034,9 @@
               "NONE",
               "OTP_EMAIL",
               "OTP_SMS",
-              "OTP_VOICE"
+              "OTP_VOICE",
+              "OTP_WECHAT",
+              "OTP_WHATSAPP"
             ]
           },
           "unique": {
@@ -11984,6 +12118,7 @@
               "OTP",
               "GRID",
               "TOKEN",
+              "TOKENCR",
               "TOKENPUSH",
               "FIDO",
               "SMARTCREDENTIALPUSH",
@@ -12022,7 +12157,9 @@
               "NONE",
               "OTP_EMAIL",
               "OTP_SMS",
-              "OTP_VOICE"
+              "OTP_VOICE",
+              "OTP_WECHAT",
+              "OTP_WHATSAPP"
             ]
           },
           "value": {
