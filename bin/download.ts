@@ -40,11 +40,11 @@ const downloadFile = async (type: "auth" | "admin" | "issuance") => {
   const configFile = Bun.file(genConfig);
   const file = Bun.file(input);
 
-  const URL = `${DOC_PATH}/${file.name}`;
+  const url = `${DOC_PATH}/${file.name}`;
 
-  console.log("Downloading", file.name, "from", URL);
+  console.log("Downloading", file.name, "from", url);
 
-  const response = await fetch(URL);
+  const response = await fetch(url);
 
   console.log("Download Status:", response.status);
 

@@ -1,6 +1,5 @@
-import * as AdminSDK from "../admin-sdk";
-
 import { describe, expect, it } from "bun:test";
+import { type AdminApiAuthentication, API } from "../admin-sdk";
 
 const basePath = process.env.BASE_PATH;
 
@@ -8,14 +7,14 @@ if (!basePath) {
   throw new Error("BASE_PATH not defined.");
 }
 
-const credentials: AdminSDK.AdminApiAuthentication = {
+const credentials: AdminApiAuthentication = {
   applicationId: process.env.ADMIN_APP_ID ?? "",
   sharedSecret: process.env.ADMIN_SECRET ?? "",
 };
 
 describe("Administration API", () => {
   it("should successfully call IDaaS", async () => {
-    const sdk = new AdminSDK.API({ basePath });
+    const sdk = new API({ basePath });
 
     const authResponse = await sdk.authenticateAdminApiUsingPOST(credentials);
 
@@ -31,7 +30,7 @@ describe("Administration API", () => {
   });
 
   it("should create a soft token", async () => {
-    const sdk = new AdminSDK.API({ basePath });
+    const sdk = new API({ basePath });
 
     const authResponse = await sdk.authenticateAdminApiUsingPOST(credentials);
 

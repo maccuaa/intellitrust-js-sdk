@@ -1,6 +1,5 @@
-import * as IssuanceSDK from "../issuance-sdk";
-
 import { describe, expect, it } from "bun:test";
+import { type AdminApiAuthentication, API } from "../issuance-sdk";
 
 const basePath = process.env.BASE_PATH;
 
@@ -8,14 +7,14 @@ if (!basePath) {
   throw new Error("BASE_PATH not defined.");
 }
 
-const credentials: IssuanceSDK.AdminApiAuthentication = {
+const credentials: AdminApiAuthentication = {
   applicationId: process.env.ADMIN_APP_ID ?? "",
   sharedSecret: process.env.ADMIN_SECRET ?? "",
 };
 
 describe("Issuance API", () => {
   it("should successfully call IIDaaS", async () => {
-    const sdk = new IssuanceSDK.API({ basePath });
+    const sdk = new API({ basePath });
 
     const authResponse = await sdk.authenticateAdminApiUsingPOST(credentials);
 

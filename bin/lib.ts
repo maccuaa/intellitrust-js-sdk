@@ -48,11 +48,11 @@ export const generateReadme = async (output: string, type: string) => {
 
   const example = await Bun.file(join("templates", examplePath)).text();
 
-  const README_FILE = join(output, "README.md");
+  const readmeFile = join(output, "README.md");
 
-  const readme = await Bun.file(README_FILE).text();
+  const readme = await Bun.file(readmeFile).text();
 
   const newReadme = readme.replace("EXAMPLE-REPLACE-ME", example);
 
-  await Bun.write(README_FILE, newReadme);
+  await Bun.write(readmeFile, newReadme);
 };
