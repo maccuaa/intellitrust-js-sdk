@@ -2,7 +2,7 @@ const basePath = "https://entrust.us.trustedauth.com";
 
 const queryParms: AuthSDK.UserAuthenticateQueryParameters = {
   userId: "john.doe",
-  applicationId: "d2f37667-253b-4260-aab1-6131f1d83fe4",
+  applicationId: process.env.AUTH_API_APPLICATION_ID,
 };
 
 // Create a new instance of the API.
