@@ -22,9 +22,19 @@ describe("Administration API", () => {
 
     const { authToken } = authResponse.data;
 
-    sdk.setApiKey(authToken);
+    sdk.setApiKey(authToken ?? "");
 
     const listResponse = await sdk.listAuthApiApplicationsUsingGET();
+
+    expect(listResponse.status).toBe(200);
+  });
+
+  it("should successfully use a long-lived token", async () => {
+    const sdk = new API({ basePath });
+
+    sdk.setApiKey(`${credentials.applicationId},${credentials.sharedSecret}`);
+
+    const listResponse = await sdk.usersPagedUsingPOST({});
 
     expect(listResponse.status).toBe(200);
   });
@@ -36,7 +46,7 @@ describe("Administration API", () => {
 
     const { authToken } = authResponse.data;
 
-    sdk.setApiKey(authToken);
+    sdk.setApiKey(authToken ?? "");
 
     // Get the user
     const getUserResponse = await sdk.userByUseridUsingPOST({
@@ -45,12 +55,18 @@ describe("Administration API", () => {
 
     const user = getUserResponse.data;
 
+    if (!user || !user.id) {
+      throw new Error("User not found or user ID is missing.");
+    }
+
     // Create a new Soft Token for the user
-    const createTokenResult = await sdk.createTokenUsingPOST(user.id, "ENTRUST_SOFT_TOKEN", {
-      activateParms: null,
-    });
+    const createTokenResult = await sdk.createTokenUsingPOST(user.id, "ENTRUST_SOFT_TOKEN");
 
     const token = createTokenResult.data;
+
+    if (!token || !token.id) {
+      throw new Error("Token creation failed or token ID is missing.");
+    }
 
     await sdk.deleteTokenUsingDELETE(token.id);
   });

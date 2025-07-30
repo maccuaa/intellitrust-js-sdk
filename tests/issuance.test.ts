@@ -22,7 +22,7 @@ describe("Issuance API", () => {
 
     const { authToken } = authResponse.data;
 
-    sdk.setApiKey(authToken);
+    sdk.setApiKey(authToken ?? "");
 
     const listResponse = await sdk.listAdminApiApplicationsUsingGET();
 
