@@ -1,18 +1,15 @@
 const basePath = "https://entrust.us.trustedauth.com";
 
-// Admin API application credentials
-const credentials: AdminSDK.AdminApiAuthentication = {
-  applicationId: process.env.ADMIN_API_APPLICATION_ID,
-  sharedSecret: process.env.ADMIN_API_SHARED_SECRET,
-};
-
 // Create a new instance of the API.
-const sdk = new AdminSDK.API({
+const sdk = new API({
   basePath,
 });
 
 // Authenticate to the Admin API application.
-const authResponse = await sdk.authenticateAdminApiUsingPOST(credentials);
+const authResponse = await sdk.authenticateAdminApiUsingPOST({
+  applicationId: process.env.ADMIN_API_APPLICATION_ID,
+  sharedSecret: process.env.ADMIN_API_SHARED_SECRET,
+});
 
 // Get the authToken from the response
 const { authToken } = authResponse.data;

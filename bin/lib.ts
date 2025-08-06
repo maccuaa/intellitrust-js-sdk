@@ -52,7 +52,7 @@ export const generateReadme = async (output: string, type: string) => {
 
   const readme = await Bun.file(readmeFile).text();
 
-  const newReadme = readme.replace("EXAMPLE-REPLACE-ME", example);
+  const newReadme = readme.replace("EXAMPLE-REPLACE-ME", example.trim());
 
   await Bun.write(readmeFile, newReadme);
 };
