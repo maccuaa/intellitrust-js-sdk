@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.41"
+    "version": "5.42"
   },
   "servers": [
     {
@@ -3528,6 +3528,7 @@
             }
           }
         },
+        "deprecated": true,
         "security": [
           {
             "AdminAPIAuthentication": [
@@ -5972,6 +5973,63 @@
         ]
       }
     },
+    "/api/web/v2/prints/paginated": {
+      "post": {
+        "tags": [
+          "PrintQueue"
+        ],
+        "summary": "View print jobs in paginated form.",
+        "operationId": "getPaginatedPrintJobsV2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrintQueuePaging"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "ISSUANCE:VIEW"
+            ]
+          }
+        ]
+      }
+    },
     "/api/web/v4/async/tenants/{id}/createresult": {
       "get": {
         "tags": [
@@ -8317,11 +8375,6 @@
             "description": "The primary key of the enrollment",
             "example": "'1'"
           },
-          "printJobId": {
-            "type": "string",
-            "description": "The print job id obtained through the pre print webhook. <b>Note:</b> This parameter is not required for printing without pre print operation.",
-            "example": "85b12842-50cb-4bd5-af99-57dc0ebc6ef2"
-          },
           "printerDetails": {
             "$ref": "#/components/schemas/CredentialDesignPrintRequestPrinter"
           }
@@ -9456,6 +9509,22 @@
         },
         "description": "A list of all oauth roles to which this user belongs."
       },
+      "OrderAttribute": {
+        "type": "object",
+        "properties": {
+          "ascending": {
+            "type": "boolean",
+            "description": "Identifies whether to order result in ascending order.",
+            "example": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Identifies the attribute.",
+            "example": "Created On"
+          }
+        },
+        "description": "An attribute used to sort the result from a search."
+      },
       "OrderByAttribute": {
         "required": [
           "ascending",
@@ -9711,7 +9780,9 @@
               "WEBHOOK_NOTIFICATION",
               "VCDEFNS",
               "VCS",
-              "PLAYINTEGRITYCREDENTIALS"
+              "PLAYINTEGRITYCREDENTIALS",
+              "VPDEFNS",
+              "ACRS"
             ]
           },
           "id": {
@@ -10724,6 +10795,41 @@
         },
         "description": "SCVariableValues store variable values for a smart credential."
       },
+      "SearchAttribute": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Identifies the attribute we are searching for.",
+            "example": "Name"
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "EQUALS",
+              "NOT_EQUALS",
+              "CONTAINS",
+              "NOT_CONTAINS",
+              "STARTS_WITH",
+              "ENDS_WITH",
+              "GREATER_THAN",
+              "GREATER_THAN_OR_EQUAL",
+              "LESS_THAN",
+              "LESS_THAN_OR_EQUAL",
+              "IN",
+              "IS",
+              "EXISTS",
+              "NOT_EXISTS"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "description": "value of the field to search on.",
+            "example": "Design"
+          }
+        },
+        "description": "Identifies attributes for searching purposes."
+      },
       "SearchByAttribute": {
         "required": [
           "name",
@@ -10760,6 +10866,32 @@
           }
         },
         "description": "An attribute used during paging and/or searching."
+      },
+      "SearchParams": {
+        "type": "object",
+        "properties": {
+          "cursor": {
+            "type": "string",
+            "description": "The value of cursor. Provide null for 1st page. For next page, provide the value of nextCursor from last API response. For previous page, provide the vaue of prevCursor from last API response."
+          },
+          "limit": {
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "description": "Identifies the maximum number of items to include in a page (1-100).",
+            "format": "int32"
+          },
+          "orderByAttribute": {
+            "$ref": "#/components/schemas/OrderAttribute"
+          },
+          "searchByAttributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchAttribute"
+            }
+          }
+        },
+        "description": "Search parameters."
       },
       "SearchParms": {
         "type": "object",
@@ -11745,7 +11877,8 @@
                 "IDP_AND_SECONDFACTOR",
                 "USER_CERTIFICATE",
                 "FACE",
-                "PASSTHROUGH"
+                "PASSTHROUGH",
+                "MAGICLINK"
               ]
             }
           },
@@ -11775,7 +11908,8 @@
                 "MACHINE",
                 "FACE",
                 "PASSTHROUGH",
-                "TOKENCR"
+                "TOKENCR",
+                "MAGICLINK"
               ]
             }
           },
@@ -11919,6 +12053,37 @@
             "description": "A list of user attribute values for this user.",
             "items": {
               "$ref": "#/components/schemas/UserAttributeValue"
+            }
+          },
+          "userAuthenticatorPreference": {
+            "type": "array",
+            "description": "The user authenticator preference list.",
+            "items": {
+              "type": "string",
+              "description": "The user authenticator preference list.",
+              "enum": [
+                "MACHINE",
+                "PASSWORD",
+                "EXTERNAL",
+                "KBA",
+                "TEMP_ACCESS_CODE",
+                "OTP",
+                "GRID",
+                "TOKEN",
+                "TOKENCR",
+                "TOKENPUSH",
+                "FIDO",
+                "SMARTCREDENTIALPUSH",
+                "PASSWORD_AND_SECONDFACTOR",
+                "SMART_LOGIN",
+                "IDP",
+                "PASSKEY",
+                "IDP_AND_SECONDFACTOR",
+                "USER_CERTIFICATE",
+                "FACE",
+                "PASSTHROUGH",
+                "MAGICLINK"
+              ]
             }
           },
           "userCreationTime": {
@@ -12129,7 +12294,8 @@
               "IDP_AND_SECONDFACTOR",
               "USER_CERTIFICATE",
               "FACE",
-              "PASSTHROUGH"
+              "PASSTHROUGH",
+              "MAGICLINK"
             ]
           }
         },
