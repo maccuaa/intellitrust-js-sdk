@@ -1,37 +1,45 @@
 import { $ } from "bun";
-import { generateReadme, getGeneratorOptions } from "./lib";
-
-const AUTH = "auth";
-const ADMIN = "admin";
-const ISSUANCE = "issuance";
+import { generateReadme, getAllSdkTypes, getGeneratorOptions, type SdkType } from "./lib";
 
 /**
- * Main function.
+ * Generate SDK from OpenAPI specification
  */
-(async () => {
-  const args = process.argv.slice(2);
+const generateSdk = async (sdkType: SdkType): Promise<void> => {
+  try {
+    const { input, output, config } = getGeneratorOptions(sdkType);
 
-  if (args.length !== 1) {
-    console.error("Too many arguments provided. Expected 1, received", args.length);
+    console.log(`Generating ${sdkType} SDK...`);
+
+    const result =
+      await $`bunx openapi-generator-cli generate -i ${input} -g typescript-axios -t templates -o ${output} -c ${config}`.quiet();
+
+    if (result.exitCode !== 0) {
+      throw new Error(`Generation failed with exit code ${result.exitCode}`);
+    }
+
+    console.log("Post processing files...");
+    await generateReadme(output, sdkType);
+    console.log("✅ SDK generation completed successfully");
+  } catch (error) {
+    console.error(`❌ Failed to generate ${sdkType} SDK:`, error);
     process.exit(1);
   }
+};
 
-  const sdkType = args.pop();
+/**
+ * Main function
+ */
+try {
+  console.log("Starting SDK generation...");
 
-  if (sdkType !== "auth" && sdkType !== "admin" && sdkType !== "issuance") {
-    console.error(`Invalid type provided. Expected '${ADMIN}' or '${AUTH}' or '${ISSUANCE}, received`, sdkType);
-    process.exit(1);
+  const sdkTypes = getAllSdkTypes();
+
+  for (const sdkType of sdkTypes) {
+    await generateSdk(sdkType);
   }
 
-  const { input, output, config } = getGeneratorOptions(sdkType);
-
-  console.log(`Generating ${sdkType} SDK...`);
-
-  await $`bunx openapi-generator-cli generate -i ${input} -g typescript-axios -t templates -o ${output} -c ${config}`;
-
-  console.log("Post processing files...");
-
-  await generateReadme(output, sdkType);
-
-  console.log("Updated README");
-})();
+  console.log("All SDKs generated successfully");
+} catch (error) {
+  console.error("❌ Failed to generate SDKs:", error);
+  process.exit(1);
+}
