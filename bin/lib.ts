@@ -1,58 +1,59 @@
 import { join } from "node:path";
 
-interface GeneratorOptions {
+export type SdkType = "admin" | "auth" | "issuance";
+
+export interface GeneratorOptions {
   input: string;
   output: string;
   config: string;
 }
 
-export const getGeneratorOptions = (type: "admin" | "auth" | "issuance"): GeneratorOptions => {
-  let input = "";
-  let output = "";
-  let config = "";
-
-  if (type === "admin") {
-    input = "administration.json";
-    output = "admin-sdk";
-    config = "config-admin.json";
-  }
-
-  if (type === "auth") {
-    input = "authentication.json";
-    output = "auth-sdk";
-    config = "config-auth.json";
-  }
-
-  if (type === "issuance") {
-    input = "issuance.json";
-    output = "issuance-sdk";
-    config = "config-issuance.json";
-  }
-
-  return {
-    input,
-    output,
-    config,
-  };
+const SDK_CONFIG: Record<SdkType, GeneratorOptions> = {
+  admin: {
+    input: "specs/administration.json",
+    output: "packages/admin-sdk",
+    config: "specs/config-admin.json",
+  },
+  auth: {
+    input: "specs/authentication.json",
+    output: "packages/auth-sdk",
+    config: "specs/config-auth.json",
+  },
+  issuance: {
+    input: "specs/issuance.json",
+    output: "packages/issuance-sdk",
+    config: "specs/config-issuance.json",
+  },
 };
 
-const ADMIN_EXAMPLE = "admin-example.ts";
-const AUTH_EXAMPLE = "auth-example.ts";
-const ISSUANCE_EXAMPLE = "issuance-example.ts";
+export const getGeneratorOptions = (type: SdkType): GeneratorOptions => {
+  return SDK_CONFIG[type];
+};
 
-export const generateReadme = async (output: string, type: string) => {
-  const isAdmin = type === "admin";
-  const isAuth = type === "auth";
+export const isValidSdkType = (type: string): type is SdkType => {
+  return type in SDK_CONFIG;
+};
 
-  const examplePath = isAdmin ? ADMIN_EXAMPLE : isAuth ? AUTH_EXAMPLE : ISSUANCE_EXAMPLE;
+export const getAllSdkTypes = (): SdkType[] => {
+  return Object.keys(SDK_CONFIG) as SdkType[];
+};
 
-  const example = await Bun.file(join("templates", examplePath)).text();
+const EXAMPLE_FILES: Record<SdkType, string> = {
+  admin: "admin-example.ts",
+  auth: "auth-example.ts",
+  issuance: "issuance-example.ts",
+};
 
-  const readmeFile = join(output, "README.md");
-
-  const readme = await Bun.file(readmeFile).text();
-
-  const newReadme = readme.replace("EXAMPLE-REPLACE-ME", example.trim());
-
-  await Bun.write(readmeFile, newReadme);
+export const generateReadme = async (output: string, type: SdkType): Promise<void> => {
+  try {
+    const examplePath = EXAMPLE_FILES[type];
+    const example = await Bun.file(join("templates", examplePath)).text();
+    const readmeFile = join(output, "README.md");
+    const readme = await Bun.file(readmeFile).text();
+    const newReadme = readme.replace("EXAMPLE-REPLACE-ME", example.trim());
+    await Bun.write(readmeFile, newReadme);
+  } catch (error) {
+    console.error(`Failed to generate README for ${type}:`, error);
+    throw error;
+  }
 };

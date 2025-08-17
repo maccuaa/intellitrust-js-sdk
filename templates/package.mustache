@@ -2,12 +2,6 @@
   "name": "{{npmName}}",
   "version": "{{npmVersion}}",
   "description": "JavaScript client for {{npmName}}",
-  "author": "Andrew MacCuaig <andrewmaccuaig@gmail.com>",
-  "homepage": "https://www.npmjs.com/package/{{npmName}}/v/{{npmVersion}}",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maccuaa/intellitrust-js-sdk.git"
-  },
   "keywords": [
     "axios",
     "typescript",
@@ -15,26 +9,43 @@
     "authentication",
     "entrust",
     "identity",
-    "authentication",
     "idaas",
     "{{npmName}}"
   ],
+  "homepage": "https://www.npmjs.com/package/{{npmName}}/v/{{npmVersion}}",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maccuaa/intellitrust-js-sdk.git"
+  },
   "license": "ISC",
+  "author": "Andrew MacCuaig <andrewmaccuaig@gmail.com>",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
-  "module": "./dist/index.js",
-  "sideEffects": false,
-  "scripts": {
-    "build": "tsc --outDir dist/"
-  },
   "files": [
     "dist"
   ],
+  "scripts": {
+    "build": "rm -rf dist && tsc --outDir dist/",
+    "pack": "bun publish --dry-run",
+    "publish": "bun publish",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
     "axios": "1.11.0"
   },
   "devDependencies": {
     "@types/node": "^24.0.3",
     "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">= 22.12.0"
   }
 }
