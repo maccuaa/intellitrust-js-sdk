@@ -1,37 +1,43 @@
 import { $ } from "bun";
-import { generateReadme, getGeneratorOptions } from "./lib";
-
-const AUTH = "auth";
-const ADMIN = "admin";
-const ISSUANCE = "issuance";
+import { getAllSdkTypes, getGeneratorOptions, type SdkType } from "./lib";
 
 /**
- * Main function.
+ * Generate SDK from OpenAPI specification
  */
-(async () => {
-  const args = process.argv.slice(2);
+const generateSdk = async (sdkType: SdkType): Promise<void> => {
+  try {
+    const { input, output } = getGeneratorOptions(sdkType);
 
-  if (args.length !== 1) {
-    console.error("Too many arguments provided. Expected 1, received", args.length);
-    process.exit(1);
+    console.log(`Cleaning ${output}...`);
+
+    await $`git -C ${output} clean -fdX -e node_modules`;
+
+    console.log(`Generating ${sdkType} SDK...`);
+
+    const result = await $`bunx -bun openapi-generator-cli generate -i ${input} \
+      -g typescript-axios \
+      -t templates \
+      -o ${output} \
+      --global-property=apiDocs=false,modelDocs=false`.quiet();
+
+    if (result.exitCode !== 0) {
+      throw new Error(`Generation failed with exit code ${result.exitCode}`);
+    }
+
+    console.log("✅ SDK generation completed successfully");
+  } catch (error) {
+    console.error(`❌ Failed to generate ${sdkType} SDK:`, error);
+    throw error;
   }
+};
 
-  const sdkType = args.pop();
+/**
+ * Main function
+ */
+console.log("Starting SDK generation...");
 
-  if (sdkType !== "auth" && sdkType !== "admin" && sdkType !== "issuance") {
-    console.error(`Invalid type provided. Expected '${ADMIN}' or '${AUTH}' or '${ISSUANCE}, received`, sdkType);
-    process.exit(1);
-  }
+const sdkTypes = getAllSdkTypes();
 
-  const { input, output, config } = getGeneratorOptions(sdkType);
+await Promise.all(sdkTypes.map((sdkType) => generateSdk(sdkType)));
 
-  console.log(`Generating ${sdkType} SDK...`);
-
-  await $`bunx openapi-generator-cli generate -i ${input} -g typescript-axios -t templates -o ${output} -c ${config}`;
-
-  console.log("Post processing files...");
-
-  await generateReadme(output, sdkType);
-
-  console.log("Updated README");
-})();
+console.log("All SDKs generated successfully");

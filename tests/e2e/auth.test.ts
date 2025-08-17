@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { API, type UserAuthenticateQueryParameters } from "../auth-sdk";
+import { API, type UserAuthenticateQueryParameters } from "@maccuaa/intellitrust-auth-sdk";
 
 const basePath = process.env.BASE_PATH;
 

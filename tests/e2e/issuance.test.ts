@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { type AdminApiAuthentication, API } from "../issuance-sdk";
+import { type AdminApiAuthentication, API } from "@maccuaa/intellitrust-issuance-sdk";
 
 const basePath = process.env.BASE_PATH;
 

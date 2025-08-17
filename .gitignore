@@ -1,5 +1,10 @@
 node_modules
-auth-sdk
-admin-sdk
-issuance-sdk
 .env
+packages/*-sdk/api.ts
+packages/*-sdk/base.ts
+packages/*-sdk/common.ts
+packages/*-sdk/configuration.ts
+packages/*-sdk/index.ts
+packages/*-sdk/dist
+packages/*-sdk/.openapi-generator
+

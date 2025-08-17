@@ -1,58 +1,30 @@
-import { join } from "node:path";
+export type SdkType = "admin" | "auth" | "issuance";
 
+const BASE_DIR: Record<SdkType, string> = {
+  admin: "packages/admin-sdk",
+  auth: "packages/auth-sdk",
+  issuance: "packages/issuance-sdk",
+};
 interface GeneratorOptions {
-  input: string;
   output: string;
-  config: string;
+  input: string;
+  packageJson: string;
 }
 
-export const getGeneratorOptions = (type: "admin" | "auth" | "issuance"): GeneratorOptions => {
-  let input = "";
-  let output = "";
-  let config = "";
+const makeOptions = (dir: string): GeneratorOptions => ({
+  output: dir,
+  packageJson: `${dir}/package.json`,
+  input: `${dir}/openapi.json`,
+});
 
-  if (type === "admin") {
-    input = "administration.json";
-    output = "admin-sdk";
-    config = "config-admin.json";
-  }
+const SDK_CONFIG: Record<SdkType, GeneratorOptions> = Object.fromEntries(
+  (Object.keys(BASE_DIR) as SdkType[]).map((sdk) => [sdk, makeOptions(BASE_DIR[sdk])]),
+) as Record<SdkType, GeneratorOptions>;
 
-  if (type === "auth") {
-    input = "authentication.json";
-    output = "auth-sdk";
-    config = "config-auth.json";
-  }
-
-  if (type === "issuance") {
-    input = "issuance.json";
-    output = "issuance-sdk";
-    config = "config-issuance.json";
-  }
-
-  return {
-    input,
-    output,
-    config,
-  };
+export const getGeneratorOptions = (type: SdkType): GeneratorOptions => {
+  return SDK_CONFIG[type];
 };
 
-const ADMIN_EXAMPLE = "admin-example.ts";
-const AUTH_EXAMPLE = "auth-example.ts";
-const ISSUANCE_EXAMPLE = "issuance-example.ts";
-
-export const generateReadme = async (output: string, type: string) => {
-  const isAdmin = type === "admin";
-  const isAuth = type === "auth";
-
-  const examplePath = isAdmin ? ADMIN_EXAMPLE : isAuth ? AUTH_EXAMPLE : ISSUANCE_EXAMPLE;
-
-  const example = await Bun.file(join("templates", examplePath)).text();
-
-  const readmeFile = join(output, "README.md");
-
-  const readme = await Bun.file(readmeFile).text();
-
-  const newReadme = readme.replace("EXAMPLE-REPLACE-ME", example.trim());
-
-  await Bun.write(readmeFile, newReadme);
+export const getAllSdkTypes = (): SdkType[] => {
+  return Object.keys(SDK_CONFIG) as SdkType[];
 };
