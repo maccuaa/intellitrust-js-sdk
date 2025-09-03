@@ -1,0 +1,31 @@
+name: Publish Pacakge
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    if: github.repository == 'maccuaa/intellitrust-js-sdk'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        run: bun run build
+
+      - name: Publish to NPM
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          bun publish --access public --cwd ./admin-sdk
+          bun publish --access public --cwd ./auth-sdk
+          bun publish --access public --cwd ./issuance-sdk

@@ -24,6 +24,7 @@
     "test": "bun test",
     "pack": "bun --filter=\"@maccuaa/intellitrust-*-sdk\" run pack",
     "publish": "bun --filter=\"@maccuaa/intellitrust-*-sdk\" run publish",
+    "postinstall": "bun run generate",
     "typecheck": "bun --filter=\"@maccuaa/intellitrust-*-sdk\" run typecheck",
     "update": "openapi-generator-cli version-manager set latest"
   },
