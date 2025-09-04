@@ -1,7 +1,0 @@
-node_modules
-.openapi-generator
-.openapi-generator-ignore
-git_push.sh
-tsconfig.json
-*.ts
-package-lock.json

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.1.4/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -7,15 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": [
-      "**",
-      "!administration.json",
-      "!authentication.json",
-      "!issuance.json",
-      "!config-admin.json",
-      "!config-auth.json",
-      "!config-issuance.json"
-    ]
+    "includes": ["**", "!packages/*/*.json"]
   },
   "formatter": {
     "enabled": true,

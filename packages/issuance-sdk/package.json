@@ -1,0 +1,49 @@
+{
+  "name": "@maccuaa/intellitrust-issuance-sdk",
+  "version": "5.42.0",
+  "description": "JavaScript client for @maccuaa/intellitrust-issuance-sdk",
+  "keywords": [
+    "axios",
+    "typescript",
+    "openapi-client",
+    "authentication",
+    "entrust",
+    "identity",
+    "idaas"
+  ],
+  "homepage": "https://www.npmjs.com/package/@maccuaa/intellitrust-issuance-sdk",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maccuaa/intellitrust-js-sdk.git"
+  },
+  "license": "ISC",
+  "author": "Andrew MacCuaig <andrewmaccuaig@gmail.com>",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc --outDir dist/",
+    "pack": "bun publish --dry-run",
+    "publish": "bun publish",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "axios": "1.11.0"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  },
+  "engines": {
+    "node": ">= 22.12.0"
+  }
+}
