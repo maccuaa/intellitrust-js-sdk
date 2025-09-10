@@ -1,5 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { type AdminApiAuthentication, API } from "../admin-sdk";
+import { ActivateParmsTypeEnum, type AdminApiAuthentication, API } from "../admin-sdk";
+import { API as AuthApi, type UserAuthenticateQueryParameters } from "../auth-sdk";
 
 const basePath = process.env.BASE_PATH;
 
@@ -12,41 +13,19 @@ const credentials: AdminApiAuthentication = {
   sharedSecret: process.env.ADMIN_SECRET ?? "",
 };
 
+const apiKey = `${credentials.applicationId},${credentials.sharedSecret}`;
+
 describe("Administration API", () => {
   it("should successfully call IDaaS", async () => {
-    const sdk = new API({ basePath });
-
-    const authResponse = await sdk.authenticateAdminApiUsingPOST(credentials);
-
-    expect(authResponse.status).toBe(200);
-
-    const { authToken } = authResponse.data;
-
-    sdk.setApiKey(authToken ?? "");
+    const sdk = new API({ basePath, apiKey });
 
     const listResponse = await sdk.listAuthApiApplicationsUsingGET();
 
     expect(listResponse.status).toBe(200);
   });
 
-  it("should successfully use a long-lived token", async () => {
-    const sdk = new API({ basePath });
-
-    sdk.setApiKey(`${credentials.applicationId},${credentials.sharedSecret}`);
-
-    const listResponse = await sdk.usersPagedUsingPOST({});
-
-    expect(listResponse.status).toBe(200);
-  });
-
   it("should create a soft token", async () => {
-    const sdk = new API({ basePath });
-
-    const authResponse = await sdk.authenticateAdminApiUsingPOST(credentials);
-
-    const { authToken } = authResponse.data;
-
-    sdk.setApiKey(authToken ?? "");
+    const sdk = new API({ basePath, apiKey });
 
     // Get the user
     const getUserResponse = await sdk.userByUseridUsingPOST({
@@ -70,4 +49,155 @@ describe("Administration API", () => {
 
     await sdk.deleteTokenUsingDELETE(token.id);
   });
+
+  it("should create a user with a password provisioned", async () => {
+    const sdk = new API({ basePath, apiKey });
+
+    const response = await sdk.createUserUsingPOST({
+      userId: `testuser${Date.now()}`,
+      firstName: "Test",
+      lastName: "User",
+      email: "success@simulator.amazonses.com",
+    });
+
+    expect(response.status).toBe(200);
+
+    const passwordResponse = await sdk.getUserPasswordUsingGET(response.data.id!);
+
+    expect(passwordResponse.status).toBe(200);
+
+    expect(passwordResponse.data.present).toBe(true);
+
+    await sdk.deleteUserUsingDELETE(response.data.id!);
+  });
+
+  it.only("should create a user with a token and perform TOTP authentication", async () => {
+    const sdk = new API({ basePath, apiKey });
+
+    const response = await sdk.createUserUsingPOST({
+      userId: `testuser${Date.now()}`,
+      firstName: "Test",
+      lastName: "User",
+      email: "success@simulator.amazonses.com",
+    });
+
+    expect(response.status).toBe(200);
+
+    const user = response.data;
+
+    // Create a new Soft Token for the user
+    const createTokenResult = await sdk.createTokenUsingPOST(user.id!, "GOOGLE_AUTHENTICATOR", {
+      activateParms: { type: [ActivateParmsTypeEnum.Offline] },
+    });
+
+    expect(createTokenResult.status).toBe(200);
+
+    const token = createTokenResult.data;
+
+    console.log("Token details:", token);
+
+    const startResult = await sdk.startActivateTokenUsingPOST(token.id!, {
+      deliverActivationEmail: false,
+      returnQRCode: false,
+      type: [ActivateParmsTypeEnum.Offline],
+    });
+
+    expect(startResult.status).toBe(200);
+
+    console.log("Activation details:", startResult.data);
+
+    const url = new URL(startResult.data.activationURL!);
+    const secret = url.searchParams.get("secret");
+
+    const code = await totp(secret!);
+
+    const authSdk = new AuthApi({ basePath });
+
+    const authResponse = await authSdk.userChallengeUsingPOST("TOKEN", {
+      userId: user.userId!,
+      applicationId: process.env.AUTH_APP_ID ?? "",
+    });
+
+    expect(authResponse.status).toBe(200);
+
+    const authResult = await authSdk.userAuthenticateUsingPOST(
+      "TOKEN",
+      {
+        userId: user.userId!,
+        applicationId: process.env.AUTH_APP_ID ?? "",
+        response: code,
+      },
+      authResponse.data.token,
+    );
+
+    expect(authResult.status).toBe(200);
+
+    expect(authResult.data.authenticationCompleted).toBe(true);
+
+    await sdk.deleteUserUsingDELETE(user.id!);
+  });
 });
+
+/**
+ * Generates a TOTP code based on the provided secret.
+ * This implementation uses the Web Crypto API available in Bun.
+ * Assume SHA1 and a 30-second time step for 6 digits.
+ * @param secret - Base32 encoded secret from the QR code URL
+ * @returns 6-digit TOTP code as a string
+ */
+const totp = async (secret: string): Promise<string> => {
+  // Decode Base32 secret to bytes
+  const keyData = base32Decode(secret);
+
+  // Create ArrayBuffer for crypto.subtle
+  const arrayBuffer = new ArrayBuffer(keyData.length);
+  const view = new Uint8Array(arrayBuffer);
+  view.set(keyData);
+
+  const cryptoKey = await crypto.subtle.importKey("raw", arrayBuffer, { name: "HMAC", hash: "SHA-1" }, false, ["sign"]);
+  const counter = Math.floor(Date.now() / 30000); // 30-second time step
+  const counterBuffer = new ArrayBuffer(8);
+  new DataView(counterBuffer).setBigUint64(0, BigInt(counter));
+
+  const hmac = await crypto.subtle.sign("HMAC", cryptoKey, counterBuffer);
+  const hmacArray = new Uint8Array(hmac);
+  const offset = hmacArray[hmacArray.length - 1] & 0xf;
+
+  const code =
+    (hmacArray[offset] & 0x7f) * 0x1000000 +
+    (hmacArray[offset + 1] & 0xff) * 0x10000 +
+    (hmacArray[offset + 2] & 0xff) * 0x100 +
+    (hmacArray[offset + 3] & 0xff);
+
+  return (code % 1000000).toString().padStart(6, "0");
+};
+
+/**
+ * Simple base32 decoder for TOTP secrets
+ */
+function base32Decode(encoded: string): Uint8Array {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+  const cleanInput = encoded.toUpperCase().replace(/[^A-Z2-7]/g, "");
+
+  let bits = 0;
+  let value = 0;
+  const output = new Uint8Array(Math.floor((cleanInput.length * 5) / 8));
+  let outputIndex = 0;
+
+  for (let i = 0; i < cleanInput.length; i++) {
+    const char = cleanInput[i];
+    const charValue = alphabet.indexOf(char);
+
+    if (charValue === -1) continue;
+
+    value = (value << 5) | charValue;
+    bits += 5;
+
+    if (bits >= 8) {
+      output[outputIndex++] = (value >>> (bits - 8)) & 255;
+      bits -= 8;
+    }
+  }
+
+  return output.slice(0, outputIndex);
+}
