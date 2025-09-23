@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { ActivateParmsTypeEnum, type AdminApiAuthentication, API } from "../admin-sdk";
-import { API as AuthApi, type UserAuthenticateQueryParameters } from "../auth-sdk";
+import { ActivateParmsTypeEnum, type AdminApiAuthentication, API } from "@maccuaa/intellitrust-admin-sdk";
+import { API as AuthApi, type UserAuthenticateQueryParameters } from "@maccuaa/intellitrust-auth-sdk";
 
 const basePath = process.env.BASE_PATH;
 

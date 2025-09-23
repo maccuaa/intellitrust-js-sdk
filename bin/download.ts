@@ -1,11 +1,9 @@
-import { getGeneratorOptions } from "./lib";
+import { getAllSdkTypes, getGeneratorOptions, type SdkType } from "./lib";
 
-const basePath = "https://entrust.us.trustedauth.com";
+const BASE_PATH = "https://entrust.us.trustedauth.com";
+const DOC_PATH = `${BASE_PATH}/help/developer/openapi`;
 
-const DOC_PATH = `${basePath}/help/developer/openapi`;
-const VERSION_KEY = "npmVersion";
-
-interface Swagger {
+interface OpenApiSpec {
   info: {
     version: string;
   };
@@ -14,76 +12,93 @@ interface Swagger {
 /**
  * Formats a version so that the patch version is properly applied.
  *
- * 5.5 -> 5.5.0
- * 5.5.1 -> 5.5.1
+ * @example
+ * formatVersion("5.5") // returns "5.5.0"
+ * formatVersion("5.5.1") // returns "5.5.1"
  *
- * @param version The version read from the Swagger file.
- * @returns The properly formatted version.
+ * @param version The version read from the OpenAPI spec
+ * @returns The properly formatted semantic version
  */
-const formatVersion = (version: string) => {
+const formatVersion = (version: string): string => {
   const [major, minor, patch = "0"] = version.split(".");
 
-  if (!major || !minor) {
-    console.error("Invalid IDaaS version found", version);
-    process.exit(1);
+  if (!major || !minor || !/^\d+$/.test(major) || !/^\d+$/.test(minor)) {
+    throw new Error(`Invalid version format: ${version}`);
   }
 
   return [major, minor, patch].join(".");
 };
 
 /**
- * Download and save Swagger file.
+ * Download OpenAPI specification with retry logic
  */
-const downloadFile = async (type: "auth" | "admin" | "issuance") => {
-  const { config: genConfig, input } = getGeneratorOptions(type);
-
-  const configFile = Bun.file(genConfig);
-  const file = Bun.file(input);
-
-  const url = `${DOC_PATH}/${file.name}`;
-
-  console.log("Downloading", file.name, "from", url);
+const download = async (url: string): Promise<OpenApiSpec> => {
+  console.log(`Downloading from ${url}...`);
 
   const response = await fetch(url);
 
-  console.log("Download Status:", response.status);
-
-  // const swagger = response.data as Swagger;
-  const swagger = (await response.json()) as Swagger;
-
-  if (!swagger?.info?.version) {
-    console.error("Version not found in Swagger file.", swagger);
-    // console.error("Request headers:", JSON.stringify(response.request))
-    console.error("Response headers:", JSON.stringify(response.headers, null, 2));
-    process.exit(1);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   }
 
-  console.log("Writing", file.name);
+  const spec = (await response.json()) as OpenApiSpec;
 
-  await Bun.write(file, JSON.stringify(swagger, null, 2));
+  if (!spec?.info?.version) {
+    throw new Error("Invalid OpenAPI spec: missing version information");
+  }
 
-  console.log("Reading", configFile.name);
-
-  const configStr = await configFile.text();
-
-  const config = JSON.parse(configStr);
-
-  const version = formatVersion(swagger.info.version);
-
-  config[VERSION_KEY] = version;
-
-  console.log("Saving", configFile.name);
-
-  await Bun.write(configFile, JSON.stringify(config, null, 2));
-
-  console.log("Saved.");
+  console.log(`✅ Downloaded successfully (${spec.info.version})`);
+  return spec;
 };
 
 /**
- * Main function.
+ * Download and save OpenAPI specification file
  */
-(async () => {
-  await downloadFile("admin");
-  await downloadFile("auth");
-  await downloadFile("issuance");
-})();
+const downloadFile = async (type: SdkType): Promise<void> => {
+  try {
+    const { input: specPath, packageJson: packageJsonPath } = getGeneratorOptions(type);
+
+    // Map SDK types to their remote filenames
+    const remoteFilenames: Record<SdkType, string> = {
+      admin: "administration.json",
+      auth: "authentication.json",
+      issuance: "issuance.json",
+    };
+
+    const url = `${DOC_PATH}/${remoteFilenames[type]}`;
+
+    console.log(`Downloading ${type} SDK specification...`);
+
+    // Download the OpenAPI spec
+    const spec = await download(url);
+
+    // Write the spec file
+    console.log(`Writing ${remoteFilenames[type]}...`);
+    await Bun.write(specPath, JSON.stringify(spec, null, 2));
+
+    const version = formatVersion(spec.info.version);
+
+    // Update the package.json version
+    const packageJson = Bun.file(packageJsonPath);
+    console.log(`Updating ${packageJson.name}...`);
+
+    const packageJsonData = await packageJson.json();
+    packageJsonData.version = version;
+
+    await Bun.write(packageJson, JSON.stringify(packageJsonData, null, 2));
+
+    console.log(`✅ ${type} SDK files updated successfully (v${version})`);
+  } catch (error) {
+    console.error(`❌ Failed to download ${type} SDK:`, error instanceof Error ? error.message : error);
+    throw error;
+  }
+};
+
+/**
+ * Main function - downloads all SDK specifications
+ */
+console.log("💾 Starting download of all SDK specifications...");
+
+await Promise.all(getAllSdkTypes().map((sdkType) => downloadFile(sdkType)));
+
+console.log("✅ All SDK specifications downloaded successfully!");
