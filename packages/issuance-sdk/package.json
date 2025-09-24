@@ -1,12 +1,12 @@
 {
   "name": "@maccuaa/intellitrust-issuance-sdk",
   "version": "5.42.0",
-  "description": "JavaScript client for @maccuaa/intellitrust-issuance-sdk",
+  "description": "TypeScript SDK client for Entrust Adaptive Issuance Instant ID API",
   "keywords": [
     "axios",
     "typescript",
     "openapi-client",
-    "authentication",
+    "issuance",
     "entrust",
     "identity",
     "idaas"
@@ -34,7 +34,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc --outDir dist/",
     "pack": "bun publish --dry-run",
-    "publish": "bun publish",
+    "publish": "npm publish --provenance --access public",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

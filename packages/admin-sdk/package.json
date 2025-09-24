@@ -1,7 +1,7 @@
 {
   "name": "@maccuaa/intellitrust-admin-sdk",
   "version": "5.42.0",
-  "description": "JavaScript client for @maccuaa/intellitrust-admin-sdk",
+  "description": "TypeScript SDK client for Entrust Identity as a Service Administration API",
   "keywords": [
     "axios",
     "typescript",
@@ -34,7 +34,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc --outDir dist/",
     "pack": "bun publish --dry-run",
-    "publish": "bun publish",
+    "publish": "npm publish --provenance --access public",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
