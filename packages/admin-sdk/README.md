@@ -39,7 +39,7 @@ const { authToken } = authResponse.data;
 // Set the authToken so it can be used in all API calls
 sdk.setApiKey(authToken);
 
-// Exampe: List all Authentication API applications
+// Example: List all Authentication API applications
 const listResponse = await sdk.listAuthApiApplicationsUsingGET();
 
 // Print the response
