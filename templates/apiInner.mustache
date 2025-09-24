@@ -225,7 +225,7 @@ private {{classname}}Fp = (configuration?: ConfigurationParameters) => {
 
 
 {{#operation}}
-public async {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{#isNullable}} | null{{/isNullable}}, {{/allParams}}options?: AxiosRequestConfig) {
+public async {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{#isNullable}} | null{{/isNullable}}, {{/allParams}}options?: AxiosRequestConfig): AxiosPromise<{{{returnType}}}{{^returnType}}void{{/returnType}}> {
     const request = await this.{{classname}}Fp(this.configuration).{{nickname}}({{#allParams}}{{paramName}}, {{/allParams}}options);
     return await request(this.axios);
 }

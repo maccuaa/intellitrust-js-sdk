@@ -16,21 +16,18 @@
     }
   },
   "scripts": {
-    "build": "bun --filter=\"@maccuaa/intellitrust-*-sdk\" run build",
+    "build": "bun ./bin/generate",
     "download": "bun ./bin/download",
-    "generate": "bun ./bin/generate",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "test": "bun test",
-    "pack": "bun --filter=\"@maccuaa/intellitrust-*-sdk\" run pack",
-    "publish": "bun --filter=\"@maccuaa/intellitrust-*-sdk\" run publish",
-    "typecheck": "bun --filter=\"@maccuaa/intellitrust-*-sdk\" run typecheck",
     "update": "openapi-generator-cli version-manager set latest"
   },
   "dependencies": {
     "@biomejs/biome": "2.2.4",
     "@openapitools/openapi-generator-cli": "^2.23.1",
     "@types/bun": "^1.2.21",
+    "bunup": "^0.11.27",
     "typescript": "catalog:"
   }
 }

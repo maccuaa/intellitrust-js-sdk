@@ -31,7 +31,7 @@ export type {{operationIdCamelCase}}{{enumName}} = typeof {{operationIdCamelCase
 
 export class API extends BaseAPI {
 
-  public setApiKey = (apiKey: string) => {
+  public setApiKey = (apiKey: string): void => {
     this.configuration.apiKey = apiKey
   }
 

@@ -14,7 +14,7 @@ export const DUMMY_BASE_URL = 'https://example.com'
  * @throws {RequiredError}
  * @export
  */
-export const assertParamExists = function (functionName: string, paramName: string, paramValue: unknown) {
+export const assertParamExists = function (functionName: string, paramName: string, paramValue: unknown): void {
     if (paramValue === null || paramValue === undefined) {
         throw new RequiredError(paramName, `Required parameter ${paramName} was null or undefined when calling ${functionName}.`);
     }
@@ -24,7 +24,7 @@ export const assertParamExists = function (functionName: string, paramName: stri
  *
  * @export
  */
-export const setApiKeyToObject = async function (object: any, keyParamName: string, configuration?: ConfigurationParameters) {
+export const setApiKeyToObject = async function (object: any, keyParamName: string, configuration?: ConfigurationParameters): Promise<void> {
     if (configuration && configuration.apiKey) {
         const localVarApiKeyValue = typeof configuration.apiKey === 'function'
             ? await configuration.apiKey(keyParamName)
@@ -59,7 +59,7 @@ function setFlattenedQueryParams(urlSearchParams: URLSearchParams, parameter: an
  *
  * @export
  */
-export const setSearchParams = function (url: URL, ...objects: any[]) {
+export const setSearchParams = function (url: URL, ...objects: any[]): void {
     const searchParams = new URLSearchParams(url.search);
     setFlattenedQueryParams(searchParams, objects);
     url.search = searchParams.toString();
@@ -69,7 +69,7 @@ export const setSearchParams = function (url: URL, ...objects: any[]) {
  *
  * @export
  */
-export const serializeDataIfNeeded = function (value: any, requestOptions: any, configuration?: Configuration) {
+export const serializeDataIfNeeded = function (value: any, requestOptions: any, configuration?: Configuration): any {
     const nonString = typeof value !== 'string';
     const needsSerialization = nonString && configuration && Configuration.isJsonMime
         ? Configuration.isJsonMime(requestOptions.headers['Content-Type'])
@@ -123,7 +123,7 @@ function objectFromEntries(entries: any): Record<string, any> {
  *
  * @export
  */
-export const toPathString = function (url: URL) {
+export const toPathString = function (url: URL): string {
     return url.pathname + url.search + url.hash
 }
 
@@ -132,7 +132,7 @@ export const toPathString = function (url: URL) {
  * @export
  */
 export const createRequestFunction = function (axiosArgs: RequestArgs, configuration?: ConfigurationParameters) {
-    return <T = unknown, R = AxiosResponse<T>>(axios: AxiosInstance) => {
+    return <T = unknown, R = AxiosResponse<T>>(axios: AxiosInstance): Promise<R> => {
         const axiosRequestArgs = {...axiosArgs.options, url: (axios.defaults.baseURL ? '' : configuration?.basePath) + axiosArgs.url};
         return axios.request<T, R>(axiosRequestArgs);
     };

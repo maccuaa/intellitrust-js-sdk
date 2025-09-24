@@ -25,4 +25,7 @@ jobs:
       - name: Publish to NPM
         env:
           NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: bun run publish
+        run: |
+          npm publish --provenance --access public --cwd ./packages/admin-sdk
+          npm publish --provenance --access public --cwd ./packages/auth-sdk
+          npm publish --provenance --access public --cwd ./packages/issuance-sdk
