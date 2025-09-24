@@ -10,6 +10,7 @@ const generateSdk = async (sdkType: SdkType): Promise<void> => {
 
     console.log(`Cleaning ${output}...`);
 
+    // Clean the output directory except node_modules
     await $`git -C ${output} clean -fdX -e node_modules`;
 
     console.log(`Generating ${sdkType} SDK...`);

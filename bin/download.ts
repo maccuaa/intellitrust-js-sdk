@@ -30,7 +30,7 @@ const formatVersion = (version: string): string => {
 };
 
 /**
- * Download OpenAPI specification with retry logic
+ * Download OpenAPI specification from a given URL
  */
 const download = async (url: string): Promise<OpenApiSpec> => {
   console.log(`Downloading from ${url}...`);
@@ -48,6 +48,7 @@ const download = async (url: string): Promise<OpenApiSpec> => {
   }
 
   console.log(`✅ Downloaded successfully (${spec.info.version})`);
+
   return spec;
 };
 
