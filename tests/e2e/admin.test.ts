@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { ActivateParmsTypeEnum, type AdminApiAuthentication, API } from "@maccuaa/intellitrust-admin-sdk";
-import { API as AuthApi, type UserAuthenticateQueryParameters } from "@maccuaa/intellitrust-auth-sdk";
+import { API as AuthApi } from "@maccuaa/intellitrust-auth-sdk";
 
 const basePath = process.env.BASE_PATH;
 
@@ -62,13 +62,13 @@ describe("Administration API", () => {
 
     expect(response.status).toBe(200);
 
-    const passwordResponse = await sdk.getUserPasswordUsingGET(response.data.id!);
+    const passwordResponse = await sdk.getUserPasswordUsingGET(response.data.id);
 
     expect(passwordResponse.status).toBe(200);
 
     expect(passwordResponse.data.present).toBe(true);
 
-    await sdk.deleteUserUsingDELETE(response.data.id!);
+    await sdk.deleteUserUsingDELETE(response.data.id);
   });
 
   it.only("should create a user with a token and perform TOTP authentication", async () => {
@@ -86,7 +86,7 @@ describe("Administration API", () => {
     const user = response.data;
 
     // Create a new Soft Token for the user
-    const createTokenResult = await sdk.createTokenUsingPOST(user.id!, "GOOGLE_AUTHENTICATOR", {
+    const createTokenResult = await sdk.createTokenUsingPOST(user.id, "GOOGLE_AUTHENTICATOR", {
       activateParms: { type: [ActivateParmsTypeEnum.Offline] },
     });
 
@@ -96,7 +96,7 @@ describe("Administration API", () => {
 
     console.log("Token details:", token);
 
-    const startResult = await sdk.startActivateTokenUsingPOST(token.id!, {
+    const startResult = await sdk.startActivateTokenUsingPOST(token.id, {
       deliverActivationEmail: false,
       returnQRCode: false,
       type: [ActivateParmsTypeEnum.Offline],
@@ -106,15 +106,15 @@ describe("Administration API", () => {
 
     console.log("Activation details:", startResult.data);
 
-    const url = new URL(startResult.data.activationURL!);
+    const url = new URL(startResult.data.activationURL);
     const secret = url.searchParams.get("secret");
 
-    const code = await totp(secret!);
+    const code = await totp(secret);
 
     const authSdk = new AuthApi({ basePath });
 
     const authResponse = await authSdk.userChallengeUsingPOST("TOKEN", {
-      userId: user.userId!,
+      userId: user.userId,
       applicationId: process.env.AUTH_APP_ID ?? "",
     });
 
@@ -123,7 +123,7 @@ describe("Administration API", () => {
     const authResult = await authSdk.userAuthenticateUsingPOST(
       "TOKEN",
       {
-        userId: user.userId!,
+        userId: user.userId,
         applicationId: process.env.AUTH_APP_ID ?? "",
         response: code,
       },
@@ -134,7 +134,7 @@ describe("Administration API", () => {
 
     expect(authResult.data.authenticationCompleted).toBe(true);
 
-    await sdk.deleteUserUsingDELETE(user.id!);
+    await sdk.deleteUserUsingDELETE(user.id);
   });
 });
 
