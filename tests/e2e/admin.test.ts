@@ -94,8 +94,6 @@ describe("Administration API", () => {
 
     const token = createTokenResult.data;
 
-    console.log("Token details:", token);
-
     const startResult = await sdk.startActivateTokenUsingPOST(token.id, {
       deliverActivationEmail: false,
       returnQRCode: false,
@@ -103,8 +101,6 @@ describe("Administration API", () => {
     });
 
     expect(startResult.status).toBe(200);
-
-    console.log("Activation details:", startResult.data);
 
     const url = new URL(startResult.data.activationURL);
     const secret = url.searchParams.get("secret");
