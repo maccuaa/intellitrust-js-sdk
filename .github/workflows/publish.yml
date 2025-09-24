@@ -1,4 +1,4 @@
-name: Publish Pacakge
+name: Publish Package
 
 on:
   push:
@@ -25,7 +25,4 @@ jobs:
       - name: Publish to NPM
         env:
           NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          bun publish --access public --cwd ./packages/admin-sdk
-          bun publish --access public --cwd ./packages/auth-sdk
-          bun publish --access public --cwd ./packages/issuance-sdk
+        run: bun run publish
