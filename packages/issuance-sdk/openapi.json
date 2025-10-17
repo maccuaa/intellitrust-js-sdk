@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.42"
+    "version": "5.43"
   },
   "servers": [
     {
@@ -7551,7 +7551,9 @@
             }
           },
           "multistep": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Perform smart cards operations over multiple print requests. This feature is NOT supported with Instant ID as a Service.",
+            "example": false
           }
         }
       },
@@ -10278,6 +10280,11 @@
             "readOnly": true,
             "example": "D4-1.2-4"
           },
+          "printerPlatform": {
+            "type": "string",
+            "description": "The printer platform",
+            "example": "DS3"
+          },
           "printerType": {
             "type": "string",
             "description": "The printer type",
@@ -10288,6 +10295,11 @@
             "type": "boolean",
             "description": "A flag used to determine if the printer has PTP ribbon or not (Ignore this field in the API request or response)"
           },
+          "retransferPartNumber": {
+            "type": "string",
+            "description": "The part number of the retransfer ribbon installed on printer",
+            "example": "525100-001-S100"
+          },
           "retransferRollRemaining": {
             "type": "number",
             "description": "percentage of retransfer roll remaining in printer",
@@ -10297,6 +10309,16 @@
             "type": "string",
             "description": "ID of the cloud enabled ribbon installed in the printer (Ignore this field in the API request or response)"
           },
+          "ribbonPartNumber": {
+            "type": "string",
+            "description": "The part number of the print ribbon installed on printer",
+            "example": "525100-001-S100"
+          },
+          "ribbonRegion": {
+            "type": "string",
+            "description": "The region of the ribbon installed",
+            "example": "100"
+          },
           "ribbonRemaining": {
             "type": "number",
             "description": "percentage of ribbon remaining in printer",
@@ -10305,6 +10327,11 @@
           "scSimulator": {
             "type": "boolean",
             "description": "A flag used to determine if the smart card simulator needs to be invoked"
+          },
+          "serialNumber": {
+            "type": "string",
+            "description": "The unique serial number of the printer",
+            "example": "XC10593"
           },
           "status": {
             "type": "string",
@@ -11951,6 +11978,10 @@
             "description": "If the user has an OTP, this attribute specifies when the user's OTP was created.",
             "format": "date-time",
             "example": "2019-02-11T11:45:27Z"
+          },
+          "passwordCompromised": {
+            "type": "boolean",
+            "description": "A flag indicating if the user password is compromised."
           },
           "passwordExpirationTime": {
             "type": "string",

@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.42"
+    "version": "5.43"
   },
   "servers": [
     {
@@ -21147,7 +21147,7 @@
           "Users"
         ],
         "summary": "Lists a page of users",
-        "description": "Returns users for the provided search parameters. Caller requires the USERS:VIEW permission. The following searchByAttributes are supported: <ul><li>userId: a String value (it matches both the User ID or any alias). Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>groupId: a String value should be a UUID of an existing group. Allowed operator: EQUALS. </li><li>roleId: a String value should be a UUID of an existing role. Allowed operator: EQUALS. </li><li>authenticator: a String with value ENTRUST_SOFT_TOKEN or FIDO or GOOGLE_AUTHENTICATOR or GRID or HARDWARE_TOKEN or KBA or OTP or PASSWORD or SMARTCREDENTIALPUSH or TEMP_ACCESS_CODE or FACE OR MAGICLINK. Allowed operator: EQUALS, NOT_EQUALS. </li><li>state: ACTIVE or INACTIVE. Allowed operator: EQUALS. </li><li>locked: 'true' is the only value allowed. Allowed operator: EQUALS. </li><li>userType: a String with value LOCAL or SYNC or EXTERNAL. Allowed operator: EQUALS. </li><li>registrationRequired: true or false. Allowed operator: EQUALS. </li><li>verificationRequired: true or false. Allowed operator: EQUALS. </li><li>lastAuthTime: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, EXISTS, NOT_EXISTS.</li><li>passwordExpirationTime: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, EXISTS, NOT_EXISTS.</li><li>organizationId: a String value should be a UUID of an existing organization. Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br/><br/>The orderByAttribute supports these attribute names: userId, state, lastAuthTime.<br/><br/>The following attributes can be optionally included in the returned User object: grids, tokens, smartCredentials, tempAccessCode, fidoTokens, userAttributeValues, userAliases, groups, oauthRoles, authenticatorLockoutStatus, organizations",
+        "description": "Returns users for the provided search parameters. Caller requires the USERS:VIEW permission. The following searchByAttributes are supported: <ul><li>userId: a String value (it matches both the User ID or any alias). Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>groupId: a String value should be a UUID of an existing group. Allowed operator: EQUALS. </li><li>roleId: a String value should be a UUID of an existing role. Allowed operator: EQUALS. </li><li>authenticator: a String with value ENTRUST_SOFT_TOKEN or FIDO or GOOGLE_AUTHENTICATOR or GRID or HARDWARE_TOKEN or KBA or OTP or PASSWORD or SMARTCREDENTIALPUSH or TEMP_ACCESS_CODE or FACE or MAGICLINK. Allowed operator: EQUALS, NOT_EQUALS. </li><li>state: ACTIVE or INACTIVE. Allowed operator: EQUALS. </li><li>locked: 'true' is the only value allowed. Allowed operator: EQUALS. </li><li>userType: a String with value LOCAL or SYNC or EXTERNAL. Allowed operator: EQUALS. </li><li>registrationRequired: true or false. Allowed operator: EQUALS. </li><li>verificationRequired: true or false. Allowed operator: EQUALS. </li><li>lastAuthTime: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, EXISTS, NOT_EXISTS.</li><li>passwordExpirationTime: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, EXISTS, NOT_EXISTS.</li><li>organizationId: a String value should be a UUID of an existing organization. Allowed operator: EQUALS. </li><li>passwordCompromised: true or false. Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br/><br/>The orderByAttribute supports these attribute names: userId, state, lastAuthTime.<br/><br/>The following attributes can be optionally included in the returned User object: grids, tokens, smartCredentials, tempAccessCode, fidoTokens, userAttributeValues, userAliases, groups, oauthRoles, authenticatorLockoutStatus, organizations",
         "operationId": "usersPagedUsingPOST",
         "requestBody": {
           "content": {
@@ -23816,6 +23816,10 @@
               ]
             }
           },
+          "allowActionableNotifications": {
+            "type": "boolean",
+            "description": "A flag indicating if the mobile app allows the user to take action on a notification without opening the app."
+          },
           "allowDeviceBiometric": {
             "type": "boolean",
             "description": "A boolean value that specifies whether device biometric is allowed. Default is true."
@@ -24380,7 +24384,13 @@
           },
           "timeout": {
             "type": "integer",
-            "description": "The time in seconds that the client will wait for the FIDO token to respond.",
+            "description": "The number of seconds that the client will wait for the FIDO token to respond. This field is deprecated, use 'timeoutMillis' instead.",
+            "format": "int32",
+            "deprecated": true
+          },
+          "timeoutMillis": {
+            "type": "integer",
+            "description": "The time in milliseconds that the client will wait for the FIDO token to respond.",
             "format": "int32"
           },
           "userDisplayName": {
@@ -24415,7 +24425,8 @@
           },
           "userIdStored": {
             "type": "boolean",
-            "description": "Flag indicating if the userId was stored on the registered FIDO2 token.  Defaults to false if not set."
+            "description": "Flag indicating if the userId was stored on the registered FIDO2 token.  Defaults to false if not set.",
+            "deprecated": true
           }
         },
         "description": "FIDORegisterResponse defines the information returned from a FIDO token to complete registration."
@@ -24759,11 +24770,18 @@
       "GeneralSettings": {
         "type": "object",
         "properties": {
-          "authenticationSessionLifetime": {
+          "adminUserAuthenticationSessionLifetime": {
             "maximum": 3600,
             "minimum": 60,
             "type": "integer",
-            "description": "The amount of time in seconds before an authenticated user needs to re-authenticate. Default is 900.",
+            "description": "The amount of time in seconds admin user sessions remain active without user interaction before automatically expiring. If not specified, then authenticationSessionLifetime value is used.",
+            "format": "int32"
+          },
+          "authenticationSessionLifetime": {
+            "maximum": 28800,
+            "minimum": 60,
+            "type": "integer",
+            "description": "The amount of time in seconds standard user sessions remain active without user interaction before automatically expiring. Default is 900.",
             "format": "int32"
           },
           "authenticatorActivationType": {
@@ -27322,7 +27340,9 @@
               "VCS",
               "PLAYINTEGRITYCREDENTIALS",
               "VPDEFNS",
-              "ACRS"
+              "ACRS",
+              "FLEET_MANAGEMENT_ALERT",
+              "VERIFYUSER"
             ]
           },
           "id": {
@@ -30667,6 +30687,10 @@
             "format": "date-time",
             "example": "2019-02-11T11:45:27Z"
           },
+          "passwordCompromised": {
+            "type": "boolean",
+            "description": "A flag indicating if the user password is compromised."
+          },
           "passwordExpirationTime": {
             "type": "string",
             "description": "The password expiration time.",
@@ -31482,6 +31506,10 @@
       "UserPassword": {
         "type": "object",
         "properties": {
+          "compromised": {
+            "type": "boolean",
+            "description": "Indicates if the user's password has been found in a data breach."
+          },
           "expiryNotificationDate": {
             "type": "string",
             "description": "The date at which the next password expiry notification will be sent.",
@@ -31501,6 +31529,12 @@
           "lastChangedTime": {
             "type": "string",
             "description": "The last time the password was changed.",
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
+          },
+          "lastCompromisedCheckTime": {
+            "type": "string",
+            "description": "The date and time of the last Have I Been Pwned api call performed on this password.",
             "format": "date-time",
             "example": "2019-02-19T13:15:27Z"
           },
@@ -31551,12 +31585,12 @@
           "passwordFormat": {
             "type": "string",
             "description": "Define the password format of new password, it's BCRYPT when importing BCrypted password, it's GETACCESS when importing GetAccess password,it defaults to CLEARTEXT if not provided.When passwordFormat is BCRYPT or GETACCESS, the following restrictions must be enforced:<ul><li>1.the user must be an IDaaS local user.</li><li>2.currentPassword must be null.</li><li>3.generatePassword must be false.</li><li>4.emailPassword must be false.</li><li>5.returnPassword must be false.</li></ul>",
-            "default": "CLEARTEXT",
             "enum": [
               "CLEARTEXT",
               "BCRYPT",
               "GETACCESS"
-            ]
+            ],
+            "default": "CLEARTEXT"
           },
           "returnPassword": {
             "type": "boolean",

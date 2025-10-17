@@ -1,7 +1,7 @@
 {
   "name": "@maccuaa/intellitrust-issuance-sdk",
   "description": "TypeScript SDK client for Entrust Adaptive Issuance Instant ID API",
-  "version": "5.42.0",
+  "version": "5.43.0",
   "type": "module",
   "files": [
     "dist"
