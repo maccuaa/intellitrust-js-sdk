@@ -71,7 +71,7 @@ describe("Administration API", () => {
     await sdk.deleteUserUsingDELETE(response.data.id);
   });
 
-  it.only("should create a user with a token and perform TOTP authentication", async () => {
+  it("should create a user with a token and perform TOTP authentication", async () => {
     const sdk = new API({ basePath, apiKey });
 
     const response = await sdk.createUserUsingPOST({
