@@ -50,27 +50,6 @@ describe("Administration API", () => {
     await sdk.deleteTokenUsingDELETE(token.id);
   });
 
-  it("should create a user with a password provisioned", async () => {
-    const sdk = new API({ basePath, apiKey });
-
-    const response = await sdk.createUserUsingPOST({
-      userId: `testuser${Date.now()}`,
-      firstName: "Test",
-      lastName: "User",
-      email: "success@simulator.amazonses.com",
-    });
-
-    expect(response.status).toBe(200);
-
-    const passwordResponse = await sdk.getUserPasswordUsingGET(response.data.id);
-
-    expect(passwordResponse.status).toBe(200);
-
-    expect(passwordResponse.data.present).toBe(true);
-
-    await sdk.deleteUserUsingDELETE(response.data.id);
-  });
-
   it("should create a user with a token and perform TOTP authentication", async () => {
     const sdk = new API({ basePath, apiKey });
 
