@@ -33,9 +33,19 @@ const generateSdk = async (sdkType: SdkType): Promise<void> => {
 
     console.log(`✅ Code generation completed for ${sdkType} SDK`);
 
+    // Install dependencies for the SDK package (needed for isolated installs)
+    console.log(`📦 Installing dependencies for ${sdkType} SDK...`);
+    const installResult = await $`bun install --cwd ${output}`.quiet();
+
+    if (installResult.exitCode !== 0) {
+      throw new Error(`Dependency installation failed with exit code ${installResult.exitCode}`);
+    }
+
+    console.log(`✅ Dependencies installed for ${sdkType} SDK`);
+
     // Run TypeScript type checking
     console.log(`🔍 Running TypeScript type checking for ${sdkType} SDK...`);
-    const tscResult = await $`bunx -bun tsc --noEmit --project ${output}/tsconfig.json`.quiet();
+    const tscResult = await $`bunx --bun tsc --noEmit --project ${output}/tsconfig.json`.quiet();
 
     if (tscResult.exitCode !== 0) {
       throw new Error(`TypeScript type checking failed with exit code ${tscResult.exitCode}`);

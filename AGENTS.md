@@ -26,7 +26,7 @@ This repository generates JavaScript/TypeScript SDKs for Entrust Identity as a S
 - **Code Generation**: OpenAPI Generator with custom Mustache templates
 - **Linting**: Biome
 - **Language**: TypeScript with type definitions
-- **Package Manager**: Bun (with workspaces)
+- **Package Manager**: Bun (with workspaces and isolated installs)
 
 ## Key Workflows
 
@@ -118,6 +118,16 @@ The `templates/` directory contains Mustache templates that customize the genera
 - Keep Bun and OpenAPI Generator CLI up to date
 - TypeScript version is managed via workspace catalog
 - Monitor renovate.json for automated dependency updates
+
+### Bun Isolated Installs
+
+This project uses Bun's **isolated installs** (default since Bun 1.3) which provides strict dependency isolation similar to pnpm:
+
+- **Benefits**: Prevents phantom dependencies, ensures deterministic builds, better workspace isolation
+- **Build Process**: The `bin/generate.ts` script installs dependencies in each SDK package after code generation but before type checking
+- **Type Checking**: Uses `bun x --bun tsc` to run TypeScript compiler with proper module resolution
+
+**Important**: Do not switch to hoisted installs unless absolutely necessary. The build process is designed to work with isolated installs.
 
 ## Project Conventions
 
