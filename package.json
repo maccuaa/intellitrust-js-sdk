@@ -24,7 +24,7 @@
     "update": "openapi-generator-cli version-manager set latest"
   },
   "dependencies": {
-    "@biomejs/biome": "2.2.5",
+    "@biomejs/biome": "2.2.6",
     "@openapitools/openapi-generator-cli": "^2.23.1",
     "@types/bun": "^1.2.21",
     "bunup": "^0.14.0",
