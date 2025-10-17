@@ -5,9 +5,12 @@ on:
     tags:
       - "v*"
 
+permissions:
+  id-token: write # Required for OIDC
+  contents: read
+
 jobs:
   publish:
-    if: github.repository == 'maccuaa/intellitrust-js-sdk'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -23,8 +26,6 @@ jobs:
         run: bun run build
 
       - name: Publish to NPM
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           npm publish --provenance --access public --cwd ./packages/admin-sdk
           npm publish --provenance --access public --cwd ./packages/auth-sdk
