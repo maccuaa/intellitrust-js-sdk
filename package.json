@@ -12,7 +12,8 @@
       "tests/*"
     ],
     "catalog": {
-      "typescript": "^5.9.2"
+      "typescript": "^5.9.2",
+      "axios": "1.12.2"
     }
   },
   "scripts": {
@@ -23,7 +24,7 @@
     "test": "bun test",
     "update": "openapi-generator-cli version-manager set latest"
   },
-  "dependencies": {
+  "devDependencies": {
     "@biomejs/biome": "2.3.3",
     "@openapitools/openapi-generator-cli": "^2.23.1",
     "@types/bun": "^1.2.21",

@@ -69,6 +69,14 @@ This repository generates JavaScript/TypeScript SDKs for Entrust Identity as a S
 3. Create a GitHub Release
 4. Packages are published to NPM under `@maccuaa/intellitrust-*-sdk`
 
+**Publishing Process:**
+
+- Loops through each SDK package (admin-sdk, auth-sdk, issuance-sdk)
+- Uses `bun pm pack` to create tarball with resolved catalog dependencies
+- Publishes tarball via `npm publish` (provenance attestations are automatic with OIDC trusted publishing)
+- Cleans up tarballs after publishing
+- This approach maintains security while properly handling catalog references
+
 ## Important Files
 
 - **`openapitools.json`** - OpenAPI Generator configuration
@@ -113,10 +121,31 @@ The `templates/` directory contains Mustache templates that customize the genera
 - Run `bun test` to execute e2e tests
 - Test changes with `bun run lint` before committing
 
-### Dependencies
+### Dependency Management
 
+This project uses Bun's **workspace catalogs** to centralize dependency versions:
+
+- **Catalog dependencies**: `typescript` and `axios` versions are defined once in the root `package.json` catalog
+- **Usage**: All SDK packages reference catalog versions using `"catalog:"` protocol
+- **Benefits**: Single source of truth for versions, easier updates across all packages
+- **Updating versions**: To update axios or typescript, modify the version in the root `package.json` catalog and run `bun install`
+
+**Example catalog entry:**
+
+```json
+"workspaces": {
+  "catalog": {
+    "typescript": "^5.9.2",
+    "axios": "1.12.2"
+  }
+}
+```
+
+**Important notes:**
+
+- When publishing SDKs, the workflow uses `bun pm pack` to create tarballs (which resolves `"catalog:"` references to actual version numbers), then publishes those tarballs with `npm publish` to maintain OIDC trusted publishing support
+- **Why this two-step process?** Bun's `bun pm pack` resolves catalog references, but `bun publish` doesn't support npm's OIDC trusted publishing (provenance attestations are automatic with `npm publish` when using trusted publishing)
 - Keep Bun and OpenAPI Generator CLI up to date
-- TypeScript version is managed via workspace catalog
 - Monitor renovate.json for automated dependency updates
 
 ### Bun Isolated Installs
