@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.43"
+    "version": "5.44"
   },
   "servers": [
     {
@@ -9002,6 +9002,11 @@
             "format": "date-time",
             "example": "2019-02-19T13:15:27Z"
           },
+          "directoryDesynced": {
+            "type": "boolean",
+            "description": "Whether the directory group is desynced. Desynced groups can be deleted.",
+            "example": false
+          },
           "externalId": {
             "type": "string",
             "description": "The externalId of this group."
@@ -9784,7 +9789,9 @@
               "VCS",
               "PLAYINTEGRITYCREDENTIALS",
               "VPDEFNS",
-              "ACRS"
+              "ACRS",
+              "FLEET_MANAGEMENT_ALERT",
+              "VERIFYUSER"
             ]
           },
           "id": {
@@ -10446,6 +10453,15 @@
           },
           "lamination": {
             "$ref": "#/components/schemas/Lamination"
+          },
+          "printResolution": {
+            "type": "string",
+            "description": "The resolution at which printer will print. This will be NA if printer supports only 1 resolution.",
+            "enum": [
+              "NA",
+              "BEST",
+              "STANDARD"
+            ]
           },
           "rewrite": {
             "type": "boolean",
