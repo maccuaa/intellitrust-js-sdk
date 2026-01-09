@@ -168,6 +168,7 @@ Fetches the latest OpenAPI JSON specs from Entrust IDaaS APIs
 ### Release Monitoring
 
 - The `new-release.yml` workflow runs nightly and on dispatch; it runs `bun run download` and extracts `.info.version` from `openapi/authentication.json` to open a PR bumping the IDaaS OpenAPI files.
+- The `publish.yml` workflow triggers on `openapi/**` changes on `main`, reads `.info.version` from `openapi/authentication.json`, checks if the tag already exists, and if not creates a GitHub release with the IDaaS docs links and publishes the SDK packages to npm.
 
 ## Important Files
 

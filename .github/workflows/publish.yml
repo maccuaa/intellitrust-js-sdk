@@ -1,25 +1,53 @@
-name: Publish
+name: Release & Publish
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - main
+    paths:
+      - openapi/**
+  workflow_dispatch: {}
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      should_release: ${{ steps.check_tag.outputs.should_release }}
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+
+      - name: Extract IDaaS version
+        id: version
+        run: echo "version=$(jq -r '.info.version' openapi/authentication.json)" >> $GITHUB_OUTPUT
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          if git ls-remote --tags origin | grep -q "refs/tags/v${{ steps.version.outputs.version }}$"; then
+            echo "should_release=false" >> $GITHUB_OUTPUT
+          else
+            echo "should_release=true" >> $GITHUB_OUTPUT
+          fi
+
   publish:
+    needs: check
+    if: needs.check.outputs.should_release == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
       - uses: oven-sh/setup-bun@b7a1c7ccf290d58743029c4f6903da283811b979 # v2
       - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6
         with:
-          node-version: "lts/*"
+          registry-url: "https://registry.npmjs.org"
+
       - run: bun install --frozen-lockfile
       - run: bun run build
+
       - name: Publish to NPM
         run: |
           for pkg in admin-sdk auth-sdk issuance-sdk; do
@@ -28,3 +56,12 @@ jobs:
             npm publish --provenance --access public *.tgz
             cd ../..
           done
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.check.outputs.version }}
+        run: |
+          gh release create "v${VERSION}" \
+            --title "IDaaS ${VERSION}" \
+            --notes $'🛡️ https://entrust.us.trustedauth.com/help/authentication/posts/'"${VERSION}"$'\n\n🖨️ https://entrust.us.trustedauth.com/help/issuance/posts/'"${VERSION}"
