@@ -1,11 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "timezone": "America/New_York",
+  "configMigration": true,
+  "extends": ["config:best-practices", "security:minimumReleaseAgeNpm", ":automergeAll"],
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true
   },
-  "extends": ["config:best-practices", ":rebaseStalePrs"],
-  "minimumReleaseAge": "3 days",
   "osvVulnerabilityAlerts": true
 }
