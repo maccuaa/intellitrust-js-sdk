@@ -20,9 +20,8 @@ jobs:
       - name: Publish to NPM
         run: |
           for pkg in admin-sdk auth-sdk issuance-sdk; do
-            pushd ./packages/$pkg > /dev/null
+            cd ./packages/$pkg
             bun pm pack --quiet
             npm publish --provenance --access public *.tgz
-            rm *.tgz
-            popd > /dev/null
+            cd ../..
           done
