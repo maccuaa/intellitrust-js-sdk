@@ -43,6 +43,7 @@ jobs:
       - uses: oven-sh/setup-bun@b7a1c7ccf290d58743029c4f6903da283811b979 # v2
       - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6
         with:
+          node-version: "lts/*"
           registry-url: "https://registry.npmjs.org"
 
       - run: bun install --frozen-lockfile
