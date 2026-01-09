@@ -1,4 +1,4 @@
-name: New Release Check
+name: New IDaaS Release Check
 on:
   schedule:
     - cron: 0 21 * * *
@@ -8,14 +8,18 @@ permissions:
   pull-requests: write
 jobs:
   update:
-    name: API Update Check
+    name: IDaaS Auth API Update Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
       - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2
       - run: bun install --frozen-lockfile
       - run: bun run download
+      - name: Extract API version
+        id: version
+        run: echo "api_version=$(jq -r '.info.version' openapi/authentication.json)" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-pull-request@98357b18bf14b5342f975ff684046ec3b2a07725 # v8
         with:
-          title: New IDaaS API version
+          title: "chore: update IDaaS API to v${{ steps.version.outputs.api_version }}"
+          commit-message: "chore: update IDaaS API to v${{ steps.version.outputs.api_version }}"
           assignees: maccuaa

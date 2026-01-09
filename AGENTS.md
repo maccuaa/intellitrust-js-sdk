@@ -165,6 +165,10 @@ Fetches the latest OpenAPI JSON specs from Entrust IDaaS APIs
 - Cleans up tarballs after publishing
 - This approach maintains security while properly handling catalog references
 
+### Release Monitoring
+
+- The `new-release.yml` workflow runs nightly and on dispatch; it runs `bun run download` and extracts `.info.version` from `openapi/authentication.json` to open a PR bumping the IDaaS OpenAPI files.
+
 ## Important Files
 
 - **`biome.json`** - Linting and formatting rules
