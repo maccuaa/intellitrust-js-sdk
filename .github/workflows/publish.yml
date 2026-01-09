@@ -22,7 +22,7 @@ jobs:
           for pkg in admin-sdk auth-sdk issuance-sdk; do
             pushd ./packages/$pkg > /dev/null
             bun pm pack --quiet
-            npm publish --access public *.tgz
+            npm publish --provenance --access public *.tgz
             rm *.tgz
             popd > /dev/null
           done
