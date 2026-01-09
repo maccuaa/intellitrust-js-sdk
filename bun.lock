@@ -20,7 +20,7 @@
     },
     "packages/admin-sdk": {
       "name": "@maccuaa/intellitrust-admin-sdk",
-      "version": "5.43.0",
+      "version": "5.44.0",
       "dependencies": {
         "@oazapfts/runtime": "catalog:",
       },
@@ -30,7 +30,7 @@
     },
     "packages/auth-sdk": {
       "name": "@maccuaa/intellitrust-auth-sdk",
-      "version": "5.43.0",
+      "version": "5.44.0",
       "dependencies": {
         "@oazapfts/runtime": "catalog:",
       },
@@ -40,7 +40,7 @@
     },
     "packages/issuance-sdk": {
       "name": "@maccuaa/intellitrust-issuance-sdk",
-      "version": "5.43.0",
+      "version": "5.44.0",
       "dependencies": {
         "@oazapfts/runtime": "catalog:",
       },
