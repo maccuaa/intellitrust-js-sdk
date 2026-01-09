@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.43"
+    "version": "5.44"
   },
   "servers": [
     {
@@ -2217,8 +2217,9 @@
           },
           "origin": {
             "type": "string",
-            "description": "The origin of the client",
-            "example": "https://mycompany.example.com:443"
+            "description": "The origin of the client. This field is deprecated, use rpId instead.",
+            "example": "https://mycompany.example.com:443",
+            "deprecated": true
           },
           "passthroughAuthenticatorParms": {
             "$ref": "#/components/schemas/PassthroughAuthenticatorParms"
@@ -2231,6 +2232,11 @@
             "type": "string",
             "description": "API response based on Authenticator type. This is not a required field if Mobile Smart Credential, KBA, Token Push, Smart Login or Face Biometric authentication is being used.",
             "example": "7569582."
+          },
+          "rpId": {
+            "type": "string",
+            "description": "The Relying Party ID associated with the passkey. This identifies the domain or origin for which the passkey is registered. This field is mandatory if domain is outside of the IDaaS hostname.",
+            "example": "mycompany.example.com"
           },
           "secondFactorAuthenticator": {
             "type": "string",
@@ -2325,8 +2331,9 @@
           },
           "origin": {
             "type": "string",
-            "description": "The origin of the client",
-            "example": "https://mycompany.example.com:443"
+            "description": "The origin of the client. This field is deprecated, use rpId instead.",
+            "example": "https://mycompany.example.com:443",
+            "deprecated": true
           },
           "priority": {
             "type": "integer",
@@ -2359,6 +2366,11 @@
             "type": "boolean",
             "description": "Flag indicating whether the service should include in the response the default challenge.",
             "example": true
+          },
+          "rpId": {
+            "type": "string",
+            "description": "The Relying Party ID associated with the passkey. This identifies the domain or origin for which the passkey is registered. This field is mandatory if domain is outside of the IDaaS hostname.",
+            "example": "mycompany.example.com"
           },
           "summary": {
             "type": "string",
@@ -2727,7 +2739,7 @@
           },
           "rpId": {
             "type": "string",
-            "description": "The Relying Party ID associated with the passkey. This identifies the domain or origin for which the passkey is registered.",
+            "description": "The Relying Party ID associated with the passkey. This identifies the domain or origin for which the passkey is registered. This field is mandatory if domain is outside of the IDaaS hostname.",
             "example": "mycompany.example.com"
           },
           "secondFactorAuthenticator": {
