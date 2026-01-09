@@ -1,7 +1,7 @@
 {
   "name": "@maccuaa/intellitrust-auth-sdk",
   "description": "TypeScript SDK client for Entrust Identity as a Service Authentication API",
-  "version": "5.43.0",
+  "version": "5.44.0",
   "type": "module",
   "files": [
     "dist",
