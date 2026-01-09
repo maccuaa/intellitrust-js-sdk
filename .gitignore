@@ -1,10 +1,8 @@
 node_modules
 .env
-packages/*-sdk/api.ts
-packages/*-sdk/base.ts
-packages/*-sdk/common.ts
-packages/*-sdk/configuration.ts
-packages/*-sdk/index.ts
-packages/*-sdk/dist
-packages/*-sdk/.openapi-generator
 
+# SDK packages - ignore everything except package.json and README.md
+packages/*-sdk/*
+!packages/*-sdk/package.json
+!packages/*-sdk/README.md
+!packages/*-sdk/tsconfig.json

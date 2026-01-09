@@ -1,30 +1,30 @@
 export type SdkType = "admin" | "auth" | "issuance";
 
-const BASE_DIR: Record<SdkType, string> = {
-  admin: "packages/admin-sdk",
-  auth: "packages/auth-sdk",
-  issuance: "packages/issuance-sdk",
-};
-interface GeneratorOptions {
-  output: string;
+export interface GeneratorOptions {
   input: string;
-  packageJson: string;
+  output: string;
 }
 
-const makeOptions = (dir: string): GeneratorOptions => ({
-  output: dir,
-  packageJson: `${dir}/package.json`,
-  input: `${dir}/openapi.json`,
-});
-
-const SDK_CONFIG: Record<SdkType, GeneratorOptions> = Object.fromEntries(
-  (Object.keys(BASE_DIR) as SdkType[]).map((sdk) => [sdk, makeOptions(BASE_DIR[sdk])]),
-) as Record<SdkType, GeneratorOptions>;
-
-export const getGeneratorOptions = (type: SdkType): GeneratorOptions => {
-  return SDK_CONFIG[type];
+/**
+ * SDK configuration - simple mapping of SDK type to paths
+ */
+const SDK_CONFIG: Record<SdkType, GeneratorOptions> = {
+  admin: {
+    input: "./openapi/administration.json",
+    output: "packages/admin-sdk",
+  },
+  auth: {
+    input: "./openapi/authentication.json",
+    output: "packages/auth-sdk",
+  },
+  issuance: {
+    input: "./openapi/issuance.json",
+    output: "packages/issuance-sdk",
+  },
 };
 
-export const getAllSdkTypes = (): SdkType[] => {
-  return Object.keys(SDK_CONFIG) as SdkType[];
-};
+export const getGeneratorOptions = (type: SdkType): GeneratorOptions => SDK_CONFIG[type];
+
+export const getAllSdkTypes = (): SdkType[] => Object.keys(SDK_CONFIG) as SdkType[];
+
+export const getAllSdkPackageDirs = (): string[] => Object.values(SDK_CONFIG).map((config) => config.output);

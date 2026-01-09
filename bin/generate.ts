@@ -1,6 +1,8 @@
+import { join } from "node:path";
 import { $ } from "bun";
 import { build } from "bunup";
 import { exports, unused } from "bunup/plugins";
+import { cleanDirectory } from "./clean";
 import { getAllSdkTypes, getGeneratorOptions, type SdkType } from "./lib";
 
 /**
@@ -8,54 +10,27 @@ import { getAllSdkTypes, getGeneratorOptions, type SdkType } from "./lib";
  */
 const generateSdk = async (sdkType: SdkType): Promise<void> => {
   const startTime = Date.now();
-  console.log(`🚀 Starting ${sdkType} SDK generation...`);
+  console.log(`\n🏗️  ${sdkType.toUpperCase()} SDK`);
 
   try {
     const { input, output } = getGeneratorOptions(sdkType);
 
-    console.log(`🧹 Cleaning output directory: ${output}`);
+    // 1. Clean the output directory (keep only package.json)
+    console.log(`   🧹 Cleaning ${output}`);
+    await cleanDirectory(output);
 
-    // Clean the output directory
-    await $`git -C ${output} clean -fdX`;
-    console.log(`✅ Cleanup completed for ${sdkType} SDK`);
+    // 2. generate the SDK using oazapfts
+    console.log(`   ⚙️  Generating from ${input}`);
+    const specPath = join(process.cwd(), input);
+    await $`bunx oazapfts ${specPath} index.ts --argumentStyle object`.cwd(output).quiet();
 
-    console.log(`⚙️  Generating ${sdkType} SDK from OpenAPI spec: ${input}`);
+    // 3. Install dependencies for the SDK package (needed for isolated installs)
+    console.log(`   📦 Installing dependencies`);
+    await $`bun install --cwd ${output}`.quiet();
 
-    const result = await $`bunx -bun openapi-generator-cli generate -i ${input} \
-      -g typescript-axios \
-      -t templates \
-      -o ${output} \
-      --global-property=apiDocs=false,modelDocs=false`.quiet();
+    // 4. Build the SDK and generate declarations via bunup
+    console.log(`   🔨 Building SDK`);
 
-    if (result.exitCode !== 0) {
-      throw new Error(`OpenAPI generation failed with exit code ${result.exitCode}`);
-    }
-
-    console.log(`✅ Code generation completed for ${sdkType} SDK`);
-
-    // Install dependencies for the SDK package (needed for isolated installs)
-    console.log(`📦 Installing dependencies for ${sdkType} SDK...`);
-    const installResult = await $`bun install --cwd ${output}`.quiet();
-
-    if (installResult.exitCode !== 0) {
-      throw new Error(`Dependency installation failed with exit code ${installResult.exitCode}`);
-    }
-
-    console.log(`✅ Dependencies installed for ${sdkType} SDK`);
-
-    // Run TypeScript type checking
-    console.log(`🔍 Running TypeScript type checking for ${sdkType} SDK...`);
-    const tscResult = await $`bunx --bun tsc --noEmit --project ${output}/tsconfig.json`.quiet();
-
-    if (tscResult.exitCode !== 0) {
-      throw new Error(`TypeScript type checking failed with exit code ${tscResult.exitCode}`);
-    }
-
-    console.log(`✅ TypeScript type checking passed for ${sdkType} SDK`);
-
-    console.log(`🔨 Building ${sdkType} SDK with bundler...`);
-
-    // Build the generated SDK
     await build(
       {
         entry: "index.ts",
@@ -63,19 +38,22 @@ const generateSdk = async (sdkType: SdkType): Promise<void> => {
         format: "esm",
         target: "node",
         sourcemap: true,
-        dts: true,
+        dts: {
+          entry: ["index.ts"],
+          inferTypes: true,
+          tsgo: true,
+        },
         clean: false,
-        silent: true,
         plugins: [exports(), unused()],
       },
       output,
     );
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-    console.log(`✅ ${sdkType} SDK generation completed successfully in ${duration}s`);
+    console.log(`   ✅ Done in ${duration}s`);
   } catch (error) {
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-    console.error(`❌ Failed to generate ${sdkType} SDK after ${duration}s:`, error);
+    console.error(`   ❌ Failed after ${duration}s:`, error);
     throw error;
   }
 };
@@ -85,19 +63,26 @@ const generateSdk = async (sdkType: SdkType): Promise<void> => {
  */
 const main = async (): Promise<void> => {
   const totalStartTime = Date.now();
-  console.log("🏁 Starting SDK generation process...");
-
   const sdkTypes = getAllSdkTypes();
-  console.log(`📦 Found ${sdkTypes.length} SDK types to generate: ${sdkTypes.join(", ")}`);
+
+  console.log("╔═══════════════════════════════════════╗");
+  console.log("║      🔨 Generating TypeScript SDKs    ║");
+  console.log("╚═══════════════════════════════════════╝");
+  console.log(`\nGenerating ${sdkTypes.length} SDK packages: ${sdkTypes.join(", ")}\n`);
 
   try {
-    await Promise.all(sdkTypes.map((sdkType) => generateSdk(sdkType)));
+    // Generate all SDKs
+    for (const sdkType of sdkTypes) {
+      await generateSdk(sdkType);
+    }
 
     const totalDuration = ((Date.now() - totalStartTime) / 1000).toFixed(2);
-    console.log(`🎉 All ${sdkTypes.length} SDKs generated successfully in ${totalDuration}s`);
+    console.log(`\n✅ Generation complete in ${totalDuration}s`);
   } catch (error) {
     const totalDuration = ((Date.now() - totalStartTime) / 1000).toFixed(2);
-    console.error(`💥 SDK generation process failed after ${totalDuration}s:`, error);
+    console.error(`\n❌ Generation failed after ${totalDuration}s`);
+    console.error(`\n📋 Error Summary:`);
+    console.error(`   ${error instanceof Error ? error.message : String(error)}`);
     process.exit(1);
   }
 };

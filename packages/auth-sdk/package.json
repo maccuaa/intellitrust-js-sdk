@@ -4,7 +4,8 @@
   "version": "5.43.0",
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -18,13 +19,13 @@
     "./package.json": "./package.json"
   },
   "keywords": [
-    "axios",
     "typescript",
     "openapi-client",
     "authentication",
     "entrust",
     "identity",
-    "idaas"
+    "idaas",
+    "oazapfts"
   ],
   "homepage": "https://www.npmjs.com/package/@maccuaa/intellitrust-auth-sdk",
   "repository": {
@@ -36,7 +37,7 @@
   "sideEffects": false,
   "typings": "./dist/index.d.ts",
   "dependencies": {
-    "axios": "catalog:"
+    "@oazapfts/runtime": "catalog:"
   },
   "devDependencies": {
     "typescript": "catalog:"
