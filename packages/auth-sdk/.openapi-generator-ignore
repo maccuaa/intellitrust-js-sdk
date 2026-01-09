@@ -1,8 +1,0 @@
-git_push.sh
-README.md
-package.json
-tsconfig.json
-tsconfig.esm.json
-.gitignore
-.npmignore
-.openapi-generator

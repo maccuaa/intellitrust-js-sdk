@@ -1,54 +1,411 @@
 # @maccuaa/intellitrust-issuance-sdk
 
-This is a JavaScript client for the Entrust Identity as a Service  API. This module can be used in the following environments:
+[![NPM Version](https://badgen.net/npm/v/@maccuaa/intellitrust-issuance-sdk)](https://www.npmjs.com/package/@maccuaa/intellitrust-issuance-sdk)
+[![NPM Downloads](https://badgen.net/npm/dm/@maccuaa/intellitrust-issuance-sdk)](https://www.npmjs.com/package/@maccuaa/intellitrust-issuance-sdk)
 
-- Node.js
-- Browser
+TypeScript SDK for the Entrust Identity as a Service (IDaaS) Issuance API (formerly Entrust Adaptive Issuance Instant ID).
 
-It can be used in both TypeScript and JavaScript projects.
+> **Note**: This is an unofficial community-maintained SDK, not an official Entrust product.
+
+## Features
+
+- 🎯 **Fully Typed**: Complete TypeScript definitions for all API operations
+- 🚀 **Modern ESM**: Built for modern JavaScript environments
+- 📦 **Tree-shakeable**: Import only the functions you need
+- 🔒 **Type-safe**: Discriminated union types for response handling
+- 🪶 **Lightweight**: Minimal runtime dependencies
 
 ## Installation
 
 ```bash
-npm install @maccuaa/intellitrust-issuance-sdk --save
+npm install @maccuaa/intellitrust-issuance-sdk
 ```
 
-## Usage
+```bash
+bun add @maccuaa/intellitrust-issuance-sdk
+```
 
-**NOTE:** Make sure to replace the configuration values in the examples with the values from your Identity as a Service account!
+## Quick Start
 
-```javascript
-import { API } from "@maccuaa/intellitrust-issuance-sdk";
+```typescript
+import {
+  authenticateAdminApiUsingPost,
+  listAdminApiApplicationsUsingGet,
+} from "@maccuaa/intellitrust-issuance-sdk";
 
-const basePath = "https://entrust.us.trustedauth.com";
+const baseUrl = "https://customer.region.trustedauth.com";
 
-// Issuance API application credentials
-const credentials: IssuanceSDK.IssuanceApiAuthentication = {
-  applicationId: "792130ae-fe2a-4a83-beb6-afc4306ac9fe",
-  sharedSecret: "b_Zv2IRQZe90ENkK59pzFQYrq1aZUJExvv4s7MJM53Q",
-};
+// Step 1: Authenticate to get auth token
+const authResponse = await authenticateAdminApiUsingPost(
+  {
+    adminApiAuthentication: {
+      applicationId: "your-app-id",
+      sharedSecret: "your-shared-secret",
+    },
+  },
+  { baseUrl }
+);
 
-// Create a new instance of the API.
-const sdk = new IssuanceSDK.API({
-  basePath,
+if (authResponse.status === 200) {
+  const authToken = authResponse.data.authToken;
+
+  // Step 2: Use auth token for subsequent requests
+  const appsResponse = await listAdminApiApplicationsUsingGet({
+    baseUrl,
+    headers: {
+      Authorization: authToken,
+    },
+  });
+
+  if (appsResponse.status === 200) {
+    console.log("Applications:", appsResponse.data);
+  }
+}
+```
+
+## Response Handling
+
+The SDK uses discriminated union types for type-safe response handling:
+
+```typescript
+const response = await authenticateAdminApiUsingPost(
+  {
+    adminApiAuthentication: {
+      applicationId: "app-id",
+      sharedSecret: "secret",
+    },
+  },
+  { baseUrl }
+);
+
+// Type guard with status check
+if (response.status === 200) {
+  // response.data is now typed as AdminApiAuthenticationResult
+  console.log("Auth token:", response.data.authToken);
+  console.log("Expires:", response.data.expirationTime);
+} else if (response.status === 401) {
+  // response.data is now typed as ErrorInfo
+  console.log("Authentication failed:", response.data.errorMessage);
+}
+```
+
+## Configuration
+
+### Global Defaults
+
+Set default options for all requests:
+
+```typescript
+import { defaults } from "@maccuaa/intellitrust-issuance-sdk";
+
+defaults.baseUrl = "https://customer.region.trustedauth.com";
+
+// Now you can call functions without specifying baseUrl each time
+const response = await listAdminApiApplicationsUsingGet({
+  headers: { Authorization: "auth-token" },
+});
+```
+
+### Per-Request Options
+
+Override defaults for individual requests:
+
+```typescript
+const response = await listAdminApiApplicationsUsingGet({
+  baseUrl: "https://different.trustedauth.com",
+  headers: {
+    Authorization: "auth-token",
+  },
+});
+```
+
+## Common Operations
+
+### Authentication
+
+```typescript
+import { authenticateAdminApiUsingPost } from "@maccuaa/intellitrust-issuance-sdk";
+
+// Authenticate and get auth token
+const authResponse = await authenticateAdminApiUsingPost(
+  {
+    adminApiAuthentication: {
+      applicationId: "app-id",
+      sharedSecret: "shared-secret",
+      enableWebSession: true, // Optional: enable session cookie
+    },
+  },
+  { baseUrl }
+);
+
+if (authResponse.status === 200) {
+  const authToken = authResponse.data.authToken;
+
+  // Store token for subsequent requests
+  // Token expiration: authResponse.data.expirationTime
+}
+```
+
+### Application Management
+
+```typescript
+import {
+  listAdminApiApplicationsUsingGet,
+  createAdminApiApplicationUsingPost,
+  updateAdminApiApplicationUsingPut,
+  deleteAdminApiApplicationUsingDelete,
+} from "@maccuaa/intellitrust-issuance-sdk";
+
+const headers = { Authorization: authToken };
+
+// List all applications
+const appsResponse = await listAdminApiApplicationsUsingGet({
+  baseUrl,
+  headers,
 });
 
-// Authenticate to the Issuance API application.
-const authResponse = await sdk.authenticateIssuanceApiUsingPOST(credentials);
+// Create new application
+const createResponse = await createAdminApiApplicationUsingPost(
+  {
+    adminApiApplicationParms: {
+      name: "My Issuance App",
+      description: "Application for credential issuance",
+      allowLongLivedToken: false,
+    },
+  },
+  { baseUrl, headers }
+);
 
-// Get the authToken from the response
-const { authToken } = authResponse.data;
+// Update application
+if (createResponse.status === 200) {
+  await updateAdminApiApplicationUsingPut(
+    {
+      id: createResponse.data.id,
+      adminApiApplicationParms: {
+        name: "Updated App Name",
+        description: "Updated description",
+      },
+    },
+    { baseUrl, headers }
+  );
+}
 
-// Set the authToken so it can be used in all API calls
-sdk.setApiKey(authToken);
-
-// Exampe: List all Authentication API applications
-const listResponse = await sdk.listAuthApiApplicationsUsingGET();
-
-// Print the response
-console.log(listResponse.data);
+// Delete application
+await deleteAdminApiApplicationUsingDelete(
+  { id: "app-id" },
+  { baseUrl, headers }
+);
 ```
 
-## Help
+### Enrollment Management
 
-For more information on how to use the APIs please refer to the Identity as a Service [API documentation](https://entrust.us.trustedauth.com/help/developer).
+```typescript
+import {
+  createEnrollments,
+  readEnrollments,
+  updateEnrollments,
+  deleteEnrollments,
+} from "@maccuaa/intellitrust-issuance-sdk";
+
+const headers = { Authorization: authToken };
+
+// Create enrollment
+const createResponse = await createEnrollments(
+  {
+    enrollmentApiPayload: {
+      enrollmentDesignName: "EmployeeID",
+      enrollmentData: [
+        {
+          employeeId: "EMP001",
+          firstName: "John",
+          lastName: "Doe",
+          department: "Engineering",
+        },
+      ],
+    },
+  },
+  { baseUrl, headers }
+);
+
+// Read enrollments with filtering
+const readResponse = await readEnrollments(
+  {
+    readEnrollmentApiPayload: {
+      enrollmentDesignName: "EmployeeID",
+      filterCriteria: [{ field: "department", value: "Engineering" }],
+      pageNumber: "1",
+      pageSize: "50",
+    },
+  },
+  { baseUrl, headers }
+);
+
+// Update enrollment
+await updateEnrollments(
+  {
+    enrollmentApiPayload: {
+      enrollmentDesignName: "EmployeeID",
+      enrollmentData: [
+        {
+          employeeId: "EMP001",
+          department: "Product",
+        },
+      ],
+    },
+  },
+  { baseUrl, headers }
+);
+
+// Delete enrollments
+await deleteEnrollments(
+  {
+    enrollmentApiPayload: {
+      enrollmentDesignName: "EmployeeID",
+      enrollmentData: [{ employeeId: "EMP001" }],
+    },
+  },
+  { baseUrl, headers }
+);
+```
+
+### Mobile FlashPass (Credential Issuance)
+
+```typescript
+import {
+  issueMobileFlashPassBulkOperation,
+  getMobileFlashPassRequestDetails,
+} from "@maccuaa/intellitrust-issuance-sdk";
+
+const headers = { Authorization: authToken };
+
+// Issue credentials (bulk operation)
+const issueResponse = await issueMobileFlashPassBulkOperation(
+  {
+    enrollmentMultiFlashPassApiRequestV1: {
+      enrollmentDesignName: "EmployeeID",
+      primaryKeys: ["EMP001", "EMP002", "EMP003"],
+    },
+  },
+  { baseUrl, headers }
+);
+
+if (issueResponse.status === 200) {
+  const operationId = issueResponse.data.id;
+
+  // Check operation status
+  const statusResponse = await getMobileFlashPassRequestDetails(
+    { id: operationId },
+    { baseUrl, headers }
+  );
+
+  if (statusResponse.status === 200) {
+    console.log("Status:", statusResponse.data.state);
+    console.log("Processed:", statusResponse.data.rowsProcessed);
+    console.log("Failed:", statusResponse.data.rowsFailed);
+  }
+}
+```
+
+### Application Template Management
+
+```typescript
+import {
+  listApplicationTemplatesUsingGet,
+  getApplicationTemplateUsingGet,
+} from "@maccuaa/intellitrust-issuance-sdk";
+
+const headers = { Authorization: authToken };
+
+// List all templates
+const templatesResponse = await listApplicationTemplatesUsingGet({
+  baseUrl,
+  headers,
+});
+
+// Get specific template
+const templateResponse = await getApplicationTemplateUsingGet(
+  { id: "template-id" },
+  { baseUrl, headers }
+);
+
+if (templateResponse.status === 200) {
+  console.log("Template:", templateResponse.data.name);
+  console.log("Type:", templateResponse.data.authenticationMethod);
+}
+```
+
+## Bulk Operations
+
+The SDK supports tracking bulk operations like credential issuance:
+
+```typescript
+import {
+  issueMobileFlashPassBulkOperation,
+  getMobileFlashPassRequestDetails,
+  cancelMobileFlashPassBulkOperation,
+} from "@maccuaa/intellitrust-issuance-sdk";
+
+const headers = { Authorization: authToken };
+
+// Start bulk operation
+const operation = await issueMobileFlashPassBulkOperation(
+  {
+    enrollmentMultiFlashPassApiRequestV1: {
+      /* ... */
+    },
+  },
+  { baseUrl, headers }
+);
+
+if (operation.status === 200) {
+  const operationId = operation.data.id;
+
+  // Poll for status
+  const checkStatus = async () => {
+    const status = await getMobileFlashPassRequestDetails(
+      { id: operationId },
+      { baseUrl, headers }
+    );
+
+    if (status.status === 200) {
+      const state = status.data.state;
+
+      if (state === "COMPLETED") {
+        console.log("Operation completed successfully");
+      } else if (state === "FAILED") {
+        console.log("Operation failed:", status.data.errorMessage);
+      } else if (state === "PROCESSING") {
+        // Continue polling
+        setTimeout(checkStatus, 2000);
+      }
+    }
+  };
+
+  checkStatus();
+
+  // Or cancel if needed
+  // await cancelMobileFlashPassBulkOperation(
+  //   { id: operationId },
+  //   { baseUrl, headers }
+  // );
+}
+```
+
+## API Documentation
+
+For detailed API documentation, refer to the official [Entrust IDaaS Issuance API documentation](https://entrust.us.trustedauth.com/help/developer/apis/issuance/openapi/).
+
+## Requirements
+
+- Node.js >= 22.12.0
+- TypeScript >= 5.0 (for TypeScript projects)
+
+## License
+
+ISC
+
+## Support
+
+This is a community-maintained SDK. For issues or feature requests, please visit the [GitHub repository](https://github.com/maccuaa/intellitrust-js-sdk).
+
+For official Entrust IDaaS support, contact Entrust directly.

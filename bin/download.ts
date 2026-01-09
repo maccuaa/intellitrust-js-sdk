@@ -33,8 +33,6 @@ const formatVersion = (version: string): string => {
  * Download OpenAPI specification from a given URL
  */
 const download = async (url: string): Promise<OpenApiSpec> => {
-  console.log(`Downloading from ${url}...`);
-
   const response = await fetch(url);
 
   if (!response.ok) {
@@ -47,17 +45,18 @@ const download = async (url: string): Promise<OpenApiSpec> => {
     throw new Error("Invalid OpenAPI spec: missing version information");
   }
 
-  console.log(`✅ Downloaded successfully (${spec.info.version})`);
-
   return spec;
 };
 
 /**
  * Download and save OpenAPI specification file
  */
-const downloadFile = async (type: SdkType): Promise<void> => {
+const downloadFile = async (type: SdkType): Promise<string> => {
+  const startTime = Date.now();
+  console.log(`\n📥 ${type.toUpperCase()} SDK`);
+
   try {
-    const { input: specPath, packageJson: packageJsonPath } = getGeneratorOptions(type);
+    const { input: specPath, output: packageDir } = getGeneratorOptions(type);
 
     // Map SDK types to their remote filenames
     const remoteFilenames: Record<SdkType, string> = {
@@ -68,29 +67,31 @@ const downloadFile = async (type: SdkType): Promise<void> => {
 
     const url = `${DOC_PATH}/${remoteFilenames[type]}`;
 
-    console.log(`Downloading ${type} SDK specification...`);
-
     // Download the OpenAPI spec
+    console.log(`   Fetching ${url}`);
     const spec = await download(url);
-
-    // Write the spec file
-    console.log(`Writing ${remoteFilenames[type]}...`);
-    await Bun.write(specPath, JSON.stringify(spec, null, 2));
-
     const version = formatVersion(spec.info.version);
 
-    // Update the package.json version
-    const packageJson = Bun.file(packageJsonPath);
-    console.log(`Updating ${packageJson.name}...`);
+    // Write the spec file
+    console.log(`   Writing OpenAPI spec → ${specPath}`);
+    await Bun.write(specPath, JSON.stringify(spec, null, 2));
 
+    // Update the package.json version
+    const packageJsonPath = `${packageDir}/package.json`;
+    const packageJson = Bun.file(packageJsonPath);
     const packageJsonData = await packageJson.json();
     packageJsonData.version = version;
 
+    console.log(`   Updating package version → v${version}`);
     await Bun.write(packageJson, JSON.stringify(packageJsonData, null, 2));
 
-    console.log(`✅ ${type} SDK files updated successfully (v${version})`);
+    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+    console.log(`   ✅ Done in ${duration}s`);
+
+    return version;
   } catch (error) {
-    console.error(`❌ Failed to download ${type} SDK:`, error instanceof Error ? error.message : error);
+    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+    console.error(`   ❌ Failed after ${duration}s:`, error instanceof Error ? error.message : error);
     throw error;
   }
 };
@@ -98,8 +99,27 @@ const downloadFile = async (type: SdkType): Promise<void> => {
 /**
  * Main function - downloads all SDK specifications
  */
-console.log("💾 Starting download of all SDK specifications...");
+const main = async (): Promise<void> => {
+  const totalStartTime = Date.now();
+  const sdkTypes = getAllSdkTypes();
 
-await Promise.all(getAllSdkTypes().map((sdkType) => downloadFile(sdkType)));
+  console.log("╔═══════════════════════════════════════╗");
+  console.log("║   📥 Downloading SDK Specifications   ║");
+  console.log("╚═══════════════════════════════════════╝");
+  console.log(`\nDownloading ${sdkTypes.length} SDK specifications from Entrust IDaaS...`);
 
-console.log("✅ All SDK specifications downloaded successfully!");
+  try {
+    for (const sdkType of sdkTypes) {
+      await downloadFile(sdkType);
+    }
+
+    const totalDuration = ((Date.now() - totalStartTime) / 1000).toFixed(2);
+    console.log(`\n✅ All downloads complete ${totalDuration}s`);
+  } catch (_error) {
+    const totalDuration = ((Date.now() - totalStartTime) / 1000).toFixed(2);
+    console.error(`\n❌ Download failed after ${totalDuration}s`);
+    process.exit(1);
+  }
+};
+
+await main();
