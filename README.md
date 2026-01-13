@@ -10,7 +10,7 @@ Unofficial JavaScript/TypeScript SDKs for the Entrust Identity as a Service (IDa
 - **Tree-shakeable** - import only what you need
 - **Lightweight** - uses `@oazapfts/runtime` as HTTP client
 
-> ⚠️ **Breaking Change (v5.43+)**: SDKs were rewritten using `oazapfts`. See [RELEASE_NOTES.md](./RELEASE_NOTES.md) for migration guide.
+> ⚠️ **Breaking Change (v5.43+)**: SDKs were rewritten using `oazapfts`. See [5.43 Release Notes](https://github.com/maccuaa/intellitrust-js-sdk/releases/tag/v5.43) for migration guide.
 
 ## SDKs
 
