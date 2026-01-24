@@ -33,7 +33,7 @@
     "@typescript/native-preview": "7.0.0-dev.20260120.1",
     "oazapfts": "7.0.1",
     "bunup": "0.16.20",
-    "publint": "0.3.16",
+    "publint": "0.3.17",
     "typescript": "catalog:"
   }
 }
