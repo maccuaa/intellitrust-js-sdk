@@ -31,7 +31,7 @@
     "@maccuaa/intellitrust-issuance-sdk": "workspace:*",
     "@types/bun": "1.3.6",
     "@typescript/native-preview": "7.0.0-dev.20260122.4",
-    "oazapfts": "7.0.1",
+    "oazapfts": "7.1.0",
     "bunup": "0.16.20",
     "publint": "0.3.17",
     "typescript": "catalog:"
