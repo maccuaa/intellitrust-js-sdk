@@ -24,7 +24,7 @@
     "validate": "bun ./bin/validate"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.13",
+    "@biomejs/biome": "2.3.14",
     "@arethetypeswrong/cli": "0.18.2",
     "@maccuaa/intellitrust-admin-sdk": "workspace:*",
     "@maccuaa/intellitrust-auth-sdk": "workspace:*",
