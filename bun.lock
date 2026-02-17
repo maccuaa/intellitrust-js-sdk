@@ -13,7 +13,7 @@
         "@types/bun": "1.3.9",
         "@typescript/native-preview": "7.0.0-dev.20260213.1",
         "bunup": "0.16.26",
-        "oazapfts": "7.3.0",
+        "oazapfts": "7.4.0",
         "publint": "0.3.17",
         "typescript": "catalog:",
       },
@@ -358,7 +358,7 @@
 
     "node-emoji": ["node-emoji@2.2.0", "", { "dependencies": { "@sindresorhus/is": "^4.6.0", "char-regex": "^1.0.2", "emojilib": "^2.4.0", "skin-tone": "^2.0.0" } }, "sha512-Z3lTE9pLaJF47NyMhd4ww1yFTAP8YhYI8SleJiHzM46Fgpm5cnNzSl9XfzFNqbaz+VlJrIj3fXQ4DeN1Rjm6cw=="],
 
-    "oazapfts": ["oazapfts@7.3.0", "", { "dependencies": { "@apidevtools/swagger-parser": "^12.1.0", "lodash": "^4.17.23", "minimist": "^1.2.8", "tapable": "^2.3.0", "typescript": "^5.9.3" }, "peerDependencies": { "@oazapfts/runtime": "*" }, "bin": { "oazapfts": "dist/cli.js" } }, "sha512-VuxuEI0kq+kuBJOMFlL/08DtuHoL2ic3bptveil6c0+TGuwUHDWBHVOSosO6aajyac89RuWHCY338EzFVfuuaQ=="],
+    "oazapfts": ["oazapfts@7.4.0", "", { "dependencies": { "@apidevtools/swagger-parser": "^12.1.0", "lodash": "^4.17.23", "minimist": "^1.2.8", "tapable": "^2.3.0", "typescript": "^5.9.3" }, "peerDependencies": { "@oazapfts/runtime": "*" }, "bin": { "oazapfts": "dist/cli.js" } }, "sha512-R6yHVyHEflT0GKKKVGm61cYkfSeOcBVjLZRLr0padDPXSNb7bj5r2XhhuaYECF6eDuU5/A+Vh4xA/i3hd8HOdg=="],
 
     "object-assign": ["object-assign@4.1.1", "", {}, "sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg=="],
 
