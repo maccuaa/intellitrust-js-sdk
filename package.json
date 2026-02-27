@@ -30,7 +30,7 @@
     "@maccuaa/intellitrust-auth-sdk": "workspace:*",
     "@maccuaa/intellitrust-issuance-sdk": "workspace:*",
     "@types/bun": "1.3.9",
-    "@typescript/native-preview": "7.0.0-dev.20260222.1",
+    "@typescript/native-preview": "7.0.0-dev.20260224.1",
     "oazapfts": "7.4.1",
     "bunup": "0.16.29",
     "publint": "0.3.17",
