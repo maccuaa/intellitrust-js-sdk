@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.44"
+    "version": "5.45"
   },
   "servers": [
     {
@@ -2273,6 +2273,7 @@
             }
           }
         },
+        "deprecated": true,
         "security": [
           {
             "AdminAPIAuthentication": [
@@ -2461,7 +2462,7 @@
           {
             "name": "fields",
             "in": "query",
-            "description": "The model properties to return.",
+            "description": "The model properties to return. This parameter is NOT supported in Instant ID as a Service and will not impact the returned list.",
             "required": false,
             "schema": {
               "type": "string"
@@ -2470,7 +2471,7 @@
           {
             "name": "withStatus",
             "in": "query",
-            "description": "Indicates if the current status of each printer is retrieved. Defaults to false if not specified.",
+            "description": "Indicates if the current status of each printer is retrieved. Defaults to false if not specified. This parameter is NOT supported in Instant ID as a Service and will not impact the returned list.",
             "required": false,
             "schema": {
               "type": "boolean"
@@ -3056,6 +3057,7 @@
             }
           }
         },
+        "deprecated": true,
         "security": [
           {
             "AdminAPIAuthentication": [
@@ -3451,6 +3453,16 @@
           },
           "401": {
             "description": "Authorization information is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource was not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -5276,8 +5288,7 @@
                 }
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -5832,6 +5843,85 @@
         ]
       }
     },
+    "/api/web/v2/print/single": {
+      "post": {
+        "tags": [
+          "PrintAPI"
+        ],
+        "summary": "Print single enrollment",
+        "description": "Prints a single enrollment by Design Name or Enrollment ID. Caller requires the ISSUANCE:ADD permission to access this resource.",
+        "operationId": "singleEnrollmentPrintV2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SingleEnrollmentPrintRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollmentPrintApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "ISSUANCE:ADD"
+            ]
+          }
+        ]
+      }
+    },
     "/api/web/v2/printers": {
       "get": {
         "tags": [
@@ -5879,6 +5969,37 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "PRINTERS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v2/printers/restricted": {
+      "get": {
+        "tags": [
+          "Printers"
+        ],
+        "summary": "Gets printers with group restriction.",
+        "operationId": "getPrintersWithGroupRestriction",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Printer"
+                  }
                 }
               }
             }
@@ -5968,6 +6089,96 @@
           {
             "AdminAPIAuthentication": [
               "PRINTERS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v2/printers/{printerId}": {
+      "put": {
+        "tags": [
+          "Printers"
+        ],
+        "summary": "Update the specified printer.",
+        "operationId": "updatePrinterV2",
+        "parameters": [
+          {
+            "name": "printerId",
+            "in": "path",
+            "description": "The unique 32–36 character id obtained from the Get All Printers request.",
+            "required": true,
+            "schema": {
+              "pattern": "[a-fA-F0-9-]{32,36}",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePrinterV2Request"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Printer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "PRINTERS:EDIT"
             ]
           }
         ]
@@ -7581,6 +7792,10 @@
               "AWAITING_PRINT"
             ]
           },
+          "statusDetails": {
+            "type": "string",
+            "description": "Print status details returned from the printer."
+          },
           "updatedOn": {
             "type": "string",
             "format": "date-time",
@@ -7706,7 +7921,6 @@
               "IMPORT_GROUPS",
               "IMPORT_USER_GROUPS",
               "IMPORT_HARDWARE_TOKENS",
-              "IMPORT_SMART_CARDS",
               "IMPORT_ENROLLMENTS",
               "PRINT_ENROLLMENTS",
               "SEND_MFP",
@@ -8384,9 +8598,6 @@
         "description": "Parameters for printing single enrollment."
       },
       "EnrollmentPrintApiResponse": {
-        "required": [
-          "printJobId"
-        ],
         "type": "object",
         "properties": {
           "printJobId": {
@@ -8404,7 +8615,7 @@
         "properties": {
           "fields": {
             "type": "array",
-            "description": "List of enrollment fields having field name and field value",
+            "description": "List of enrollment fields having field name and field value. Instant ID as a Service automatically optimizes images for best print quality and performance. Images in photograph, signature, and background fields are limited to 2100 x 1344 pixels or 3 MB in size. Images exceeding these limits will be automatically resized while preserving quality and aspect ratio.",
             "example": [
               {
                 "name": "Bar Code",
@@ -8511,6 +8722,12 @@
           },
           "fleetManagement": {
             "$ref": "#/components/schemas/FleetManagement"
+          },
+          "gracePeriodEndDate": {
+            "type": "string",
+            "description": "The USERS grace period end date of this entitlement in UTC time.",
+            "format": "date-time",
+            "example": "2020-02-18T23:59:59Z"
           },
           "id": {
             "type": "string",
@@ -8822,13 +9039,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Name of the enrollment field",
-            "example": "Bar Code"
+            "description": "A descriptive name of the enrollment field to filter results by. Must exactly match the Enrollment Field Name.",
+            "example": "State"
           },
           "value": {
             "type": "string",
-            "description": "Value of the enrollment field.<br/>Accepted Date Formats: YYYY-MM-DD, MM/DD/YYYY, YYYY-MM-DDTHH:MM:SSZ, YYYY-MM-DDTHH:MM:SS",
-            "example": "12345678"
+            "description": "Value of the enrollment field to match records. Comparison is case-insensitive and matches the whole word. Searching on Date type fields is not supported.",
+            "example": "Minnesota"
           }
         },
         "description": "List of enrollment fields having field name and field value (For search enrollments request only)"
@@ -9192,7 +9409,6 @@
               "IMPORT_GROUPS",
               "IMPORT_USER_GROUPS",
               "IMPORT_HARDWARE_TOKENS",
-              "IMPORT_SMART_CARDS",
               "IMPORT_ENROLLMENTS",
               "PRINT_ENROLLMENTS",
               "SEND_MFP",
@@ -9415,7 +9631,6 @@
               "IMPORT_GROUPS",
               "IMPORT_USER_GROUPS",
               "IMPORT_HARDWARE_TOKENS",
-              "IMPORT_SMART_CARDS",
               "IMPORT_ENROLLMENTS",
               "PRINT_ENROLLMENTS",
               "SEND_MFP",
@@ -9791,7 +10006,9 @@
               "VPDEFNS",
               "ACRS",
               "FLEET_MANAGEMENT_ALERT",
-              "VERIFYUSER"
+              "VERIFYUSER",
+              "USER_PRINTER_PREFERENCE",
+              "NAMEDPASSWORDS"
             ]
           },
           "id": {
@@ -10163,7 +10380,6 @@
               "IMPORT_GROUPS",
               "IMPORT_USER_GROUPS",
               "IMPORT_HARDWARE_TOKENS",
-              "IMPORT_SMART_CARDS",
               "IMPORT_ENROLLMENTS",
               "PRINT_ENROLLMENTS",
               "SEND_MFP",
@@ -10506,7 +10722,17 @@
           },
           "topcoat": {
             "type": "boolean",
-            "description": "Topcoat card?",
+            "description": "Applies topcoat to both front and back sides when front/back values are not provided.",
+            "example": false
+          },
+          "topcoatBack": {
+            "type": "boolean",
+            "description": "Applies topcoat to the back side of the card. When both topcoatFront and topcoatBack are null or undefined,topcoat value is used.",
+            "example": false
+          },
+          "topcoatFront": {
+            "type": "boolean",
+            "description": "Applies topcoat to the front side of the card. When both topcoatFront and topcoatBack are null or undefined,topcoat value is used.",
             "example": false
           }
         }
@@ -11007,6 +11233,53 @@
         },
         "description": "A bundle identifies a set of capabilities available to a tenant."
       },
+      "SingleEnrollmentPrintRequest": {
+        "required": [
+          "hopper"
+        ],
+        "type": "object",
+        "properties": {
+          "deviceId": {
+            "pattern": "[a-fA-F0-9]{16}",
+            "type": "string",
+            "description": "16 character unique Auth key of the printer. This is required if printerId is not provided.",
+            "example": "D5619F1C3590A236"
+          },
+          "enrollmentDesignName": {
+            "type": "string",
+            "description": "The design name of the enrollment. <b>Note:</b> primaryKey parameter is required when this parameter is present.",
+            "example": "Enrollment Design 1"
+          },
+          "enrollmentId": {
+            "type": "string",
+            "description": "The unique enrollment ID obtained from Read Enrollments request. <b>Note:</b> primaryKey and enrollmentDesignName parameters are not required when this parameter is present.",
+            "example": "eyJ3b3JrZmxvd0lkIjoiZDkyZmU1OTgtYmU5MC00N2QzLWJmNWEtZmM2MDJmZjNkOGY0Iiwid2hlcmVDbGF1c2UiOnsiQVVUT1NFUVVFTkNFRklFTEQxIjoiMiJ9fQ=="
+          },
+          "exceptionSlotMessage": {
+            "type": "string",
+            "description": "The message to display on the printer LCD screen when the exception slot is selected. Maximum 45 character limit for Sigma printers, and 32 character limit for older printers.",
+            "example": "Load the correct card stock type into the exception slot."
+          },
+          "hopper": {
+            "type": "integer",
+            "description": "The printer hopper to use. Value of 0 will use the printer exception slot.",
+            "format": "int32",
+            "example": 1
+          },
+          "primaryKey": {
+            "type": "string",
+            "description": "The primary key of the enrollment. <b>Note:</b> enrollmentDesignName parameter is required when this parameter is present.",
+            "example": "1"
+          },
+          "printerId": {
+            "pattern": "[a-fA-F0-9-]{32,36}",
+            "type": "string",
+            "description": "32 or 36 character unique ID of the printer. This takes preference over deviceId if both are provided.",
+            "example": "aa123-bb456-cc789-dd890-ee123-fffee4"
+          }
+        },
+        "description": "Parameters for printing single enrollment."
+      },
       "SmartCardCommand": {
         "required": [
           "command",
@@ -11216,6 +11489,12 @@
           "endDate": {
             "type": "string",
             "description": "The date when the entitlement will end.",
+            "format": "date-time",
+            "example": "2020-02-19T00:00:00Z"
+          },
+          "gracePeriodEndDate": {
+            "type": "string",
+            "description": "The date when the grace period for the entitlement will end.",
             "format": "date-time",
             "example": "2020-02-19T00:00:00Z"
           },
@@ -11444,6 +11723,10 @@
           "locked": {
             "type": "boolean",
             "description": "A flag indicating if this tenant has been locked."
+          },
+          "otpProviderId": {
+            "type": "string",
+            "description": "The ID of the preferred OTP provider associated with this tenant, if any. Only visible to root tenant."
           },
           "previousHostname": {
             "type": "string",
@@ -11688,6 +11971,21 @@
           }
         },
         "description": "Information returned from the service about a token."
+      },
+      "UpdatePrinterV2Request": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "The physical location of the printer.",
+            "example": "321 Plesant, MyCompany, Floor 2"
+          },
+          "name": {
+            "type": "string",
+            "description": "The printer's name.",
+            "example": "Printer at front desk"
+          }
+        }
       },
       "UsageInfo": {
         "required": [
@@ -12311,6 +12609,10 @@
             "description": "if remainingAuthenticationAttempts is 0 then a lockoutExpiryDate of null means the lockout never expires. Otherwise a value of null means the user isn't locked out.",
             "format": "date-time",
             "example": "2019-02-20T13:15:27Z"
+          },
+          "name": {
+            "type": "string",
+            "description": "The users named password authentication that is locked out."
           },
           "remainingAuthenticationAttempts": {
             "type": "integer",

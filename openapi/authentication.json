@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.44"
+    "version": "5.45"
   },
   "servers": [
     {
@@ -1113,6 +1113,9 @@
           "passthroughAuthenticationResponse": {
             "$ref": "#/components/schemas/PassthroughAuthenticationResponse"
           },
+          "passwordChallenge": {
+            "$ref": "#/components/schemas/PasswordChallenge"
+          },
           "pushMutualChallenge": {
             "type": "string",
             "description": "Push authentication mutual challenge."
@@ -1953,6 +1956,17 @@
         },
         "description": "Passthrough authenticator placeholder"
       },
+      "PasswordChallenge": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "namedPasswordId": {
+            "type": "string"
+          }
+        }
+      },
       "RequestDetail": {
         "type": "object",
         "properties": {
@@ -2235,7 +2249,7 @@
           },
           "rpId": {
             "type": "string",
-            "description": "The Relying Party ID associated with the passkey. This identifies the domain or origin for which the passkey is registered. This field is mandatory if domain is outside of the IDaaS hostname.",
+            "description": "Specifies the domain name (relying party ID) of your application and the passkey is registered with. Provide the domain only (e.g., example.com), without protocol (https://). Required if using a custom domain different from your IDaaS tenant’s hostname.",
             "example": "mycompany.example.com"
           },
           "secondFactorAuthenticator": {
@@ -2521,6 +2535,9 @@
               "WHATSAPP"
             ]
           },
+          "passwordChallenge": {
+            "$ref": "#/components/schemas/PasswordChallenge"
+          },
           "passwordResetAllowed": {
             "type": "boolean",
             "description": "Flag to indicate if the user can initiate a password reset flow."
@@ -2587,6 +2604,10 @@
             "description": "if remainingAuthenticationAttempts is 0 then a lockoutExpiryDate of null means the lockout never expires. Otherwise a value of null means the user isn't locked out.",
             "format": "date-time",
             "example": "2019-02-20T13:15:27Z"
+          },
+          "name": {
+            "type": "string",
+            "description": "The users named password authentication that is locked out."
           },
           "remainingAuthenticationAttempts": {
             "type": "integer",
@@ -2739,7 +2760,7 @@
           },
           "rpId": {
             "type": "string",
-            "description": "The Relying Party ID associated with the passkey. This identifies the domain or origin for which the passkey is registered. This field is mandatory if domain is outside of the IDaaS hostname.",
+            "description": "Specifies the domain name (relying party ID) of your application and the passkey is registered with. Provide the domain only (e.g., example.com), without protocol (https://). Required if using a custom domain different from your IDaaS tenant’s hostname.",
             "example": "mycompany.example.com"
           },
           "secondFactorAuthenticator": {
