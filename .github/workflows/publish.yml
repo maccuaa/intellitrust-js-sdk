@@ -63,6 +63,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ needs.check.outputs.version }}
         run: |
+          YEAR=$(date +%Y)
           gh release create "v${VERSION}" \
             --title "IDaaS ${VERSION}" \
-            --notes $'🛡️ https://entrust.us.trustedauth.com/help/authentication/posts/'"${VERSION}"$'\n\n🖨️ https://entrust.us.trustedauth.com/help/issuance/posts/'"${VERSION}"
+            --notes $'🛡️ https://docs.trustedauth.com/blog/'"${YEAR}/idaas-${VERSION}"$'\n\n🖨️ https://entrust.us.trustedauth.com/release-notes/issuance/posts/'"${VERSION}"$'/index.html'
