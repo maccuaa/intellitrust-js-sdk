@@ -1,8 +1,5 @@
 import { getAllSdkTypes, getGeneratorOptions, type SdkType } from "./lib";
 
-const BASE_PATH = "https://entrust.us.trustedauth.com";
-const DOC_PATH = `${BASE_PATH}/help/developer/openapi`;
-
 interface OpenApiSpec {
   info: {
     version: string;
@@ -52,20 +49,19 @@ const download = async (url: string): Promise<OpenApiSpec> => {
  * Download and save OpenAPI specification file
  */
 const downloadFile = async (type: SdkType): Promise<string> => {
-  const startTime = Date.now();
   console.log(`\n📥 ${type.toUpperCase()} SDK`);
 
   try {
     const { input: specPath, output: packageDir } = getGeneratorOptions(type);
 
     // Map SDK types to their remote filenames
-    const remoteFilenames: Record<SdkType, string> = {
-      admin: "administration.json",
-      auth: "authentication.json",
-      issuance: "issuance.json",
+    const remoteURLs: Record<SdkType, string> = {
+      admin: "https://docs.trustedauth.com/openapi/administration.json",
+      auth: "https://docs.trustedauth.com/openapi/authentication.json",
+      issuance: "http://entrust.us.trustedauth.com/api-docs/api-web-issuance.json",
     };
 
-    const url = `${DOC_PATH}/${remoteFilenames[type]}`;
+    const url = remoteURLs[type];
 
     // Download the OpenAPI spec
     console.log(`   Fetching ${url}`);
@@ -85,13 +81,9 @@ const downloadFile = async (type: SdkType): Promise<string> => {
     console.log(`   Updating package version → v${version}`);
     await Bun.write(packageJson, JSON.stringify(packageJsonData, null, 2));
 
-    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-    console.log(`   ✅ Done in ${duration}s`);
-
     return version;
   } catch (error) {
-    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-    console.error(`   ❌ Failed after ${duration}s:`, error instanceof Error ? error.message : error);
+    console.error(`   ❌ Failed: `, error instanceof Error ? error.message : error);
     throw error;
   }
 };
@@ -100,24 +92,16 @@ const downloadFile = async (type: SdkType): Promise<string> => {
  * Main function - downloads all SDK specifications
  */
 const main = async (): Promise<void> => {
-  const totalStartTime = Date.now();
   const sdkTypes = getAllSdkTypes();
-
-  console.log("╔═══════════════════════════════════════╗");
-  console.log("║   📥 Downloading SDK Specifications   ║");
-  console.log("╚═══════════════════════════════════════╝");
-  console.log(`\nDownloading ${sdkTypes.length} SDK specifications from Entrust IDaaS...`);
 
   try {
     for (const sdkType of sdkTypes) {
       await downloadFile(sdkType);
     }
 
-    const totalDuration = ((Date.now() - totalStartTime) / 1000).toFixed(2);
-    console.log(`\n✅ All downloads complete ${totalDuration}s`);
+    console.log(`\n✅ All downloads complete`);
   } catch (_error) {
-    const totalDuration = ((Date.now() - totalStartTime) / 1000).toFixed(2);
-    console.error(`\n❌ Download failed after ${totalDuration}s`);
+    console.error(`\n❌ Download failed after`);
     process.exit(1);
   }
 };
