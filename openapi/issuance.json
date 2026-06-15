@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.45"
+    "version": "5.46"
   },
   "servers": [
     {
@@ -4665,6 +4665,15 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookTestParms"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Successful"
@@ -5537,7 +5546,7 @@
           "MobileFlashPassAPI"
         ],
         "summary": "Create bulk mobile flash pass request V2",
-        "description": "Create bulk mobile flash pass request. Caller requires the ISSUANCE:ADD permission to access this resource.<br/><br/><b>Note:</b> Request body payload must not exceed 200 KB.",
+        "description": "Create bulk mobile flash pass request. Caller requires the ISSUANCE:ADD permission to access this resource.<br><br><b>Note:</b> Request body payload must not exceed 200 KB.",
         "operationId": "issueMobileFlashPassBulkOperationV2",
         "requestBody": {
           "content": {
@@ -5697,7 +5706,7 @@
           "PrintAPI"
         ],
         "summary": "Create bulk print enrollment request V2",
-        "description": "Create bulk print enrollment request. Caller requires the ISSUANCE:ADD permission to access this resource.<br/><br/><b>Note:</b> Request body payload must not exceed 200 KB.",
+        "description": "Create bulk print enrollment request. Caller requires the ISSUANCE:ADD permission to access this resource.<br><br><b>Note:</b> Request body payload must not exceed 200 KB.",
         "operationId": "printEnrollmentsBulkOperationV2",
         "requestBody": {
           "content": {
@@ -6416,96 +6425,6 @@
           {
             "AdminAPIAuthentication": [
               "TENANTS:VIEW"
-            ]
-          }
-        ]
-      }
-    },
-    "/api/web/v4/tenants": {
-      "post": {
-        "tags": [
-          "Tenants"
-        ],
-        "summary": "Create a tenant",
-        "description": "Create a new tenant for a service provider. Caller requires the TENANTS:ADD permission from a service provider role.<br/>Notes on CreateTenantParms attributes: <br/><b>adminUser</b> (UserParms):<ul>    <li>The locale attribute is ignored if provided. It defaults to English for the first super administrator.</li>    <li>The status attributes is ignored if provided. It defaults to ACTIVE for the first super administrator.</li>    <li>The userId is required.</li></ul><b>adminApiApplication</b> (AdminApiApplicationParms):<ul>    <li>The spRoleId attribute is not supported. An error is returned if provided.</li></ul><b>entitlements</b> (EntitlementParms):<ul>    <li>The contractMode attribute is required. It must be either TRIAL or PRODUCTION.</li>    <li>The quantity attribute is required.</li>    <li><b>entitlements.issuance</b> (EntitlementParms.IssuanceParms):</li>    <li>The entitlements.issuance attribute is required if you are creating an Issuance tenant.</li>    <li>The serviceBundles attribute is required. One service bundle (of those supported by the service provider contract) must be defined.</li></ul>",
-        "operationId": "createTenantUsingPOST",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateTenantParms"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateTenantResult"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Access denied",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorInfo"
-                }
-              }
-            }
-          }
-        },
-        "deprecated": true,
-        "security": [
-          {
-            "AdminAPIAuthentication": [
-              "TENANTS:ADD"
             ]
           }
         ]
@@ -8969,6 +8888,18 @@
       "FIDOToken": {
         "type": "object",
         "properties": {
+          "aaguid": {
+            "type": "string",
+            "description": "The AAGUID of the authenticator that created this FIDO token."
+          },
+          "aaguidVerified": {
+            "type": "boolean",
+            "description": "Indicates whether the AAGUID reported by the authenticator was cryptographically verified via a full certificate chain against the FIDO MDS trust anchors. True only for DIRECT attestation; false for INDIRECT (cert chain not verified); null for NONE (no attestation collected)."
+          },
+          "algorithm": {
+            "type": "string",
+            "description": "The signature algorithm of the authenticator that created this FIDO token."
+          },
           "allowedActions": {
             "type": "array",
             "description": "Administration actions that can be performed on this FIDO token.",
@@ -8983,11 +8914,35 @@
               ]
             }
           },
+          "attestationFormat": {
+            "type": "string",
+            "description": "Attestation format of the authenticator that created this FIDO token."
+          },
+          "attestedData": {
+            "type": "boolean",
+            "description": "Indicates if this FIDO token contains attested data."
+          },
+          "authenticatorModel": {
+            "type": "string",
+            "description": "The authenticator model of the authenticator that created this FIDO token."
+          },
+          "backupEligible": {
+            "type": "boolean",
+            "description": "Indicates if this FIDO token is eligible for backup."
+          },
+          "backupStatus": {
+            "type": "boolean",
+            "description": "Indicates if this FIDO token is currently backed up."
+          },
           "createDate": {
             "type": "string",
             "description": "The date on which the FIDO token was created.",
             "format": "date-time",
             "example": "2019-02-19T13:15:27Z"
+          },
+          "icon": {
+            "type": "string",
+            "description": "The icon of the authenticator that created this FIDO token."
           },
           "id": {
             "type": "string",
@@ -9027,9 +8982,17 @@
             "type": "boolean",
             "description": "Indicates if the userId was stored on the FIDO token."
           },
+          "userPresent": {
+            "type": "boolean",
+            "description": "Indicates if the user was present during the registration or authentication ceremony that created or last used this FIDO token."
+          },
           "userUUID": {
             "type": "string",
             "description": "The UUID of the user who owns this FIDO token."
+          },
+          "userVerified": {
+            "type": "boolean",
+            "description": "Indicates if the user was verified during the registration or authentication ceremony that created or last used this FIDO token."
           }
         },
         "description": "A FIDOToken defines the information returned about a FIDO Token."
@@ -12295,12 +12258,14 @@
           },
           "passwordCompromised": {
             "type": "boolean",
-            "description": "A flag indicating if the user password is compromised."
+            "description": "A flag indicating if the user password is compromised.",
+            "deprecated": true
           },
           "passwordExpirationTime": {
             "type": "string",
             "description": "The password expiration time.",
             "format": "date-time",
+            "deprecated": true,
             "example": "2019-02-19T13:15:27Z"
           },
           "phone": {
@@ -12447,6 +12412,13 @@
           "userId": {
             "type": "string",
             "description": "The user ID for this user."
+          },
+          "userPasswordDetails": {
+            "type": "array",
+            "description": "A list of the user password details.",
+            "items": {
+              "$ref": "#/components/schemas/UserPasswordDetails"
+            }
           },
           "userPrincipalName": {
             "type": "string",
@@ -12598,6 +12570,10 @@
       "UserAuthenticatorLockoutStatus": {
         "type": "object",
         "properties": {
+          "locked": {
+            "type": "boolean",
+            "description": "Determines if this authenticator is currently locked out."
+          },
           "lockoutDate": {
             "type": "string",
             "description": "The date the user was locked. Null means the user is not locked.",
@@ -12868,6 +12844,32 @@
         },
         "description": "Attributes for the new user."
       },
+      "UserPasswordDetails": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the password.",
+            "example": "default"
+          },
+          "namedPasswordId": {
+            "type": "string",
+            "description": "The ID of the named password."
+          },
+          "passwordCompromised": {
+            "type": "boolean",
+            "description": "A flag indicating if the user password is compromised."
+          },
+          "passwordExpirationTime": {
+            "type": "string",
+            "description": "The password expiration time.",
+            "format": "date-time",
+            "deprecated": true,
+            "example": "2019-02-19T13:15:27Z"
+          }
+        },
+        "description": "Information returned when a user password details is queried."
+      },
       "Webhook": {
         "required": [
           "callbackUrl",
@@ -12878,42 +12880,48 @@
         "properties": {
           "callbackUrl": {
             "type": "string",
-            "description": "The callback url of the webhook.",
-            "example": "https://mycompany.com/api"
+            "description": "HTTPS endpoint URL where webhook event notifications will be sent. Must be a valid HTTPS URL.",
+            "example": "https://api.mycompany.com/webhooks/auth-events"
           },
           "enabled": {
             "type": "boolean",
-            "description": "A flag indicating if the webhook is enabled.",
+            "description": "Indicates whether the webhook is active and will receive event notifications. Disabled webhooks will not receive any events.",
             "example": true
           },
           "events": {
             "type": "array",
-            "description": "The events of the webhook.",
+            "description": "List of event types that will trigger this webhook. If not specified, all available events will be sent.",
             "items": {
               "$ref": "#/components/schemas/WebhookEvent"
             }
           },
           "expired": {
             "type": "boolean",
-            "description": "A flag indicating if the webhook has expired.",
+            "description": "Indicates whether the webhook has passed its expiry date and is no longer active.",
             "example": false
           },
           "expiryDate": {
             "type": "string",
-            "description": "The timestamp of when the webhook is set to expire. If no expiry is set, this value will be NULL.",
-            "example": "2019-02-19T13:15:27"
+            "description": "Timestamp indicating when the webhook will automatically expire and stop receiving events. Null indicates no expiration.",
+            "example": "2025-12-31T23:59:59"
           },
           "id": {
             "type": "string",
-            "description": "The ID of the webhook. This value is generated when the webhook is created."
+            "description": "Unique identifier for the webhook. This value is automatically generated upon webhook creation and cannot be modified.",
+            "example": "wh_1a2b3c4d5e6f7g8h"
+          },
+          "name": {
+            "type": "string",
+            "description": "Descriptive name for the webhook to help identify its purpose.",
+            "example": "User Authentication Events Webhook"
           },
           "token": {
             "type": "string",
-            "description": "The unique webhook token.",
-            "example": "Base64 Encoded String"
+            "description": "Secure authentication token used to verify webhook request authenticity. Use this token to validate incoming webhook requests.",
+            "example": "whsec_3f8a9b2c1d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6"
           }
         },
-        "description": "Information returned about a webhook."
+        "description": "Webhook configuration returned by the API."
       },
       "WebhookEvent": {
         "required": [
@@ -12933,7 +12941,34 @@
           "type": {
             "type": "string",
             "description": "The event type set to trigger the webhook.",
-            "example": "credential.create | credential.update | credential.delete | user.create"
+            "example": "user.created",
+            "enum": [
+              "user.created",
+              "user.updated",
+              "user.deleted",
+              "user.registration.completed",
+              "authentication.succeeded",
+              "authentication.failed",
+              "password.updated",
+              "magiclink.email.sent",
+              "grid.created",
+              "grid.email.sent",
+              "grid.password.email.sent",
+              "passkey.created",
+              "passkey.updated",
+              "passkey.deleted",
+              "kba.question.created",
+              "token.created",
+              "token.activated",
+              "token.activated.online",
+              "token.seed.rotated",
+              "hardware.token.assigned",
+              "face.biometric.created",
+              "credential.create",
+              "credential.update",
+              "credential.delete",
+              "credential.print"
+            ]
           }
         },
         "description": "Information returned about the events of a webhook."
@@ -12941,24 +12976,24 @@
       "WebhookParms": {
         "required": [
           "callbackUrl",
-          "events"
+          "events",
+          "name"
         ],
         "type": "object",
         "properties": {
           "callbackUrl": {
             "type": "string",
-            "description": "The client callback url for this webhook.",
-            "example": "https://mycompany.com/api"
+            "description": "HTTPS endpoint URL where webhook event notifications will be sent. Must be a valid HTTPS URL.",
+            "example": "https://api.mycompany.com/webhooks/auth-events"
           },
           "enabled": {
             "type": "boolean",
-            "description": "A flag indicating if the webhook is enabled.",
-            "example": true,
-            "default": true
+            "description": "Indicates whether the webhook is active and will receive event notifications. Disabled webhooks will not receive any events.",
+            "example": true
           },
           "events": {
             "type": "array",
-            "description": "The list of webhook events.",
+            "description": "List of event types that will trigger this webhook. If not specified, all available events will be sent.",
             "items": {
               "$ref": "#/components/schemas/WebhookEvent"
             }
@@ -12970,9 +13005,25 @@
             "description": "How long to keep the webhook alive for <b>(in days)</b>. Value of 0 means no expiration. Once a webhook has reached expiry, it will be marked as <b>disabled</b>. This parameter is optional and is not set by default.",
             "format": "int32",
             "example": 90
+          },
+          "name": {
+            "type": "string",
+            "description": "Descriptive name for the webhook to help identify its purpose.",
+            "example": "User Authentication Events Webhook"
           }
         },
         "description": "Parameters including the callback URL and list of events to trigger the webhook."
+      },
+      "WebhookTestParms": {
+        "type": "object",
+        "properties": {
+          "callbackUrl": {
+            "type": "string",
+            "description": "Optional callback URL to use for this test request instead of the webhook's configured callback URL. Must be a valid URL.",
+            "example": "https://api.mycompany.com/webhooks/test"
+          }
+        },
+        "description": "Webhook test request body."
       }
     },
     "securitySchemes": {

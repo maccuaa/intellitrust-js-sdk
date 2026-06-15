@@ -2,13 +2,13 @@
   "openapi": "3.0.1",
   "info": {
     "title": "Entrust Identity as a Service Administration API",
-    "description": "This document describes how to manage your Identity as a Service account using Administration (Admin) API calls. This\nAPI allows you to seamlessly perform administrative actions on Identity as a Service without logging in to the Identity\nas a Service Administrator portal.\n\n# Prerequisites\n\nConfirm the following before executing the Admin API calls included in this guide:\n\n- An Admin API application has been created on your Identity as a Service account. The application must be configured\n  with a role that has the permissions needed by your application. Identity as a Service allows you to download a JSON\n  file once the application is created.\n- The Application ID and Shared Secret parameter values are easily accessible. They must be entered into the body of the\n  Admin APi request. The required values are displayed after creating the Administration API application on Identity as\n  a Service. Upon creation, you can either copy these values to your clipboard or download them as a JSON file.\n- The Admin API application configuration data has been downloaded and is available for use.\n\n# Identity as a Service Administration APIs\n\nIdentity as a Service administration APIs are grouped into the following categories. You can only perform the API calls\npermitted by the role assigned to your Administration API application on Identity as a Service. See the **Identity as a\nService Administrator Help** for more information on Identity as a Service roles:\n\n### Admin Authentication\n\nThese APIs facilitate authentication between your Admin API application and Identity as a Service. You must make this\ncall before making any other Admin API calls. The call generates an authentication token value that must be included in\nall other Admin API requests.\n\nThe Admin API authentication response includes the token's expiration time. For instance:\n\n```json\n{\n  \"authToken\": \"GLrKMuDGiIWPJooDRFTZIHc65RyjJBiPdy4b5xNR8fKxXfwy4tbSIvh+xiFHlJ2p6tm3FuOZ34sxjCHYbDa77eLrxFcMuwYjRMmLWsUIGfkpfg33Wb/5X01Xag4Vdjz5DpVKfCg/OL2rnd4tfCfzM9FoY+vY/sllGgRtQkGeZodsi+QvazqQS1iJ5e6i5ouR05P52YsLgmMlZ4mUfH3JiXZmkkAJvXuM3oj9msi/a4ULWeUGYW5oHM5Gs6ab37baa5xzVykzowHdIoZMVeC8+zVqDr+yXTAHVysBYQHngyckgBizDc2g49RgRTEz2k+yRIvwUU5swGzKtgt6kYtyyFM8YdeODB59Fkl8w5mQQDpxIyZcclCFv2C+MBWdnbM0kJIgNtE1ZeRA+zxwS6avE8EKw3T9Nczs6KBfycV3NxgxTvTQIxNi3kPA8XdJtAmCkUR/gyLkqJXk7bGDvFo4+rWR4uX2XxHm2NZGTNA1QezK96Y7JVjImfoHlUJnxGm207/kVPIVtSUD+6XuEl0uVvrtnTPmQnpq3P0gTYvon3Cw1caQvIydtrUv4yfs4Q/WVvSF3GQh3uet/IkUeGbkxLn43CSVz2hCQoeF8jxIoiJuSAxs1e3phylp0plijvok01Tbit6um/x4tK5UZYCRZYmeSD/ltXGtZNOoA4YHh5cDK+KcDy2tuWaexi2Hf+nJ5adqiMHwuozIH69Eqc6OZ9o86t75mIdux8zLgWt0T3SFOphtCvF0L8BdxICrEXGMDhguRRH7f+/IPU0ggFwnxsIV2a3c4oOayFfHwVSg4rGSKfWuWtkfNavA8RI5y6JOKzMrulrdg+gzuBMms2nKn38HNIRu2pKMVzQ2jU8CrtPgOT8=\",\n  \"expirationTime\": \"2020-01-23T16:30:58Z\",\n  \"creationTime\": \"2020-01-23T16:15:58Z\"\n}\n```\n\nIf you use this authentication token to make requests after it expires, the service will return an UNAUTHORIZED response\ncode (401) and you will need to reauthenticate to obtain a new token.\n\nSome workarounds to prevent this are:\n\n- Always reauthenticate before making a request; or\n- Track the expiration time and reauthenticate when you detect that it has expired; or\n- Send an OPTIONS request to the same end-point to detect whether the token has expired. This can be useful with\n  end-points receiving a large payload such as images where the token can expire before the request has completed. In\n  these cases the request may fail with a 500 error.\n\nWhen an admin API application authenticates, there is an option to enable a web session to add additional security to\nthe session. This is done by setting the enableWebSession argument passed to the authentication controller to true. When\na web session is enabled, an HTTP session cookie named Identity as a Service_SESSION_ID will be returned with the\nauthentication results. This cookie must be included with all subsequent admin API calls along with the authentication\ntoken.\n\n### Users\n\nThese APIs facilitate user management operations on an Identity as a Service account.\n\n### Smart Credentials\n\nThe Entrust® Mobile Smart Credential (MSC) application allows users to perform authentications to their Identity as a\nService account and configured applications. This API call facilitates mobile smart credential management operations on\nan Identity as a Service account.\n\n### Tokens\n\nThese APIs facilitate hardware and soft token management operations on an Identity as a Service account.\n\n### FIDO2/Passkey Tokens\n\nThese APIs facilitate management of FIDO2 tokens. FIDO2 tokens can be registered, viewed, deleted and updated.\n\n### Grid Cards\n\nGrid authentication uses cards with a grid as the authentication lookup tool. This API call facilitates Grid Card\nmanagement operations on an Identity as a Service account.\n\n### Temporary Access Codes\n\nTemporary Access Codes can be used to log in when a user cannot access their one-time passcode (OTP), Grid Card, or\ntoken authenticator. This API call facilitates Temporary Access Code management operations on an Identity as a Service\naccount.\n\n### KBA - Knowledge-based Authenticators\n\nKnowledge-based authentication (or knowledge-based authenticators) (KBA) (also known as question-and-answer (Q&A)\nauthentication) allows users to authenticate to SAML application accounts using Identity as a Service by providing the\ncorrect answer to one or more preregistered questions. This API call facilitates Knowledge-based Authenticator\nmanagement operations on an Identity as a Service account.\n\n### Passwords\n\nThere are two types of password authenticators available on Identity as a Service —Identity as a Service passwords and\nActive Directory (AD) passwords. Identity as a Service passwords are passwords that can be manually or automatically\nassigned to users on Identity as a Service. Active Directory (AD) passwords are passwords that have already been\nassigned to a user on their corporate directory - not through Identity as a Service. This API call facilitates password\nmanagement operations on an Identity as a Service account for either type of password.\n\n### OTPs\n\nThese APIs facilitate OTP management operations on an Identity as a Service account.\n\n### Machine authenticators\n\nMachine Authentication (MA) provides identification information on the Web browser being used to access a SAML\napplication. This API call facilitates Machine Authenticator management operations on an Identity as a Service account.\n\n### Face Biometric\n\nFace Biometric authentication uses an Onfido account to allow users to authenticate with biometric security. Face\nBiometric can be viewed, deleted, updated and created for a user if they already exist in Onfido.\n\n### Magic Link\n\nMagic Link is a secure, time-sensitive, single-use URL that is sent to a user's email address. When clicked, the link\nverifies the user's identity and grants access without requiring a password. Magic Links support multiple use cases\nincluding authentication, registration, and password reset. For an enhanced user experience, Magic Links can be\nconfigured to redirect users to a list of allowed URLs after successful verification. These APIs facilitate creating,\nviewing, and revoking Magic Links.\n\n### User Risk-based authentication (RBA) Settings\n\nRisk-based authentication (RBA) identifies the level of risk associated with a user who tries to authenticate. This API\ncall facilitates Risk-based authentication management operations on an Identity as a Service account.\n\n### User Attributes\n\nUser attributes are the information fields listed as part of each user's Profile information. This API call facilitates\nuser attribute management operations on an Identity as a Service account.\n\n### Roles\n\nRoles control what operations a user can perform on their Identity as a Service account. These roles distinguish the\namount of access given to each account, ranging from administrators with full access to end users (who can only access\nthe user portal features).This API call facilitates role management operations on an Identity as a Service account.\n\n### Groups\n\nAn Identity as a Service group is a collection of users given access to applications based on the resource rules they\nare assigned to. This API call facilitates group management operations on an Identity as a Service account.\n\n### Reports\n\nThese APIs allow you to access the Audit Log on your Identity as a Service account. This Log lists the actions\nperformed on your account within a period of time.\n\n### Settings\n\nThese APIs provide management of the settings used to configure Identity as a Service behavior. Settings that can be\nmanaged using the administration API include General settings, OTP settings, Token settings, FIDO Token settings, \nPassword Reset settings and Onfido Account settings.\n\n### Applications\n\nThese APIs provide management of authentication API applications using the administration API.\n\n### Resource Rules\n\nResource rules define the authenticators that can be used to authenticate to an application. The resource rules APIs\nprovide management of resource rules, access filters, and authentication flows using the administration API. Optional \naccess filters, including authentication context references that evaluate users with or without an ACR specified, \ndomain-based IDPs that evaluate users that are associated or not associated with a domain, and groups that evaluate \nusers associated with specific groups, can be used to further streamline whether users accessing the resource can have \naccess to this resource rule.\n\nAn authentication flow defines a list of possible authentication paths that a user can take when accessing an \napplication. For example:\n\n- The User Login flow allows access to an application after providing a user identifier (User ID) and a combination of\n  first and/or second factor authenticators (e.g., OTP, FIDO, TOKEN).\n- The IDP Login flow allows access to an application after authenticating using an external identity provider.\n- The Passkey Login flow allows access to an application using a Passkey/FIDO token.\n\n### Identity Providers\n\nIdentity providers define external OpenID Connect (OIDC) or SAML identity providers that can be used for user authentication and user verification purposes. \nThe identity providers APIs provide management of identity providers using the administration API.\n\n### Directories\n\nThese APIs provide directory related information using the administration API.\n\n### Tenants\n\nFor service provider accounts, the tenant APIs provide management of their child tenants as well as management of\nentitlements for those tenants. These APIs are only available for accounts that are service providers.\n\n### Account Info\n\nThe account info APIs provide functionality to fetch and modify account related information such as the company name and\nthe license acknowledged flag.\n\n### Entitlements\n\nThese APIs are used by child tenants to retrieve their own entitlement information.\n\n### Organizations\n\nAn organization is a collection of users given access to applications in a business-to-business configuration using a single Identity as a Service account. These APIs provide management of organizations as well as management of user membership to organizations.\n\n### Webhooks\n\nThese APIs provide management of webhooks.\n\n# Examples\n\nThe following are examples of Admin API calls that can be used to perform administrative actions. The examples below are\nnot an exhaustive list of possible Admin API actions.\n\n**Important:** You must execute the Authentication (Admin API) call before executing any other Admin API calls. The\nAuthentication (Admin API) call generates a token value that must be included in every other request to be successful.\n\n## Authentication (Admin API)\n\nTo perform this action, the first step is to submit a POST request to the Admin application. This is the Admin\napplication created on your Identity as a Service account. The URL address of the Admin application includes your\nIdentity as a Service account URL. The format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v1/adminapi/authenticate\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v1/adminapi/authenticate\n```\n\nThe body of this request should contain the JSON object with an Application ID and Shared Secret. This JSON file was\ngenerated during creation of Admin Application on Identity as a Service. For example:\n\n```json\n{\n  \"applicationId\": \"d3737e0f-4d8e-431c-b1d8-cd17ad4d633d\",\n  \"sharedSecret\": \"randomSharedSecret\"\n}\n```\n\nAn API response is received if the call is successful . For example:\n\n```json\n{\n  \"authToken\": \"GLb6JWz966gCayVNw4lZSSKV6W3PGgsJZ4CagZjoZNMaa2Me7F5OX+CKOVx8sOXsBEdLemVEruixXoaVsjQc1j+GPBy5Qn+KlilA9GXrSEQujsmfiJono3Gta7Uc8b3VUkEBvU193UqWPtmW1NXsSnPV2Z9B2AjZT17zNlHAyOvFpOXTI5bkmj6f2cKses6cBem5kLSbGHH9lHBv4JvXBjNxtPf7urAUkFn8cJariZyb0/q/AYqYL9do8nFrPFmSCTjYeNmxuWm5CACRi17K5XSyhZpu979b3i7MQEeOq1Pfjw7WzdKfrSvLJg/qgYeLD4aSOrQu4HAixZSFBmW9RGDxlo0J0Y1uAAy4lR57yG3p6E8H6OcV3Vakso4CT8yHAFH8xmdsUXXfyv9v+hr5QKh+7iVYro8tjjByRzj6XXAOx0vDO2yhpOd4migv33aWlFEhbgxIzNseJ8je6wauST0O+hJ5kKjl5yLBXS3iKhZJZMG2FNcU5pbD7SnUh79OWoCuOsehOM2pDFDPnMEms5ri/y0yaKIZmtz9Poy6KH1BDd+645+xX8iqW4IeqJ3zW8RZtnJgzAkUFeCjuDtbvotIcR45p8ibXF0GWLFAbxzvc5daf21bBV29A33C7mFoX4id44BZJ6OC8fztmthRzR2l0uP04STG0dgRRTNgZpoqKiMczwbOVNDv7ZQeSf/Kh3n2S1O8SZXHZT+zUvPwCLg9mnhOTYEqPjoMlqTZycttFYv3D4hKbU7NzYmFdtGYreaI2rNNue7aOzn+J8BN0j3+ZHkhimfO/ZfhF89Bn02IRzDER1ENdcwBSO8frWeAR+nCy0m4Eg==\",\n  \"expirationTime\": \"2018-05-28T19:07:50.328+0000\",\n  \"creationTime\": \"2018-05-28T18:52:50.329+0000\"\n}\n```\n\nYou must include the **auth token** value displayed in this response in subsequent API calls. Without it, other Admin\nAPI calls will fail.\n\nAn error code is displayed if the call is unsuccessful. A different error code is displayed for each type of error.\n\n## Users\n\n### Create A User\n\nSubmit a POST request to create a User on your account.\nThe format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v3/users\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n```\n\nThe body of this request must contain all the fields mentioned in the example below that are configured as mandatory:\n\n```json\n{\n  \"firstName\": \"john\",\n  \"lastName\": \"smith\",\n  \"email\": \"johnsmith@organization.com\",\n  \"userId\": \"john\",\n  \"mobile\": \"+16138561234\",\n  \"phone\": \"+161385699876\",\n  \"locale\": \"\",\n  \"state\": \"ACTIVE\",\n  \"externaId\": null,\n  \"externalSource\": null,\n  \"userAttributeValues\": [\n  ],\n  \"userAliases\": [\n    {\n      \"value\": \"johnny\",\n      \"type\": \"CUSTOM\"\n    }\n  ]\n}\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes all the details of the created user. For example:\n\n```json\n{\n  \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userId\": \"john\",\n  \"firstName\": \"john\",\n  \"lastName\": \"smith\",\n  \"email\": \"johnsmith@organization.com\",\n  \"mobile\": \"+16138561234\",\n  \"phone\": \"+161385699876\",\n  \"locale\": null,\n  \"state\": \"ACTIVE\",\n  \"externalId\": null,\n  \"externalSource\": null,\n  \"migrated\": null,\n  \"locked\": false,\n  \"lockoutExpiry\": null,\n  \"otpCreateTime\": null,\n  \"grids\": [],\n  \"tokens\": [\n    {\n      \"id\": \"9a2edcc5-46f0-4fff-89b1-13c0f73e1a5c\",\n      \"type\": \"ENTRUST_SOFT_TOKEN\",\n      \"serialNumber\": \"62461-69384\",\n      \"loadDate\": \"2018-05-29T19:12:54.000+0000\",\n      \"lastUsedDate\": null,\n      \"state\": \"ACTIVATING\",\n      \"platform\": null,\n      \"registeredForTransactions\": false,\n      \"name\": null,\n      \"allowedActions\": [\n        \"REACTIVATE\",\n        \"ACTIVATE_COMPLETE\",\n        \"DELETE\"\n      ],\n      \"description\": null,\n      \"userId\": null\n    }\n  ],\n  \"smartCredentials\": [],\n  \"tempAccessCode\": null,\n  \"userAttributeValues\": [],\n  \"userAliases\": [\n    {\n      \"id\": \"43422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"johnny\",\n      \"type\": \"CUSTOM\"\n    },\n    {\n      \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"john\",\n      \"type\": \"USERID\"\n    }\n  ],\n  \"groups\": [],\n  \"type\": \"MGMT_UI\"\n}\n```\n\n### Get a User by UserID\n\nSubmit a POST request to retrieve user details for a particular User ID. The format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v3/users/userid\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n``` \n\nThe body of this request must contain **UserID**. For example:\n\n```json\n{\n  \"userId\": \"John\"\n}\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes the user's information. For example:\n\n```json\n{\n  \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userId\": \"john\",\n  \"firstName\": \"john\",\n  \"lastName\": \"smith\",\n  \"email\": \"johnsmith@organization.com\",\n  \"mobile\": \"+16138561234\",\n  \"phone\": \"+161385699876\",\n  \"locale\": null,\n  \"state\": \"ACTIVE\",\n  \"externalId\": null,\n  \"externalSource\": null,\n  \"migrated\": null,\n  \"locked\": false,\n  \"lockoutExpiry\": null,\n  \"otpCreateTime\": null,\n  \"grids\": [],\n  \"tokens\": [\n    {\n      \"id\": \"9a2edcc5-46f0-4fff-89b1-13c0f73e1a5c\",\n      \"type\": \"ENTRUST_SOFT_TOKEN\",\n      \"serialNumber\": \"62461-69384\",\n      \"loadDate\": \"2018-05-29T19:12:54.000+0000\",\n      \"lastUsedDate\": null,\n      \"state\": \"ACTIVATING\",\n      \"platform\": null,\n      \"registeredForTransactions\": false,\n      \"name\": null,\n      \"allowedActions\": [\n        \"REACTIVATE\",\n        \"ACTIVATE_COMPLETE\",\n        \"DELETE\"\n      ],\n      \"description\": null,\n      \"userId\": null\n    }\n  ],\n  \"smartCredentials\": [],\n  \"tempAccessCode\": null,\n  \"userAttributeValues\": [],\n  \"userAliases\": [\n    {\n      \"id\": \"43422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"johnny\",\n      \"type\": \"CUSTOM\"\n    },\n    {\n      \"id\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n      \"userId\": \"c633a710-70bd-411e-86be-e1898f1b19f5\",\n      \"value\": \"john\",\n      \"type\": \"USERID\"\n    }\n  ],\n  \"groups\": [],\n  \"type\": \"MGMT_UI\"\n}\n```\n\n## Grids\n\n### Create a Grid\n\nSubmit a POST request to create a new Grid Card and assign it to a user. You must include the UUID of the user that you\nwant to assign a Grid Card in the API request. The format of the URL is:\n\n```\nhttps://<domainname>.<region>.trustedauth.com/api/web/v2/users/{userid}/grids\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v2/users/2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0/grids\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes the desired Grid Card information. For example:\n\n```json\n{\n  \"id\": \"6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\",\n  \"serialNumber\": 2,\n  \"createDate\": \"2018-05-29T19:48:24.249+0000\",\n  \"assignDate\": null,\n  \"expiryDate\": null,\n  \"expired\": false,\n  \"lastUsedDate\": null,\n  \"state\": \"ACTIVE\",\n  \"gridContents\": [\n    [\n      \"TP\",\n      \"0M\",\n      \"P8\",\n      \"KW\",\n      \"3D\",\n      \"KR\",\n      \"M1\",\n      \"W0\",\n      \"TJ\",\n      \"F4\"\n    ],\n    [\n      \"9M\",\n      \"MV\",\n      \"88\",\n      \"DX\",\n      \"H3\",\n      \"DV\",\n      \"44\",\n      \"PW\",\n      \"V1\",\n      \"CX\"\n    ],\n    [\n      \"F2\",\n      \"FE\",\n      \"0Q\",\n      \"XN\",\n      \"CD\",\n      \"36\",\n      \"MQ\",\n      \"PN\",\n      \"WF\",\n      \"DD\"\n    ],\n    [\n      \"WN\",\n      \"9F\",\n      \"J4\",\n      \"TF\",\n      \"7J\",\n      \"W4\",\n      \"7M\",\n      \"9Q\",\n      \"1H\",\n      \"W5\"\n    ],\n    [\n      \"QM\",\n      \"21\",\n      \"VQ\",\n      \"39\",\n      \"1N\",\n      \"EV\",\n      \"PT\",\n      \"P4\",\n      \"28\",\n      \"WY\"\n    ]\n  ],\n  \"allowedActions\": [\n    \"DELETE\",\n    \"DISABLE\"\n  ],\n  \"userId\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userName\": \"john\"\n}\n```\n\n### Get a Grid by Id\n\nSubmit a GET request to display a Grid Card's details. You must include the Grid Card's ID string in the request. The ID\nis required to identify which Grid Card's details to display. The format of the request URL is:\n\n```\nhttps://customer.region.trustedauth.com/api/web/v2/grids/{gridid}\n```\n\nFor example:\n\n```\nhttps://example.us.trustedauth.com/api/web/v2/grids/6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\n```\n\nAn Authorization header field must be included in the header section of this request. The Authorization header stores\nthe value received as \"token\" in the authentication request. The Authorization header can be sent with or without a type\nvalue of \"Bearer\". For example:\n\n```\nAuthorization: Bearer <token>\n```\n\nor\n\n```\nAuthorization: <token>\n```\n\nIn this example, all the required input parameters have been provided. The request would succeed and generate a response\nthat includes Grid Card details. For example:\n\n```json\n{\n  \"id\": \"6c5ad3b4-888c-4d3b-88f2-8ab71ae4f917\",\n  \"serialNumber\": 2,\n  \"createDate\": \"2018-05-29T19:48:24.000+0000\",\n  \"assignDate\": null,\n  \"expiryDate\": null,\n  \"expired\": false,\n  \"lastUsedDate\": null,\n  \"state\": \"ACTIVE\",\n  \"gridContents\": [\n    [\n      \"TP\",\n      \"0M\",\n      \"P8\",\n      \"KW\",\n      \"3D\",\n      \"KR\",\n      \"M1\",\n      \"W0\",\n      \"TJ\",\n      \"F4\"\n    ],\n    [\n      \"9M\",\n      \"MV\",\n      \"88\",\n      \"DX\",\n      \"H3\",\n      \"DV\",\n      \"44\",\n      \"PW\",\n      \"V1\",\n      \"CX\"\n    ],\n    [\n      \"F2\",\n      \"FE\",\n      \"0Q\",\n      \"XN\",\n      \"CD\",\n      \"36\",\n      \"MQ\",\n      \"PN\",\n      \"WF\",\n      \"DD\"\n    ],\n    [\n      \"WN\",\n      \"9F\",\n      \"J4\",\n      \"TF\",\n      \"7J\",\n      \"W4\",\n      \"7M\",\n      \"9Q\",\n      \"1H\",\n      \"W5\"\n    ],\n    [\n      \"QM\",\n      \"21\",\n      \"VQ\",\n      \"39\",\n      \"1N\",\n      \"EV\",\n      \"PT\",\n      \"P4\",\n      \"28\",\n      \"WY\"\n    ]\n  ],\n  \"allowedActions\": [\n    \"DELETE\",\n    \"DISABLE\"\n  ],\n  \"userId\": \"2c422a2f-e8ae-4af8-8b03-e1ce0ddde0b0\",\n  \"userName\": \"john\"\n}\n```\n",
+    "description": "Administration API",
     "contact": {
       "name": "Entrust Identity as a Service",
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.45"
+    "version": "5.46"
   },
   "servers": [
     {
@@ -115,10 +115,6 @@
     {
       "name": "Account Info",
       "description": "Account information controllers"
-    },
-    {
-      "name": "Devices",
-      "description": "Device controllers"
     },
     {
       "name": "OAuth Roles",
@@ -1842,6 +1838,544 @@
         ]
       }
     },
+    "/api/web/v1/async/tokenspaged/assigned": {
+      "post": {
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "Lists a page of assigned tokens asynchronously",
+        "description": "Returns assigned tokens for the provided search parameters. Caller requires the TOKENS:VIEW permission.The following searchByAttributes are supported: <ul><li>state: NEW, ACTIVE, ACTIVATING or INACTIVE. Allowed operator: EQUALS.</li><li>serialNumber: a String up to 100 characters. Allowed operators are: EQUALS, CONTAINS, STARTS_WITH.</li><li>type: ENTRUST_SOFT_TOKEN, GOOGLE_AUTHENTICATOR, OATH_PHYSICAL_TOKEN or ENTRUST_LEGACY_TOKEN. Allowed operator: EQUALS.</li><li>loadDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>lastUsedDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>groupId: a String value should be a UUID of an existing group. Allowed operator: EQUALS. </li><li>label: a String up to 100 characters. Allowed operator: CONTAINS. </li></ul>The orderByAttribute supports these attribute names: serialNumber, state, loadDate or lastUsedDate.Sorting by attributes containing Null values such as lastUsedDate is not possible. Therefore, any record containing Null in the orderByAttribute will be filtered out before doing the sorting.",
+        "operationId": "assignedTokenPageAsyncUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AsyncOperationStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "TOKENS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/async/tokenspaged/unassigned": {
+      "post": {
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "Lists a page of unassigned hardware tokens asynchronously",
+        "description": "Returns unassigned hardware tokens for the provided search parameters. Caller requires the TOKENS:VIEW permission.The following searchByAttributes are supported: <ul><li>serialNumber: a String up to 100 characters. Allowed operators are: EQUALS, CONTAINS, STARTS_WITH.</li><li>type: OATH_PHYSICAL_TOKEN or ENTRUST_LEGACY_TOKEN. Allowed operator: EQUALS.</li><li>loadDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>groupId: a String value should be a UUID of an existing group. Allowed operator: EQUALS. </li></ul>The orderByAttribute supports these attribute names: serialNumber.",
+        "operationId": "unassignedTokenPageAsyncUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AsyncOperationStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "TOKENS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/async/tokenspaged/{id}/assigned/result": {
+      "get": {
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "Get the result of an asynchronous list assigned tokens operation",
+        "description": "Get the result of an asynchronous list assigned grids operation. Caller requires the TOKENS:VIEW permission.",
+        "operationId": "assignedTokenPageAsyncResultUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the operation whose results are to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokensPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "TOKENS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/async/tokenspaged/{id}/assigned/status": {
+      "get": {
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "Get the status of an asynchronous list assigned tokens operation",
+        "description": "Get the status of an asynchronous list assigned grids operation. Caller requires the TOKENS:VIEW permission.",
+        "operationId": "assignedTokenPageAsyncStatusUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the search operation whose status is be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AsyncOperationStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "TOKENS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/async/tokenspaged/{id}/unassigned/result": {
+      "get": {
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "Get the result of an asynchronous list unassigned tokens operation",
+        "description": "Get the result of an asynchronous list unassigned tokens operation. Caller requires the TOKENS:VIEW permission.",
+        "operationId": "unassignedTokenPageAsyncResultUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the operation whose results are to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokensPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "TOKENS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/async/tokenspaged/{id}/unassigned/status": {
+      "get": {
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "Get the status of an asynchronous list unassigned tokens operation",
+        "description": "Get the status of an asynchronous list unassigned tokens operation. Caller requires the TOKENS:VIEW permission.",
+        "operationId": "unassignedTokenPageAsyncStatusUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the search operation whose status is be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AsyncOperationStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "TOKENS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
     "/api/web/v1/attributemappings/{id}": {
       "get": {
         "tags": [
@@ -2076,7 +2610,7 @@
           "Directories"
         ],
         "summary": "List directories",
-        "description": "List all directories. Caller requires the DIRECTORIES:VIEW permission.<br/><br/>The following attributes are not included in the returned Directory object: directoryAttributeMappings, directorySync, groupFilters, searchBases. The get directory API can be used to acquire these attribute for a specific directory.",
+        "description": "List all directories. Caller requires the DIRECTORIES:VIEW permission.<br><br>The following attributes are not included in the returned Directory object: directoryAttributeMappings, directorySync, groupFilters, searchBases. The get directory API can be used to acquire these attribute for a specific directory.",
         "operationId": "listDirectoriesUsingGET",
         "responses": {
           "200": {
@@ -3570,6 +4104,95 @@
         ]
       }
     },
+    "/api/web/v1/fidotokenspaged": {
+      "post": {
+        "tags": [
+          "FIDO Tokens"
+        ],
+        "summary": "Get FIDO tokens (paginated)",
+        "description": "Get a paginated list of FIDO tokens with search and filter capabilities. Caller requires the FIDOTOKENS:VIEW permission. The following searchByAttributes are supported: <ul><li>userId: a String value (it matches both the User ID or any alias). Allowed operator is EQUALS. </li><li>name: a String with value matching the FIDO token name. Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>authenticatorModel: a String value matching the authenticator model name. Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>state: FIDO token state Active or Inactive. Allowed operator is: EQUALS </li><li>createDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL</li><li>lastUsedDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, EXISTS, NOT_EXISTS</li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br><br>The orderByAttribute supports these attribute names: userId and createDate.",
+        "operationId": "getFIDOTokensPagedUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FIDOTokensPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "FIDOTOKENS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
     "/api/web/v1/grids": {
       "post": {
         "tags": [
@@ -4105,7 +4728,7 @@
           "Grids"
         ],
         "summary": "Lists a page of unassigned grids",
-        "description": "Returns unassigned grids for the provided search parameters. Caller requires the GRIDS:VIEW permission. The following searchByAttributes are supported: <ul><li>serialNumber: a numeric value. Allowed operators are: EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>createDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>groupId: a String value should be a UUID of an existing group. Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br/><br/>The orderByAttribute supports these attribute names: serialNumber, createDate.",
+        "description": "Returns unassigned grids for the provided search parameters. Caller requires the GRIDS:VIEW permission. The following searchByAttributes are supported: <ul><li>serialNumber: a numeric value. Allowed operators are: EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>createDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>groupId: a String value should be a UUID of an existing group. Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br><br>The orderByAttribute supports these attribute names: serialNumber, createDate.",
         "operationId": "unassignedGridsPageUsingPOST",
         "requestBody": {
           "content": {
@@ -4811,7 +5434,7 @@
           "Groups"
         ],
         "summary": "List a page of groups",
-        "description": "Returns groups for the provided search parameters. Caller requires the GROUPS:VIEW permission. The following searchByAttributes are supported: <ul><li>name: a string value that indicates the name of the group. Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>type: a string with the value that indicates the type of the group. Allowed operator: EQUALS.</li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br/><br/>The orderByAttribute supports this attribute name: name.<br/><br/>",
+        "description": "Returns groups for the provided search parameters. Caller requires the GROUPS:VIEW permission. The following searchByAttributes are supported: <ul><li>name: a string value that indicates the name of the group. Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>type: a string with the value that indicates the type of the group. Allowed operator: EQUALS.</li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br><br>The orderByAttribute supports this attribute name: name.<br><br>",
         "operationId": "groupsPagedUsingPOST",
         "requestBody": {
           "content": {
@@ -6837,7 +7460,7 @@
           "Organizations"
         ],
         "summary": "List a page of organizations",
-        "description": "Returns organizations for the provided search parameters. Caller requires the ORGANIZATIONS:VIEW permission. The following searchByAttributes are supported: <ul><li>displayName: a string value that indicates the display name of the organizations. Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>name: a string value that indicates the name of the organizations. Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br/><br/>The orderByAttribute supports these attribute names: displayName, name.<br/><br/>",
+        "description": "Returns organizations for the provided search parameters. Caller requires the ORGANIZATIONS:VIEW permission. The following searchByAttributes are supported: <ul><li>displayName: a string value that indicates the display name of the organizations. Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>name: a string value that indicates the name of the organizations. Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br><br>The orderByAttribute supports these attribute names: displayName, name.<br><br>",
         "operationId": "organizationsPagedUsingPOST",
         "requestBody": {
           "content": {
@@ -16889,6 +17512,15 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookTestParms"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Successful"
@@ -17217,6 +17849,544 @@
           {
             "AdminAPIAuthentication": [
               "WEBHOOKS:REMOVE"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v2/async/gridspaged/assigned": {
+      "post": {
+        "tags": [
+          "Grids"
+        ],
+        "summary": "Lists a page of assigned grids asynchronously",
+        "description": "Returns assigned grids for the provided search parameters. Caller requires the GRIDS:VIEW permission. The following searchByAttributes are supported: <ul><li>serialNumber: a numeric value. Allowed operators are: EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>state: ACTIVE, INACTIVE, PENDING, CANCELED. Allowed operator: EQUALS.</li><li>expired: 'true' is the only value allowed. Allowed operator: EQUALS. </li><li>createDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>expiryDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>lastUsedDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>userId: a String value. Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>groupId: a String value should be a UUID of an existing group. Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br><br>The orderByAttribute supports these attribute names: serialNumber, state, createDate, expiryDate, lastUsedDate, userId.<br>The results will only include grids that contain data in the orderByAttribute selected.",
+        "operationId": "assignedGridsPageAsyncUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AsyncOperationStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "GRIDS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v2/async/gridspaged/unassigned": {
+      "post": {
+        "tags": [
+          "Grids"
+        ],
+        "summary": "Lists a page of unassigned grids asynchronously",
+        "description": "Returns unassigned grids for the provided search parameters. Caller requires the GRIDS:VIEW permission. The following searchByAttributes are supported: <ul><li>serialNumber: a numeric value. Allowed operators are: EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>createDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>groupId: a String value should be a UUID of an existing group. Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br><br>The orderByAttribute supports these attribute names: serialNumber, createDate.",
+        "operationId": "unassignedGridsPageAsyncUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AsyncOperationStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "GRIDS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v2/async/gridspaged/{id}/assigned/result": {
+      "get": {
+        "tags": [
+          "Grids"
+        ],
+        "summary": "Get the result of an asynchronous list assigned grids operation",
+        "description": "Get the result of an asynchronous list assigned grids operation. Caller requires the GRIDS:VIEW permission.",
+        "operationId": "assignedGridsPageAsyncResultUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the operation whose results are to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GridsPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "GRIDS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v2/async/gridspaged/{id}/assigned/status": {
+      "get": {
+        "tags": [
+          "Grids"
+        ],
+        "summary": "Get the status of an asynchronous list assigned grids operation",
+        "description": "Get the status of an asynchronous list assigned grids operation. Caller requires the GRIDS:VIEW permission.",
+        "operationId": "assignedGridsPageAsyncStatusUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the search operation whose status is be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AsyncOperationStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "GRIDS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v2/async/gridspaged/{id}/unassigned/result": {
+      "get": {
+        "tags": [
+          "Grids"
+        ],
+        "summary": "Get the result of an asynchronous list unassigned grids operation",
+        "description": "Get the result of an asynchronous list unassigned grids operation. Caller requires the GRIDS:VIEW permission.",
+        "operationId": "unassignedGridsPageAsyncResultUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the operation whose results are to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GridsPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "GRIDS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v2/async/gridspaged/{id}/unassigned/status": {
+      "get": {
+        "tags": [
+          "Grids"
+        ],
+        "summary": "Get the status of an asynchronous list unassigned grids operation",
+        "description": "Get the status of an asynchronous list unassigned grids operation. Caller requires the GRIDS:VIEW permission.",
+        "operationId": "unassignedGridsPageAsyncStatusUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the search operation whose status is be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AsyncOperationStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "GRIDS:VIEW"
             ]
           }
         ]
@@ -18121,7 +19291,7 @@
           "Grids"
         ],
         "summary": "Lists a page of assigned grids",
-        "description": "Returns assigned grids for the provided search parameters. Caller requires the GRIDS:VIEW permission. The following searchByAttributes are supported: <ul><li>serialNumber: a numeric value. Allowed operators are: EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>state: ACTIVE, INACTIVE, PENDING, CANCELED. Allowed operator: EQUALS.</li><li>expired: 'true' is the only value allowed. Allowed operator: EQUALS. </li><li>createDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>expiryDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>lastUsedDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>userId: a String value. Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>groupId: a String value should be a UUID of an existing group. Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br/><br/>The orderByAttribute supports these attribute names: serialNumber, state, createDate, expiryDate, lastUsedDate, userId.<br/>The results will only include grids that contain data in the orderByAttribute selected.",
+        "description": "Returns assigned grids for the provided search parameters. Caller requires the GRIDS:VIEW permission. The following searchByAttributes are supported: <ul><li>serialNumber: a numeric value. Allowed operators are: EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>state: ACTIVE, INACTIVE, PENDING, CANCELED. Allowed operator: EQUALS.</li><li>expired: 'true' is the only value allowed. Allowed operator: EQUALS. </li><li>createDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>expiryDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>lastUsedDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>userId: a String value. Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>groupId: a String value should be a UUID of an existing group. Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br><br>The orderByAttribute supports these attribute names: serialNumber, state, createDate, expiryDate, lastUsedDate, userId.<br>The results will only include grids that contain data in the orderByAttribute selected.",
         "operationId": "assignedGridsPageUsingPOST",
         "requestBody": {
           "content": {
@@ -18210,7 +19380,7 @@
           "Reports"
         ],
         "summary": "Lists a page of audit events",
-        "description": "Returns audit events for the provided search parameters. Caller requires the REPORTS:VIEW permission.The following searchByAttributes are supported: <ul><li>eventTime: a <b>mandatory</b> String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are: GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL. </li><li>outcome: SUCCESS or FAIL. Allowed operator: EQUALS. </li><li>category: AUTHENTICATION or MANAGEMENT. Allowed operator: EQUALS. </li><li>entityName: a String up to 100 characters. Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>entityType: a String up to 40 characters (e.g., USERS, GROUPS, QUESTIONS, REPORTS, ROLES). Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>entityAction: a String up to 100 characters (e.g., ADD, EDIT, REMOVE, ASSIGN, RESET). Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>resourceName: a String up to 100 characters. Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>sourceIp: a String up to 39 characters. Allowed operators: EQUALS, STARTS_WITH. </li><li>subjectName: a String up to 100 characters (e.g., jsmith). Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>eventType: a String up to 100 characters (e.g., AuthenticationDeniedEvent). Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>subject: Restrict events to the UUID of a specific subject. Allowed operator: EQUALS. </li><li>authenticator: Filter by authenticator type (e.g., PASSWORD, OTP, TOKEN, FIDO, SMARTCREDENTIALPUSH, TOKENPUSH, IDP, PASSKEY, etc.). Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br/><br/>The orderByAttribute supports these attribute names: eventTime, outcome, category, entityName, entityType, entityAction, resourceName, sourceIp, subjectName.<br/>The results will only include audit events with data in the orderByAttribute selected. If ordering by entityName, entityType, or entityAction, then AUTHENTICATION events will not be returned.",
+        "description": "Returns audit events for the provided search parameters. Caller requires the REPORTS:VIEW permission.The following searchByAttributes are supported: <ul><li>eventTime: a <b>mandatory</b> String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are: GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL. </li><li>outcome: SUCCESS or FAIL. Allowed operator: EQUALS. </li><li>category: AUTHENTICATION or MANAGEMENT. Allowed operator: EQUALS. </li><li>entityName: a String up to 100 characters. Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>entityType: a String up to 40 characters (e.g., USERS, GROUPS, QUESTIONS, REPORTS, ROLES). Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>entityAction: a String up to 100 characters (e.g., ADD, EDIT, REMOVE, ASSIGN, RESET). Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>resourceName: a String up to 100 characters. Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>sourceIp: a String up to 39 characters. Allowed operators: EQUALS, STARTS_WITH. </li><li>subjectName: a String up to 100 characters (e.g., jsmith). Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>eventType: a String up to 100 characters (e.g., AuthenticationDeniedEvent). Allowed operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>subject: Restrict events to the UUID of a specific subject. Allowed operator: EQUALS. </li><li>authenticator: Filter by authenticator type (e.g., PASSWORD, OTP, TOKEN, FIDO, SMARTCREDENTIALPUSH, TOKENPUSH, IDP, PASSKEY, etc.). Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br><br>The orderByAttribute supports these attribute names: eventTime, outcome, category, entityName, entityType, entityAction, resourceName, sourceIp, subjectName.<br>The results will only include audit events with data in the orderByAttribute selected. If ordering by entityName, entityType, or entityAction, then AUTHENTICATION events will not be returned.",
         "operationId": "auditEventPageUsingPOST",
         "requestBody": {
           "content": {
@@ -18299,7 +19469,7 @@
           "Reports"
         ],
         "summary": "Lists a page of audit events (SIEM)",
-        "description": "Returns audit events for the provided search parameters in ascending order always. Caller requires the REPORTS:VIEW permission.The following searchByAttributes are supported: <ul><li>startTime: a <b>mandatory</b> String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are: GREATER_THAN_OR_EQUAL. </li><li>endTime: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-31T18:15:30). Allowed operators are: LESS_THAN_OR_EQUAL. </li><li>outcome: SUCCESS or FAIL. Allowed operator: EQUALS. </li><li>category: AUTHENTICATION or MANAGEMENT. Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br/><br/>The orderByAttribute is not used even if provided. Results are returned in ascending order always (oldest to newest event)",
+        "description": "Returns audit events for the provided search parameters in ascending order always. Caller requires the REPORTS:VIEW permission.The following searchByAttributes are supported: <ul><li>startTime: a <b>mandatory</b> String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are: GREATER_THAN_OR_EQUAL. </li><li>endTime: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-31T18:15:30). Allowed operators are: LESS_THAN_OR_EQUAL. </li><li>outcome: SUCCESS or FAIL. Allowed operator: EQUALS. </li><li>category: AUTHENTICATION or MANAGEMENT. Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br><br>The orderByAttribute is not used even if provided. Results are returned in ascending order always (oldest to newest event)",
         "operationId": "siemAuditEventPageUsingPOST",
         "requestBody": {
           "content": {
@@ -18912,7 +20082,7 @@
           "Face"
         ],
         "summary": "Create a Face Biometric for a user",
-        "description": "Create a Face Biometric authenticator for the specified user. Caller requires the FACE:ADD permission.<br/>\nThe Face Biometric can be created using either the web flow or the mobile flow.<br/>\nIf using the web flow, the Face Biometric can optionally use the Onfido applicantId and workflowRunId to link the Face Biometric\nto the correct Onfido applicant and workflow run.<br/>\nIf using the mobile flow, setting deliverActivationEmail to true will send an activation email to the user with instructions to\ndownload the mobile app and complete activation.<br/>\nSetting returnQRCode to true will include a QR code in the response that can be scanned by the user to start the activation process.<br/>\nIf using the IDaaS stored biometric web flow, the encryptedBiometricToken parameter is required and must include both the\nencrypted biometric token and the customer user ID used to create the token in Onfido.\n",
+        "description": "Create a Face Biometric authenticator for the specified user. Caller requires the FACE:ADD permission.<br>\nThe Face Biometric can be created using either the web flow or the mobile flow.<br>\nIf using the web flow, the Face Biometric can optionally use the Onfido applicantId and workflowRunId to link the Face Biometric\nto the correct Onfido applicant and workflow run.<br>\nIf using the mobile flow, setting deliverActivationEmail to true will send an activation email to the user with instructions to\ndownload the mobile app and complete activation.<br>\nSetting returnQRCode to true will include a QR code in the response that can be scanned by the user to start the activation process.<br>\nIf using the IDaaS stored biometric web flow, the encryptedBiometricToken parameter is required and must include both the\nencrypted biometric token and the customer user ID used to create the token in Onfido.\n",
         "operationId": "createFaceAuthenticatorUsingPOST",
         "parameters": [
           {
@@ -20245,19 +21415,19 @@
         ]
       }
     },
-    "/api/web/v4/tenants": {
+    "/api/web/v4/async/userspaged": {
       "post": {
         "tags": [
-          "Tenants"
+          "Users"
         ],
-        "summary": "Create a tenant",
-        "description": "Create a new tenant for a service provider. Caller requires the TENANTS:ADD permission from a service provider role.<br/>Notes on CreateTenantParms attributes: <br/><b>adminUser</b> (UserParms):<ul>    <li>The locale attribute is ignored if provided. It defaults to English for the first super administrator.</li>    <li>The status attributes is ignored if provided. It defaults to ACTIVE for the first super administrator.</li>    <li>The userId is required.</li></ul><b>adminApiApplication</b> (AdminApiApplicationParms):<ul>    <li>The spRoleId attribute is not supported. An error is returned if provided.</li></ul><b>entitlements</b> (EntitlementParms):<ul>    <li>The contractMode attribute is required. It must be either TRIAL or PRODUCTION.</li>    <li>The quantity attribute is required.</li>    <li><b>entitlements.issuance</b> (EntitlementParms.IssuanceParms):</li>    <li>The entitlements.issuance attribute is required if you are creating an Issuance tenant.</li>    <li>The serviceBundles attribute is required. One service bundle (of those supported by the service provider contract) must be defined.</li></ul>",
-        "operationId": "createTenantUsingPOST",
+        "summary": "Lists a page of users asynchronously",
+        "description": "Returns users for the provided search parameters. Caller requires the USERS:VIEW permission. The following searchByAttributes are supported: <ul><li>userId: a String value (it matches both the User ID or any alias). Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>groupId: a String value should be a UUID of an existing group. Allowed operator: EQUALS. </li><li>roleId: a String value should be a UUID of an existing role. Allowed operator: EQUALS. </li><li>authenticator: a String with value ENTRUST_SOFT_TOKEN or FIDO or GOOGLE_AUTHENTICATOR or GRID or HARDWARE_TOKEN or KBA or OTP or PASSWORD or SMARTCREDENTIALPUSH or TEMP_ACCESS_CODE or FACE or MAGICLINK. Allowed operator: EQUALS, NOT_EQUALS. </li><li>state: ACTIVE or INACTIVE. Allowed operator: EQUALS. </li><li>locked: 'true' is the only value allowed. Allowed operator: EQUALS. </li><li>userType: a String with value LOCAL or SYNC or EXTERNAL. Allowed operator: EQUALS. </li><li>registrationRequired: true or false. Allowed operator: EQUALS. </li><li>verificationRequired: true or false. Allowed operator: EQUALS. </li><li>lastAuthTime: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, EXISTS, NOT_EXISTS.</li><li>passwordExpirationTime: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, EXISTS, NOT_EXISTS.</li><li>organizationId: a String value should be a UUID of an existing organization. Allowed operator: EQUALS. </li><li>passwordCompromised: true or false. Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br><br>The orderByAttribute supports these attribute names: userId, state, lastAuthTime.<br><br>The following attributes can be optionally included in the returned User object: grids, tokens, smartCredentials, tempAccessCode, fidoTokens, userAttributeValues, userAliases, groups, oauthRoles, authenticatorLockoutStatus, organizations",
+        "operationId": "usersPagedAsyncUsingPOST",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateTenantParms"
+                "$ref": "#/components/schemas/SearchParms"
               }
             }
           },
@@ -20269,7 +21439,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreateTenantResult"
+                  "$ref": "#/components/schemas/AsyncOperationStatus"
                 }
               }
             }
@@ -20325,11 +21495,190 @@
             }
           }
         },
-        "deprecated": true,
         "security": [
           {
             "AdminAPIAuthentication": [
-              "TENANTS:ADD"
+              "USERS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v4/async/userspaged/{id}/result": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get the result of an asynchronous list users operation",
+        "description": "Get the result of an asynchronous list users operation. Caller requires the USERS:VIEW permission.",
+        "operationId": "usersPagedAsyncResultUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the operation whose results are to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsersPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "USERS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v4/async/userspaged/{id}/status": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get the status of an asynchronous list users operation",
+        "description": "Get the status of an asynchronous list users operation. Caller requires the USERS:VIEW permission.",
+        "operationId": "usersPagedAsyncStatusUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the search operation whose status is be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AsyncOperationStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "USERS:VIEW"
             ]
           }
         ]
@@ -21233,7 +22582,7 @@
           "Users"
         ],
         "summary": "Lists a page of users",
-        "description": "Returns users for the provided search parameters. Caller requires the USERS:VIEW permission. The following searchByAttributes are supported: <ul><li>userId: a String value (it matches both the User ID or any alias). Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>groupId: a String value should be a UUID of an existing group. Allowed operator: EQUALS. </li><li>roleId: a String value should be a UUID of an existing role. Allowed operator: EQUALS. </li><li>authenticator: a String with value ENTRUST_SOFT_TOKEN or FIDO or GOOGLE_AUTHENTICATOR or GRID or HARDWARE_TOKEN or KBA or OTP or PASSWORD or SMARTCREDENTIALPUSH or TEMP_ACCESS_CODE or FACE or MAGICLINK. Allowed operator: EQUALS, NOT_EQUALS. </li><li>state: ACTIVE or INACTIVE. Allowed operator: EQUALS. </li><li>locked: 'true' is the only value allowed. Allowed operator: EQUALS. </li><li>userType: a String with value LOCAL or SYNC or EXTERNAL. Allowed operator: EQUALS. </li><li>registrationRequired: true or false. Allowed operator: EQUALS. </li><li>verificationRequired: true or false. Allowed operator: EQUALS. </li><li>lastAuthTime: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, EXISTS, NOT_EXISTS.</li><li>passwordExpirationTime: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, EXISTS, NOT_EXISTS.</li><li>organizationId: a String value should be a UUID of an existing organization. Allowed operator: EQUALS. </li><li>passwordCompromised: true or false. Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br/><br/>The orderByAttribute supports these attribute names: userId, state, lastAuthTime.<br/><br/>The following attributes can be optionally included in the returned User object: grids, tokens, smartCredentials, tempAccessCode, fidoTokens, userAttributeValues, userAliases, groups, oauthRoles, authenticatorLockoutStatus, organizations",
+        "description": "Returns users for the provided search parameters. Caller requires the USERS:VIEW permission. The following searchByAttributes are supported: <ul><li>userId: a String value (it matches both the User ID or any alias). Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>groupId: a String value should be a UUID of an existing group. Allowed operator: EQUALS. </li><li>roleId: a String value should be a UUID of an existing role. Allowed operator: EQUALS. </li><li>authenticator: a String with value ENTRUST_SOFT_TOKEN or FIDO or GOOGLE_AUTHENTICATOR or GRID or HARDWARE_TOKEN or KBA or OTP or PASSWORD or SMARTCREDENTIALPUSH or TEMP_ACCESS_CODE or FACE or MAGICLINK. Allowed operator: EQUALS, NOT_EQUALS. </li><li>state: ACTIVE or INACTIVE. Allowed operator: EQUALS. </li><li>locked: 'true' is the only value allowed. Allowed operator: EQUALS. </li><li>userType: a String with value LOCAL or SYNC or EXTERNAL. Allowed operator: EQUALS. </li><li>registrationRequired: true or false. Allowed operator: EQUALS. </li><li>verificationRequired: true or false. Allowed operator: EQUALS. </li><li>lastAuthTime: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, EXISTS, NOT_EXISTS.</li><li>passwordExpirationTime: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, EXISTS, NOT_EXISTS.</li><li>organizationId: a String value should be a UUID of an existing organization. Allowed operator: EQUALS. </li><li>passwordCompromised: true or false. Allowed operator: EQUALS. </li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br><br>The orderByAttribute supports these attribute names: userId, state, lastAuthTime.<br><br>The following attributes can be optionally included in the returned User object: grids, tokens, smartCredentials, tempAccessCode, fidoTokens, userAttributeValues, userAliases, groups, oauthRoles, authenticatorLockoutStatus, organizations",
         "operationId": "usersPagedUsingPOST",
         "requestBody": {
           "content": {
@@ -21715,9 +23064,9 @@
             "type": "object",
             "additionalProperties": {
               "type": "string",
-              "description": "A map which consists of additional attributes and values to be used for smart credential encoding. Currently the only value that is supported is the value with name \"photo\" where the value is a Base-64 encoded JPEG or PNG image or a data URL of the form \"data:image/<type>;base64,&lt;data&gt;\" where <type> is jpeg or png and &lt;data&gt; is a Base-64 encoded JPEG or PNG image."
+              "description": "A map which consists of additional attributes and values to be used for smart credential encoding. Currently the only value that is supported is the value with name \"photo\" where the value is a Base-64 encoded JPEG or PNG image or a data URL of the form \"data:image/<type>;base64,<data>\" where <type> is jpeg or png and <data> is a Base-64 encoded JPEG or PNG image."
             },
-            "description": "A map which consists of additional attributes and values to be used for smart credential encoding. Currently the only value that is supported is the value with name \"photo\" where the value is a Base-64 encoded JPEG or PNG image or a data URL of the form \"data:image/<type>;base64,&lt;data&gt;\" where <type> is jpeg or png and &lt;data&gt; is a Base-64 encoded JPEG or PNG image."
+            "description": "A map which consists of additional attributes and values to be used for smart credential encoding. Currently the only value that is supported is the value with name \"photo\" where the value is a Base-64 encoded JPEG or PNG image or a data URL of the form \"data:image/<type>;base64,<data>\" where <type> is jpeg or png and <data> is a Base-64 encoded JPEG or PNG image."
           },
           "deliverActivationEmail": {
             "type": "boolean",
@@ -22062,6 +23411,66 @@
           }
         },
         "description": "Arguments specifying the changes to the token."
+      },
+      "AsyncOperationStatus": {
+        "required": [
+          "id",
+          "state"
+        ],
+        "type": "object",
+        "properties": {
+          "errorMessage": {
+            "type": "string",
+            "description": "The error message describing the first error encountered processing the operation."
+          },
+          "id": {
+            "type": "string",
+            "description": "The unique UUID of the operation. Used to get status and results of operation."
+          },
+          "initTime": {
+            "type": "string",
+            "description": "The time this operation was initialized.",
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the operation. It can be null for operations not named."
+          },
+          "processingEndTime": {
+            "type": "string",
+            "description": "The time at which the operation completed processing.",
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
+          },
+          "processingStartTime": {
+            "type": "string",
+            "description": "The time at which the operation began processing.",
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
+          },
+          "processingTime": {
+            "type": "integer",
+            "description": "How long the operation took to complete processing in milliseconds.",
+            "format": "int64"
+          },
+          "state": {
+            "type": "string",
+            "description": "The state of the operation.",
+            "enum": [
+              "FAILED",
+              "CANCELLED",
+              "COMPLETED",
+              "PROCESSING",
+              "SCHEDULED"
+            ]
+          },
+          "subject": {
+            "type": "string",
+            "description": "The subject of this operation."
+          }
+        },
+        "description": "Status of an asynchronous search request."
       },
       "AuditDetails": {
         "type": "object",
@@ -24305,6 +25714,15 @@
         ],
         "type": "object",
         "properties": {
+          "attestation": {
+            "type": "string",
+            "description": "Attestation preference for passkey/FIDO2 registration. Determines how much information about the authenticator (security key/passkey) is shared during registration. NONE: No authenticator details shared (recommended for privacy). INDIRECT: Basic information shared in a privacy-preserving way (balanced approach). DIRECT: Full authenticator details shared (use when you need to verify specific device models).",
+            "enum": [
+              "NONE",
+              "INDIRECT",
+              "DIRECT"
+            ]
+          },
           "backupEligibleCheck": {
             "type": "boolean",
             "description": "A boolean value indicating if synced passkey/FIDO2 tokens should be blocked.",
@@ -24369,6 +25787,15 @@
       "FIDOAuthenticatorSettingsParms": {
         "type": "object",
         "properties": {
+          "attestation": {
+            "type": "string",
+            "description": "Attestation preference for passkey/FIDO2 registration. Determines how much information about the authenticator (security key/passkey) is shared during registration. NONE: No authenticator details shared (recommended for privacy). INDIRECT: Basic information shared in a privacy-preserving way (balanced approach). DIRECT: Full authenticator details shared (use when you need to verify specific device models).",
+            "enum": [
+              "NONE",
+              "INDIRECT",
+              "DIRECT"
+            ]
+          },
           "backupEligibleCheck": {
             "type": "boolean",
             "description": "A boolean value indicating if synced passkey/FIDO2 tokens should be blocked.",
@@ -24453,6 +25880,15 @@
       "FIDORegisterChallenge": {
         "type": "object",
         "properties": {
+          "attestation": {
+            "type": "string",
+            "description": "Attestation preference for passkey/FIDO2 registration. Determines how much information about the authenticator (security key/passkey) is shared during registration. NONE: No authenticator details shared (recommended for privacy). INDIRECT: Basic information shared in a privacy-preserving way (balanced approach). DIRECT: Full authenticator details shared (use when you need to verify specific device models).",
+            "enum": [
+              "NONE",
+              "INDIRECT",
+              "DIRECT"
+            ]
+          },
           "challenge": {
             "type": "string",
             "description": "The registration challenge generated by Identity as a Service.  This is a base-64 encoded value."
@@ -24545,6 +25981,19 @@
             "type": "string",
             "description": "The name for the new FIDO token."
           },
+          "rpId": {
+            "type": "string",
+            "description": "Specifies the domain name (relying party ID) of your application and the passkey is registered with. Provide the domain only (e.g., example.com), without protocol (https://). Required if using a custom domain different from your IDaaS tenant's hostname.",
+            "example": "mycompany.example.com"
+          },
+          "transports": {
+            "type": "array",
+            "description": "The transport methods used during registration (e.g., 'usb', 'nfc', 'ble', 'internal'). Used to determine authenticator capabilities.",
+            "items": {
+              "type": "string",
+              "description": "The transport methods used during registration (e.g., 'usb', 'nfc', 'ble', 'internal'). Used to determine authenticator capabilities."
+            }
+          },
           "userIdStored": {
             "type": "boolean",
             "description": "Flag indicating if the userId was stored on the registered FIDO2 token.  Defaults to false if not set.",
@@ -24556,6 +26005,18 @@
       "FIDOToken": {
         "type": "object",
         "properties": {
+          "aaguid": {
+            "type": "string",
+            "description": "The AAGUID of the authenticator that created this FIDO token."
+          },
+          "aaguidVerified": {
+            "type": "boolean",
+            "description": "Indicates whether the AAGUID reported by the authenticator was cryptographically verified via a full certificate chain against the FIDO MDS trust anchors. True only for DIRECT attestation; false for INDIRECT (cert chain not verified); null for NONE (no attestation collected)."
+          },
+          "algorithm": {
+            "type": "string",
+            "description": "The signature algorithm of the authenticator that created this FIDO token."
+          },
           "allowedActions": {
             "type": "array",
             "description": "Administration actions that can be performed on this FIDO token.",
@@ -24570,11 +26031,35 @@
               ]
             }
           },
+          "attestationFormat": {
+            "type": "string",
+            "description": "Attestation format of the authenticator that created this FIDO token."
+          },
+          "attestedData": {
+            "type": "boolean",
+            "description": "Indicates if this FIDO token contains attested data."
+          },
+          "authenticatorModel": {
+            "type": "string",
+            "description": "The authenticator model of the authenticator that created this FIDO token."
+          },
+          "backupEligible": {
+            "type": "boolean",
+            "description": "Indicates if this FIDO token is eligible for backup."
+          },
+          "backupStatus": {
+            "type": "boolean",
+            "description": "Indicates if this FIDO token is currently backed up."
+          },
           "createDate": {
             "type": "string",
             "description": "The date on which the FIDO token was created.",
             "format": "date-time",
             "example": "2019-02-19T13:15:27Z"
+          },
+          "icon": {
+            "type": "string",
+            "description": "The icon of the authenticator that created this FIDO token."
           },
           "id": {
             "type": "string",
@@ -24614,12 +26099,170 @@
             "type": "boolean",
             "description": "Indicates if the userId was stored on the FIDO token."
           },
+          "userPresent": {
+            "type": "boolean",
+            "description": "Indicates if the user was present during the registration or authentication ceremony that created or last used this FIDO token."
+          },
           "userUUID": {
             "type": "string",
             "description": "The UUID of the user who owns this FIDO token."
+          },
+          "userVerified": {
+            "type": "boolean",
+            "description": "Indicates if the user was verified during the registration or authentication ceremony that created or last used this FIDO token."
           }
         },
         "description": "A FIDOToken defines the information returned about a FIDO Token."
+      },
+      "FIDOTokenDetails": {
+        "type": "object",
+        "properties": {
+          "aaguid": {
+            "type": "string",
+            "description": "Authenticator Attestation GUID.",
+            "example": "00000000-0000-0000-0000-000000000000"
+          },
+          "aaguidVerified": {
+            "type": "boolean",
+            "description": "Indicates whether the AAGUID reported by the authenticator was cryptographically verified via a full certificate chain against the FIDO MDS trust anchors. True only for DIRECT attestation; false for INDIRECT (cert chain not verified); null for NONE (no attestation collected)."
+          },
+          "algorithm": {
+            "type": "string",
+            "description": "Cryptographic algorithm used by the token.",
+            "example": "ES256"
+          },
+          "authenticatorModel": {
+            "type": "string",
+            "description": "Model name of the authenticator.",
+            "example": "YubiKey 5 NFC"
+          },
+          "authenticatorType": {
+            "type": "string",
+            "description": "Type of authenticator device.",
+            "example": "Platform"
+          },
+          "backupEligible": {
+            "type": "boolean",
+            "description": "Whether the credential is eligible for backup.",
+            "example": false
+          },
+          "backupStatus": {
+            "type": "boolean",
+            "description": "Current backup state of the credential.",
+            "example": false
+          },
+          "certificationStatus": {
+            "type": "string",
+            "description": "FIDO certification status.",
+            "example": "Level 1"
+          },
+          "createDate": {
+            "type": "string",
+            "description": "Timestamp when the token was registered.",
+            "format": "date-time",
+            "example": "2019-02-19T13:15:27Z"
+          },
+          "cryptoStrength": {
+            "type": "integer",
+            "description": "Cryptographic strength in bits.",
+            "format": "int32",
+            "example": 256
+          },
+          "icon": {
+            "type": "string",
+            "description": "Base64-encoded icon for the authenticator."
+          },
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the FIDO token.",
+            "example": "5cb1e8f0-8d3a-4e2b-9c1a-2f3e4d5f6a7b"
+          },
+          "keyProtection": {
+            "type": "array",
+            "description": "Methods used to protect the authenticator's private key (e.g., software, hardware, TEE, secure element).",
+            "example": [
+              "hardware",
+              "secure_element"
+            ],
+            "items": {
+              "type": "string",
+              "description": "Methods used to protect the authenticator's private key (e.g., software, hardware, TEE, secure element).",
+              "example": "[\"hardware\",\"secure_element\"]"
+            }
+          },
+          "lastUsedDate": {
+            "type": "string",
+            "description": "Timestamp when the token was last used for authentication.",
+            "format": "date-time",
+            "example": "2019-02-21T11:37:27Z"
+          },
+          "matcherProtection": {
+            "type": "array",
+            "description": "Protection mechanisms for the biometric matcher component (e.g., software, TEE, on-chip).",
+            "example": [
+              "tee",
+              "on_chip"
+            ],
+            "items": {
+              "type": "string",
+              "description": "Protection mechanisms for the biometric matcher component (e.g., software, TEE, on-chip).",
+              "example": "[\"tee\",\"on_chip\"]"
+            }
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the FIDO token.",
+            "example": "My YubiKey"
+          },
+          "protocolFamily": {
+            "type": "string",
+            "description": "FIDO protocol family.",
+            "example": "fido2"
+          },
+          "rpId": {
+            "type": "string",
+            "description": "Relying Party ID associated with the token.",
+            "example": "example.com"
+          },
+          "state": {
+            "type": "string",
+            "description": "Current state of the token.",
+            "example": "ACTIVE",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          },
+          "transports": {
+            "type": "array",
+            "description": "Supported transport protocols.",
+            "example": [
+              "usb",
+              "nfc"
+            ],
+            "items": {
+              "type": "string",
+              "description": "Supported transport protocols.",
+              "example": "[\"usb\",\"nfc\"]"
+            }
+          },
+          "userId": {
+            "type": "string",
+            "description": "User ID of the token owner.",
+            "example": "john.doe"
+          },
+          "userPresent": {
+            "type": "boolean",
+            "description": "Whether user presence was confirmed during registration.",
+            "example": true
+          },
+          "userVerified": {
+            "type": "boolean",
+            "description": "Whether user verification was performed during registration.",
+            "example": true
+          }
+        },
+        "description": "Detailed FIDO token information with user and authenticator metadata."
       },
       "FIDOTokenParms": {
         "type": "object",
@@ -24638,6 +26281,25 @@
           }
         },
         "description": "The parameters specifying what is to be changed."
+      },
+      "FIDOTokensPage": {
+        "required": [
+          "results"
+        ],
+        "type": "object",
+        "properties": {
+          "paging": {
+            "$ref": "#/components/schemas/Paging"
+          },
+          "results": {
+            "type": "array",
+            "description": "A single page with the list of fido tokens found.",
+            "items": {
+              "$ref": "#/components/schemas/FIDOTokenDetails"
+            }
+          }
+        },
+        "description": "Contains paging information and the results from a fido tokens search."
       },
       "FaceAccountSettings": {
         "required": [
@@ -26311,9 +27973,9 @@
             "example": "360e0c3d-27d7-405b-81db-0524fa8f41bd",
             "deprecated": true
           },
-          "otpWechatDefaultDeliveryAttribute": {
+          "otpWeChatDefaultDeliveryAttribute": {
             "type": "string",
-            "description": "Id of the default Wechat OTP delivery attribute.",
+            "description": "Id of the default WeChat OTP delivery attribute.",
             "example": "360e0c3d-27d7-405b-81db-0524fa8f41bd",
             "deprecated": true
           },
@@ -27353,6 +29015,11 @@
           "namedPasswordId": {
             "type": "string",
             "description": "The ID of the named password."
+          },
+          "namedPasswordName": {
+            "type": "string",
+            "description": "The name of the password.",
+            "example": "default"
           },
           "twoSecondFactorRequired": {
             "type": "boolean",
@@ -30923,12 +32590,14 @@
           },
           "passwordCompromised": {
             "type": "boolean",
-            "description": "A flag indicating if the user password is compromised."
+            "description": "A flag indicating if the user password is compromised.",
+            "deprecated": true
           },
           "passwordExpirationTime": {
             "type": "string",
             "description": "The password expiration time.",
             "format": "date-time",
+            "deprecated": true,
             "example": "2019-02-19T13:15:27Z"
           },
           "phone": {
@@ -31075,6 +32744,13 @@
           "userId": {
             "type": "string",
             "description": "The user ID for this user."
+          },
+          "userPasswordDetails": {
+            "type": "array",
+            "description": "A list of the user password details.",
+            "items": {
+              "$ref": "#/components/schemas/UserPasswordDetails"
+            }
           },
           "userPrincipalName": {
             "type": "string",
@@ -31257,6 +32933,10 @@
       "UserAuthenticatorLockoutStatus": {
         "type": "object",
         "properties": {
+          "locked": {
+            "type": "boolean",
+            "description": "Determines if this authenticator is currently locked out."
+          },
           "lockoutDate": {
             "type": "string",
             "description": "The date the user was locked. Null means the user is not locked.",
@@ -31801,6 +33481,32 @@
         },
         "description": "Information returned when a user password is queried."
       },
+      "UserPasswordDetails": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the password.",
+            "example": "default"
+          },
+          "namedPasswordId": {
+            "type": "string",
+            "description": "The ID of the named password."
+          },
+          "passwordCompromised": {
+            "type": "boolean",
+            "description": "A flag indicating if the user password is compromised."
+          },
+          "passwordExpirationTime": {
+            "type": "string",
+            "description": "The password expiration time.",
+            "format": "date-time",
+            "deprecated": true,
+            "example": "2019-02-19T13:15:27Z"
+          }
+        },
+        "description": "Information returned when a user password details is queried."
+      },
       "UserPasswordParms": {
         "type": "object",
         "properties": {
@@ -31972,7 +33678,7 @@
         "properties": {
           "score": {
             "type": "integer",
-            "description": "Evaluated password strength score. <br/><br/> 0:very weak | 1:weak | 2:average | 3:good | 4:strong",
+            "description": "Evaluated password strength score. <br><br> 0:very weak | 1:weak | 2:average | 3:good | 4:strong",
             "format": "int32",
             "example": 3
           },
@@ -32152,42 +33858,48 @@
         "properties": {
           "callbackUrl": {
             "type": "string",
-            "description": "The callback url of the webhook.",
-            "example": "https://mycompany.com/api"
+            "description": "HTTPS endpoint URL where webhook event notifications will be sent. Must be a valid HTTPS URL.",
+            "example": "https://api.mycompany.com/webhooks/auth-events"
           },
           "enabled": {
             "type": "boolean",
-            "description": "A flag indicating if the webhook is enabled.",
+            "description": "Indicates whether the webhook is active and will receive event notifications. Disabled webhooks will not receive any events.",
             "example": true
           },
           "events": {
             "type": "array",
-            "description": "The events of the webhook.",
+            "description": "List of event types that will trigger this webhook. If not specified, all available events will be sent.",
             "items": {
               "$ref": "#/components/schemas/WebhookEvent"
             }
           },
           "expired": {
             "type": "boolean",
-            "description": "A flag indicating if the webhook has expired.",
+            "description": "Indicates whether the webhook has passed its expiry date and is no longer active.",
             "example": false
           },
           "expiryDate": {
             "type": "string",
-            "description": "The timestamp of when the webhook is set to expire. If no expiry is set, this value will be NULL.",
-            "example": "2019-02-19T13:15:27"
+            "description": "Timestamp indicating when the webhook will automatically expire and stop receiving events. Null indicates no expiration.",
+            "example": "2025-12-31T23:59:59"
           },
           "id": {
             "type": "string",
-            "description": "The ID of the webhook. This value is generated when the webhook is created."
+            "description": "Unique identifier for the webhook. This value is automatically generated upon webhook creation and cannot be modified.",
+            "example": "wh_1a2b3c4d5e6f7g8h"
+          },
+          "name": {
+            "type": "string",
+            "description": "Descriptive name for the webhook to help identify its purpose.",
+            "example": "User Authentication Events Webhook"
           },
           "token": {
             "type": "string",
-            "description": "The unique webhook token.",
-            "example": "Base64 Encoded String"
+            "description": "Secure authentication token used to verify webhook request authenticity. Use this token to validate incoming webhook requests.",
+            "example": "whsec_3f8a9b2c1d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6"
           }
         },
-        "description": "Information returned about a webhook."
+        "description": "Webhook configuration returned by the API."
       },
       "WebhookEvent": {
         "required": [
@@ -32207,7 +33919,34 @@
           "type": {
             "type": "string",
             "description": "The event type set to trigger the webhook.",
-            "example": "credential.create | credential.update | credential.delete | user.create"
+            "example": "user.created",
+            "enum": [
+              "user.created",
+              "user.updated",
+              "user.deleted",
+              "user.registration.completed",
+              "authentication.succeeded",
+              "authentication.failed",
+              "password.updated",
+              "magiclink.email.sent",
+              "grid.created",
+              "grid.email.sent",
+              "grid.password.email.sent",
+              "passkey.created",
+              "passkey.updated",
+              "passkey.deleted",
+              "kba.question.created",
+              "token.created",
+              "token.activated",
+              "token.activated.online",
+              "token.seed.rotated",
+              "hardware.token.assigned",
+              "face.biometric.created",
+              "credential.create",
+              "credential.update",
+              "credential.delete",
+              "credential.print"
+            ]
           }
         },
         "description": "Information returned about the events of a webhook."
@@ -32215,24 +33954,24 @@
       "WebhookParms": {
         "required": [
           "callbackUrl",
-          "events"
+          "events",
+          "name"
         ],
         "type": "object",
         "properties": {
           "callbackUrl": {
             "type": "string",
-            "description": "The client callback url for this webhook.",
-            "example": "https://mycompany.com/api"
+            "description": "HTTPS endpoint URL where webhook event notifications will be sent. Must be a valid HTTPS URL.",
+            "example": "https://api.mycompany.com/webhooks/auth-events"
           },
           "enabled": {
             "type": "boolean",
-            "description": "A flag indicating if the webhook is enabled.",
-            "example": true,
-            "default": true
+            "description": "Indicates whether the webhook is active and will receive event notifications. Disabled webhooks will not receive any events.",
+            "example": true
           },
           "events": {
             "type": "array",
-            "description": "The list of webhook events.",
+            "description": "List of event types that will trigger this webhook. If not specified, all available events will be sent.",
             "items": {
               "$ref": "#/components/schemas/WebhookEvent"
             }
@@ -32244,9 +33983,25 @@
             "description": "How long to keep the webhook alive for <b>(in days)</b>. Value of 0 means no expiration. Once a webhook has reached expiry, it will be marked as <b>disabled</b>. This parameter is optional and is not set by default.",
             "format": "int32",
             "example": 90
+          },
+          "name": {
+            "type": "string",
+            "description": "Descriptive name for the webhook to help identify its purpose.",
+            "example": "User Authentication Events Webhook"
           }
         },
         "description": "Parameters including the callback URL and list of events to trigger the webhook."
+      },
+      "WebhookTestParms": {
+        "type": "object",
+        "properties": {
+          "callbackUrl": {
+            "type": "string",
+            "description": "Optional callback URL to use for this test request instead of the webhook's configured callback URL. Must be a valid URL.",
+            "example": "https://api.mycompany.com/webhooks/test"
+          }
+        },
+        "description": "Webhook test request body."
       }
     },
     "securitySchemes": {
