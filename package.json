@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.3",
-    "@arethetypeswrong/cli": "0.18.4",
+    "@arethetypeswrong/cli": "0.18.5",
     "@maccuaa/intellitrust-admin-sdk": "workspace:*",
     "@maccuaa/intellitrust-auth-sdk": "workspace:*",
     "@maccuaa/intellitrust-issuance-sdk": "workspace:*",
