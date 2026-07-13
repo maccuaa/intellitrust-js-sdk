@@ -41,7 +41,6 @@ const generateSdk = async (sdkType: SdkType): Promise<void> => {
         dts: {
           entry: ["index.ts"],
           inferTypes: true,
-          tsgo: true,
         },
         clean: false,
         plugins: [exports(), unused()],

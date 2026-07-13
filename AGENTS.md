@@ -103,7 +103,7 @@ The generation process consists of these steps for each SDK package:
 3. **Install**: Run `bun install --cwd [sdk-dir]` to install dependencies (required for isolated installs)
 4. **Build**: Use `bunup` to:
    - Bundle TypeScript to ESM format
-   - Generate type declarations with `inferTypes` and `tsgo` options
+   - Generate type declarations with `inferTypes` (uses `tsc` from TypeScript 7, natively fast)
    - Create sourcemaps
    - Validate exports with `exports()` plugin
    - Tree-shake unused code with `unused()` plugin
@@ -210,7 +210,7 @@ Keep the documentation accurate and synchronized with the actual implementation 
    - Cleans SDK directories (preserving `package.json`, `tsconfig.json`, and `README.md`)
    - Runs `oazapfts` CLI via `bunx` with `--argumentStyle object` flag to generate TypeScript code directly to `index.ts`
    - Installs dependencies for each SDK package (required for Bun's isolated installs)
-   - Builds via `bunup` with ESM format, sourcemaps, and type declarations (`inferTypes + tsgo`)
+   - Builds via `bunup` with ESM format, sourcemaps, and type declarations (`inferTypes`)
    - Uses `bunup` plugins: `exports()` for package.json validation and `unused()` for tree-shaking
 
 4. **Testing** - Test files are in `tests/*.test.ts` (flat structure, no subdirectories). All tests use the functional SDK pattern.
@@ -280,7 +280,7 @@ This project uses Bun's **workspace catalogs** to centralize dependency versions
 ```
 
 **Note**: The project uses `@oazapfts/runtime` (not axios) as the HTTP client, which is shared across all SDK packages via the catalog.catalog": {
-    "typescript": "^5.9.2",
+    "typescript": "^7.0.2",
     "axios": "1.12.2"
   }
 }`oazapfts` CLI up to date
@@ -341,8 +341,8 @@ packages/[sdk-name]/
 - **oazapfts**: 7.0.1
 - **bunup**: 0.15.14
 - **Biome**: 2.3.4
-- **TypeScript**: 5.9.2+
-- **@oazapfts/runtime**: 1.1.0+
+- **TypeScript**: 7.0.2+
+- **@oazapfts/runtime**: 1.2.0+
 
 ## Resources
 
