@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.46"
+    "version": "5.47"
   },
   "servers": [
     {
@@ -1378,7 +1378,7 @@
           },
           "name": {
             "type": "string",
-            "description": "The name for the new FIDO token."
+            "description": "Optional display name for the new FIDO token. If omitted or blank, the server auto-generates one from the authenticator model (DIRECT/INDIRECT attestation) or defaults to 'Passkey' (NONE attestation)."
           },
           "rpId": {
             "type": "string",
@@ -2446,6 +2446,10 @@
             "type": "integer",
             "description": "The request start time in milliseconds. If an authentication token and a maximum authentication age are supplied, determining whether authentication is required or not is based on the current system time if this value is not provided.",
             "format": "int64"
+          },
+          "response": {
+            "type": "string",
+            "description": "Password response used for combined user ID and password login."
           },
           "returnDefaultChallenge": {
             "type": "boolean",
