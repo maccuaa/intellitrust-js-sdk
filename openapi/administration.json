@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.46"
+    "version": "5.47"
   },
   "servers": [
     {
@@ -1844,7 +1844,7 @@
           "Tokens"
         ],
         "summary": "Lists a page of assigned tokens asynchronously",
-        "description": "Returns assigned tokens for the provided search parameters. Caller requires the TOKENS:VIEW permission.The following searchByAttributes are supported: <ul><li>state: NEW, ACTIVE, ACTIVATING or INACTIVE. Allowed operator: EQUALS.</li><li>serialNumber: a String up to 100 characters. Allowed operators are: EQUALS, CONTAINS, STARTS_WITH.</li><li>type: ENTRUST_SOFT_TOKEN, GOOGLE_AUTHENTICATOR, OATH_PHYSICAL_TOKEN or ENTRUST_LEGACY_TOKEN. Allowed operator: EQUALS.</li><li>loadDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>lastUsedDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>groupId: a String value should be a UUID of an existing group. Allowed operator: EQUALS. </li><li>label: a String up to 100 characters. Allowed operator: CONTAINS. </li></ul>The orderByAttribute supports these attribute names: serialNumber, state, loadDate or lastUsedDate.Sorting by attributes containing Null values such as lastUsedDate is not possible. Therefore, any record containing Null in the orderByAttribute will be filtered out before doing the sorting.",
+        "description": "Returns assigned tokens for the provided search parameters. Caller requires the TOKENS:VIEW permission.The following searchByAttributes are supported: <ul><li>state: NEW, ACTIVE, ACTIVATING or INACTIVE. Allowed operator: EQUALS.</li><li>serialNumber: a String up to 100 characters. Allowed operators are: EQUALS, CONTAINS, STARTS_WITH.</li><li>type: ENTRUST_SOFT_TOKEN, GOOGLE_AUTHENTICATOR, OATH_PHYSICAL_TOKEN or ENTRUST_LEGACY_TOKEN. Allowed operator: EQUALS.</li><li>loadDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>lastUsedDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, EXISTS, NOT_EXISTS.</li><li>groupId: a String value should be a UUID of an existing group. Allowed operator: EQUALS. </li><li>label: a String up to 100 characters. Allowed operator: CONTAINS. </li></ul>The orderByAttribute supports these attribute names: serialNumber, state, loadDate or lastUsedDate.Sorting by attributes containing Null values such as lastUsedDate is not possible. Therefore, any record containing Null in the orderByAttribute will be filtered out before doing the sorting.",
         "operationId": "assignedTokenPageAsyncUsingPOST",
         "requestBody": {
           "content": {
@@ -8725,6 +8725,88 @@
         ]
       }
     },
+    "/api/web/v1/settings/fido/authenticators": {
+      "get": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "List FIDO authenticators",
+        "description": "Returns a list of known FIDO authenticators.",
+        "operationId": "listAuthenticatorsUsingGET",
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FIDOAuthenticatorModel"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "SETTINGS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
     "/api/web/v1/settings/fido/configuration/android": {
       "post": {
         "tags": [
@@ -12124,8 +12206,8 @@
         "tags": [
           "Tokens"
         ],
-        "summary": "Unlock a token",
-        "description": "Unlock a token. Caller requires the TOKENS:EDIT permission.",
+        "summary": "Token PIN unlock",
+        "description": "Unlock a token PIN. Caller requires the TOKENS:EDIT permission.",
         "operationId": "unlockTokenUsingPUT",
         "parameters": [
           {
@@ -12225,7 +12307,7 @@
           "Tokens"
         ],
         "summary": "Lists a page of assigned tokens",
-        "description": "Returns assigned tokens for the provided search parameters. Caller requires the TOKENS:VIEW permission.The following searchByAttributes are supported: <ul><li>state: NEW, ACTIVE, ACTIVATING or INACTIVE. Allowed operator: EQUALS.</li><li>serialNumber: a String up to 100 characters. Allowed operators are: EQUALS, CONTAINS, STARTS_WITH.</li><li>type: ENTRUST_SOFT_TOKEN, GOOGLE_AUTHENTICATOR, OATH_PHYSICAL_TOKEN or ENTRUST_LEGACY_TOKEN. Allowed operator: EQUALS.</li><li>loadDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>lastUsedDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>groupId: a String value should be a UUID of an existing group. Allowed operator: EQUALS. </li><li>label: a String up to 100 characters. Allowed operator: CONTAINS. </li></ul>The orderByAttribute supports these attribute names: serialNumber, state, loadDate or lastUsedDate.Sorting by attributes containing Null values such as lastUsedDate is not possible. Therefore, any record containing Null in the orderByAttribute will be filtered out before doing the sorting.",
+        "description": "Returns assigned tokens for the provided search parameters. Caller requires the TOKENS:VIEW permission.The following searchByAttributes are supported: <ul><li>state: NEW, ACTIVE, ACTIVATING or INACTIVE. Allowed operator: EQUALS.</li><li>serialNumber: a String up to 100 characters. Allowed operators are: EQUALS, CONTAINS, STARTS_WITH.</li><li>type: ENTRUST_SOFT_TOKEN, GOOGLE_AUTHENTICATOR, OATH_PHYSICAL_TOKEN or ENTRUST_LEGACY_TOKEN. Allowed operator: EQUALS.</li><li>loadDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL.</li><li>lastUsedDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, EXISTS, NOT_EXISTS.</li><li>groupId: a String value should be a UUID of an existing group. Allowed operator: EQUALS. </li><li>label: a String up to 100 characters. Allowed operator: CONTAINS. </li></ul>The orderByAttribute supports these attribute names: serialNumber, state, loadDate or lastUsedDate.Sorting by attributes containing Null values such as lastUsedDate is not possible. Therefore, any record containing Null in the orderByAttribute will be filtered out before doing the sorting.",
         "operationId": "assignedTokenPageUsingPOST",
         "requestBody": {
           "content": {
@@ -24787,6 +24869,10 @@
             "format": "int32",
             "example": 3600000
           },
+          "deltaCrawl": {
+            "type": "boolean",
+            "description": "Only sync changed users/groups (delta sync) on next crawl."
+          },
           "directory": {
             "$ref": "#/components/schemas/Directory"
           },
@@ -24798,6 +24884,11 @@
             "type": "string",
             "description": "The UUID of the Directory Sync Gateway Agent.",
             "example": "6781549d-433c-44ea-a42f-4705c26f3245"
+          },
+          "forceCrawlSequence": {
+            "type": "integer",
+            "description": "Sequence counter incremented on each force crawl to trigger agent sync.",
+            "format": "int32"
           },
           "groupDesyncPolicy": {
             "type": "string",
@@ -25700,16 +25791,37 @@
         },
         "description": "Represents the request body for downloading association file APIs for Android and Apple."
       },
+      "FIDOAuthenticatorModel": {
+        "required": [
+          "aaguid",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "aaguid": {
+            "type": "string",
+            "description": "The AAGUID uniquely identifying the authenticator model."
+          },
+          "name": {
+            "type": "string",
+            "description": "The display name of the authenticator model."
+          }
+        },
+        "description": "Represents a known FIDO authenticator."
+      },
       "FIDOAuthenticatorSettings": {
         "required": [
+          "authenticatorTrustMode",
           "backupEligibleCheck",
           "fidoRelyingPartyAllowlist",
           "fidoRelyingPartyAllowlistEnabled",
+          "nonCompliantAuthenticatorPolicy",
           "passkeyAuthenticatorLevel",
           "registrationAuthenticatorAttachment",
           "registrationRequireResidentKey",
           "registrationUserVerification",
           "timeout",
+          "unknownAuthenticatorPolicy",
           "userPresentCheck"
         ],
         "type": "object",
@@ -25721,6 +25833,24 @@
               "NONE",
               "INDIRECT",
               "DIRECT"
+            ]
+          },
+          "authenticatorList": {
+            "type": "array",
+            "description": "List of authenticator AAGUIDs used as the allow or block list. Only applicable when authenticatorTrustMode is ALLOW_SELECTED or BLOCK_SELECTED.",
+            "items": {
+              "type": "string",
+              "description": "List of authenticator AAGUIDs used as the allow or block list. Only applicable when authenticatorTrustMode is ALLOW_SELECTED or BLOCK_SELECTED.",
+              "format": "uuid"
+            }
+          },
+          "authenticatorTrustMode": {
+            "type": "string",
+            "description": "Controls which authenticators are permitted. ALLOW_ALL: any authenticator is accepted (default). ALLOW_SELECTED: only authenticators listed in authenticatorList are accepted. BLOCK_SELECTED: authenticators listed in authenticatorList are blocked; all others are accepted.",
+            "enum": [
+              "ALLOW_ALL",
+              "ALLOW_SELECTED",
+              "BLOCK_SELECTED"
             ]
           },
           "backupEligibleCheck": {
@@ -25739,6 +25869,14 @@
             "type": "boolean",
             "description": "A boolean value indicating if passkey/FIDO2 relying party allow list is enabled.",
             "default": false
+          },
+          "nonCompliantAuthenticatorPolicy": {
+            "type": "string",
+            "description": "Policy applied during authentication when an authenticator is no longer compliant (e.g. authenticator was removed from the allowed list after the user registered, or the trust policy was tightened). ALLOW: authentication succeeds (default). BLOCK: authentication is blocked.",
+            "enum": [
+              "ALLOW",
+              "BLOCK"
+            ]
           },
           "passkeyAuthenticatorLevel": {
             "type": "string",
@@ -25775,6 +25913,14 @@
             "type": "integer",
             "description": "The time in seconds that a client will wait for the FIDO token to respond. Value must be between 5 and 300.",
             "format": "int32"
+          },
+          "unknownAuthenticatorPolicy": {
+            "type": "string",
+            "description": "Policy applied when an authenticator's AAGUID cannot be identified from the server's metadata or community list. ALLOW: proceed normally (default). BLOCK: the operation is blocked.",
+            "enum": [
+              "ALLOW",
+              "BLOCK"
+            ]
           },
           "userPresentCheck": {
             "type": "boolean",
@@ -25796,6 +25942,24 @@
               "DIRECT"
             ]
           },
+          "authenticatorList": {
+            "type": "array",
+            "description": "List of authenticator AAGUIDs used as the allow or block list. Only applicable when authenticatorTrustMode is ALLOW_SELECTED or BLOCK_SELECTED.",
+            "items": {
+              "type": "string",
+              "description": "List of authenticator AAGUIDs used as the allow or block list. Only applicable when authenticatorTrustMode is ALLOW_SELECTED or BLOCK_SELECTED.",
+              "format": "uuid"
+            }
+          },
+          "authenticatorTrustMode": {
+            "type": "string",
+            "description": "Controls which authenticators are permitted. ALLOW_ALL: any authenticator is accepted (default). ALLOW_SELECTED: only authenticators listed in authenticatorList are accepted. BLOCK_SELECTED: authenticators listed in authenticatorList are blocked; all others are accepted.",
+            "enum": [
+              "ALLOW_ALL",
+              "ALLOW_SELECTED",
+              "BLOCK_SELECTED"
+            ]
+          },
           "backupEligibleCheck": {
             "type": "boolean",
             "description": "A boolean value indicating if synced passkey/FIDO2 tokens should be blocked.",
@@ -25812,6 +25976,14 @@
             "type": "boolean",
             "description": "A boolean value indicating if passkey/FIDO2 relying party allow list is enabled.",
             "default": false
+          },
+          "nonCompliantAuthenticatorPolicy": {
+            "type": "string",
+            "description": "Policy applied during authentication when an authenticator is no longer compliant (e.g. authenticator was removed from the allowed list after the user registered, or the trust policy was tightened). ALLOW: authentication succeeds (default). BLOCK: authentication is blocked.",
+            "enum": [
+              "ALLOW",
+              "BLOCK"
+            ]
           },
           "passkeyAuthenticatorLevel": {
             "type": "string",
@@ -25848,6 +26020,14 @@
             "type": "integer",
             "description": "The time in seconds that a client will wait for the FIDO token to respond. Value must be between 5 and 300.",
             "format": "int32"
+          },
+          "unknownAuthenticatorPolicy": {
+            "type": "string",
+            "description": "Policy applied when an authenticator's AAGUID cannot be identified from the server's metadata or community list. ALLOW: proceed normally (default). BLOCK: the operation is blocked.",
+            "enum": [
+              "ALLOW",
+              "BLOCK"
+            ]
           },
           "userPresentCheck": {
             "type": "boolean",
@@ -25979,7 +26159,7 @@
           },
           "name": {
             "type": "string",
-            "description": "The name for the new FIDO token."
+            "description": "Optional display name for the new FIDO token. If omitted or blank, the server auto-generates one from the authenticator model (DIRECT/INDIRECT attestation) or defaults to 'Passkey' (NONE attestation)."
           },
           "rpId": {
             "type": "string",
@@ -26593,7 +26773,7 @@
           },
           "authenticatorActivationType": {
             "type": "string",
-            "description": "A setting that indicates the type of token automatically created for the user when it is created. Choices are NONE, ENTRUST_SOFT_TOKEN or GOOGLE_AUTHENTICATOR. Default is NONE.",
+            "description": "A setting that indicates the type of token automatically created when a user is created. Choices are NONE, ENTRUST_SOFT_TOKEN or GOOGLE_AUTHENTICATOR. Default is NONE.",
             "enum": [
               "NONE",
               "ENTRUST_SOFT_TOKEN",
@@ -26615,34 +26795,34 @@
           },
           "defaultGrid": {
             "type": "boolean",
-            "description": "A flag that indicates if a grid card is created for the user when it is created.",
+            "description": "A flag that indicates whether a grid card is created when a user is created.",
             "default": false
           },
           "defaultMobileSmartCredential": {
             "type": "boolean",
-            "description": "A flag that indicates whether to automatically enroll a smart credential for the user when it is created. Default is false."
+            "description": "A flag that indicates whether to automatically enroll a smart credential when a user is created. Default is false."
           },
           "defaultPassword": {
             "type": "boolean",
-            "description": "A flag that indicates if a default password is created for the user when it is created. Default is false."
+            "description": "A flag that indicates whether a default password is created when a user is created. Default is false."
           },
           "dynamicLinkingTransactionLifetime": {
             "maximum": 3600,
             "minimum": 60,
             "type": "integer",
-            "description": "The amount of time in seconds before a dynamic linking transaction expired. Default is 300.",
+            "description": "The amount of time in seconds before a dynamic linking transaction expires. Default is 300.",
             "format": "int32"
           },
           "enableEnhancedAuthenticationDetails": {
             "type": "boolean",
-            "description": "Indicates whether to enable Enhanced Authentication Details or not.",
+            "description": "Indicates whether Enhanced Authentication Details are enabled.",
             "example": true
           },
           "inactivityGracePeriod": {
             "maximum": 2592000,
             "minimum": 60,
             "type": "integer",
-            "description": "The amount of time in seconds that administrators can grant for users.",
+            "description": "The grace period, in seconds, granted by an administrator after unblocking a user for inactivity. The user must authenticate within this period or they are considered inactive and blocked again (minimum 60 = 1 minute, default 3600 = 1 hour, maximum 2592000 = 30 days).",
             "format": "int32",
             "default": 3600
           },
@@ -26660,7 +26840,7 @@
           },
           "lockoutMode": {
             "type": "string",
-            "description": "The lockout mode to use for your IntelliTrust account. The AUTHENTICATOR lockout mode means a per-authenticator lockout will be enforced. When a user locks an authenticator they can no longer use that authenticator but can still use an alternative authenticator to log in. The USER lockout mode will lock out a user if any of their authenticators have been locked.",
+            "description": "The lockout mode for the account. AUTHENTICATOR enforces lockout per authenticator; USER locks the user if any authenticator is locked.",
             "enum": [
               "AUTHENTICATOR",
               "USER"
@@ -26668,7 +26848,7 @@
           },
           "manageInactiveUsers": {
             "type": "boolean",
-            "description": "Indicates whether to block users who have not authenticated for a time being.",
+            "description": "Indicates whether users are blocked after being inactive longer than userInactivityThreshold.",
             "default": false
           },
           "maxFIDOTokensPerUser": {
@@ -26717,7 +26897,7 @@
             "maximum": 3600,
             "minimum": 60,
             "type": "integer",
-            "description": "The amount of time in seconds before a push authentication requires expires if a response is not received from the mobile application.  Default is 300.",
+            "description": "The amount of time in seconds before a push authentication request expires if no response is received from the mobile application.  Default is 300.",
             "format": "int32"
           },
           "pushTransactionLifetime": {
@@ -26729,7 +26909,7 @@
           },
           "showOnboardingWizard": {
             "type": "boolean",
-            "description": "Indicates whether the Get Started wizard should be shown or not.",
+            "description": "Indicates whether the Get Started wizard is shown.",
             "example": true
           },
           "smartCredentialDefn": {
@@ -26737,10 +26917,10 @@
             "description": "The UUID of the Smart Credential Definition to use when a user enrolls a Smart Credential."
           },
           "userInactivityThreshold": {
-            "maximum": 31536000,
+            "maximum": 94608000,
             "minimum": 604800,
             "type": "integer",
-            "description": "The amount of time in seconds for a user to be inactive.",
+            "description": "The inactivity threshold in seconds after which a user is considered inactive (minimum 604800 = 7 days, default 2592000 = 30 days, maximum 94608000 = 1095 days or approximately 36 months).",
             "format": "int32",
             "default": 2592000
           }
@@ -29234,7 +29414,9 @@
               "FLEET_MANAGEMENT_ALERT",
               "VERIFYUSER",
               "USER_PRINTER_PREFERENCE",
-              "NAMEDPASSWORDS"
+              "NAMEDPASSWORDS",
+              "WEBSERVICES",
+              "WORKLOADIDENTITY"
             ]
           },
           "id": {
@@ -31835,7 +32017,8 @@
       "Token": {
         "required": [
           "appVerified",
-          "deviceVerified"
+          "deviceVerified",
+          "pushDeliveryEnabled"
         ],
         "type": "object",
         "properties": {
@@ -31933,6 +32116,11 @@
           "platform": {
             "type": "string",
             "description": "The mobile device platform on which an Entrust Soft Token was activated."
+          },
+          "pushDeliveryEnabled": {
+            "type": "boolean",
+            "description": "A flag indicating if push delivery is enabled for this token.",
+            "example": true
           },
           "registeredForTransactions": {
             "type": "boolean",
@@ -32182,7 +32370,7 @@
             "description": "The unlock challenge generated by the token when it is locked."
           }
         },
-        "description": "Parameters specifying parameters for the token unlock operation."
+        "description": "Parameters for the token PIN unlock operation."
       },
       "UnlockResult": {
         "required": [
@@ -32192,10 +32380,10 @@
         "properties": {
           "unlockCode": {
             "type": "string",
-            "description": "The unlock code generated by the service in response to the unlock challenge. This value should be entered into the token to complete the unlock."
+            "description": "The unlock code generated by the service in response to the unlock challenge. This value should be entered into the token to complete token PIN unlock."
           }
         },
-        "description": "The response returned from a token unlock operation."
+        "description": "The response returned from a token PIN unlock operation."
       },
       "UnsyncUserParms": {
         "required": [
@@ -33547,12 +33735,12 @@
           "passwordFormat": {
             "type": "string",
             "description": "Define the password format of new password, it's BCRYPT when importing BCrypted password, it's GETACCESS when importing GetAccess password,it defaults to CLEARTEXT if not provided.When passwordFormat is BCRYPT or GETACCESS, the following restrictions must be enforced:<ul><li>1.the user must be an IDaaS local user.</li><li>2.currentPassword must be null.</li><li>3.generatePassword must be false.</li><li>4.emailPassword must be false.</li><li>5.returnPassword must be false.</li></ul>",
-            "default": "CLEARTEXT",
             "enum": [
               "CLEARTEXT",
               "BCRYPT",
               "GETACCESS"
-            ]
+            ],
+            "default": "CLEARTEXT"
           },
           "returnPassword": {
             "type": "boolean",
@@ -33935,6 +34123,7 @@
               "passkey.created",
               "passkey.updated",
               "passkey.deleted",
+              "passkey.registration.failed",
               "kba.question.created",
               "token.created",
               "token.activated",
