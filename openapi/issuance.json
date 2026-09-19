@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.46"
+    "version": "5.47"
   },
   "servers": [
     {
@@ -59,9 +59,277 @@
     {
       "name": "Webhooks",
       "description": "Webhook Controllers"
+    },
+    {
+      "name": "WebServices",
+      "description": "Web Services Controllers"
     }
   ],
   "paths": {
+    "/api/web/issuance/v1/webservices": {
+      "get": {
+        "tags": [
+          "WebServices"
+        ],
+        "summary": "List web services",
+        "description": "Return a list of web services. Caller is required to have WEB_SERVICES:VIEW permission.",
+        "operationId": "getWebServices",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WebService"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBSERVICES:VIEW"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "WebServices"
+        ],
+        "summary": "Register a web service",
+        "description": "Register a web service with callback URL. Caller is required to have WEB_SERVICES:ADD permission.",
+        "operationId": "createWebService",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebServiceParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebService"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBSERVICES:ADD"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/issuance/v1/webservices/test/{id}": {
+      "post": {
+        "tags": [
+          "WebServices"
+        ],
+        "summary": "Test a web service",
+        "description": "Sends a dummy payload to the registered web service callback URL. Use this to ensure your API is ready to start accepting web service notifications. Caller is required to have WEB_SERVICES:EDIT permission.",
+        "operationId": "testWebService",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the web service to test.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBSERVICES:EDIT"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/issuance/v1/webservices/{id}": {
+      "get": {
+        "tags": [
+          "WebServices"
+        ],
+        "summary": "Get a web service by id",
+        "description": "Get the specified web service. Caller is required to have WEB_SERVICES:VIEW permission.",
+        "operationId": "readWebService",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the web service.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebService"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBSERVICES:VIEW"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "WebServices"
+        ],
+        "summary": "Update a web service",
+        "description": "Update a web service with callback URL. Caller is required to have WEB_SERVICES:EDIT permission.",
+        "operationId": "updateWebService",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the web service to be updated.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebServiceParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebService"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBSERVICES:EDIT"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "WebServices"
+        ],
+        "summary": "Delete a web service",
+        "description": "Delete a registered web service by ID. Caller is required to have WEB_SERVICES:REMOVE permission.",
+        "operationId": "deleteWebService",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the web service to be deleted.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBSERVICES:REMOVE"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/issuance/v1/webservices/{id}/fields": {
+      "get": {
+        "tags": [
+          "WebServices"
+        ],
+        "summary": "Get web service fields",
+        "description": "Get the fields available from the web service by making a request and parsing the response. Caller is required to have WEB_SERVICES:VIEW permission.",
+        "operationId": "getWebServiceFields",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the web service.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "WEBSERVICES:VIEW"
+            ]
+          }
+        ]
+      }
+    },
     "/api/web/v1/adminapi/authenticate": {
       "post": {
         "tags": [
@@ -7873,7 +8141,8 @@
               "CREATE_TENANT",
               "REVOKE_MFP",
               "DELETE_GRIDS",
-              "DELETE_TOKENS"
+              "DELETE_TOKENS",
+              "SHARE_SMARTCARDS"
             ]
           }
         }
@@ -9405,7 +9674,8 @@
               "CREATE_TENANT",
               "REVOKE_MFP",
               "DELETE_GRIDS",
-              "DELETE_TOKENS"
+              "DELETE_TOKENS",
+              "SHARE_SMARTCARDS"
             ]
           }
         }
@@ -9627,7 +9897,8 @@
               "CREATE_TENANT",
               "REVOKE_MFP",
               "DELETE_GRIDS",
-              "DELETE_TOKENS"
+              "DELETE_TOKENS",
+              "SHARE_SMARTCARDS"
             ]
           }
         }
@@ -9971,7 +10242,9 @@
               "FLEET_MANAGEMENT_ALERT",
               "VERIFYUSER",
               "USER_PRINTER_PREFERENCE",
-              "NAMEDPASSWORDS"
+              "NAMEDPASSWORDS",
+              "WEBSERVICES",
+              "WORKLOADIDENTITY"
             ]
           },
           "id": {
@@ -10376,7 +10649,8 @@
               "CREATE_TENANT",
               "REVOKE_MFP",
               "DELETE_GRIDS",
-              "DELETE_TOKENS"
+              "DELETE_TOKENS",
+              "SHARE_SMARTCARDS"
             ]
           }
         }
@@ -11774,7 +12048,8 @@
       "Token": {
         "required": [
           "appVerified",
-          "deviceVerified"
+          "deviceVerified",
+          "pushDeliveryEnabled"
         ],
         "type": "object",
         "properties": {
@@ -11872,6 +12147,11 @@
           "platform": {
             "type": "string",
             "description": "The mobile device platform on which an Entrust Soft Token was activated."
+          },
+          "pushDeliveryEnabled": {
+            "type": "boolean",
+            "description": "A flag indicating if push delivery is enabled for this token.",
+            "example": true
           },
           "registeredForTransactions": {
             "type": "boolean",
@@ -12870,6 +13150,130 @@
         },
         "description": "Information returned when a user password details is queried."
       },
+      "WebService": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string",
+            "description": "The client ID if using OAuth authentication."
+          },
+          "id": {
+            "type": "string",
+            "description": "The ID of the web service. This value is generated when the web service is created."
+          },
+          "parameters": {
+            "type": "string",
+            "description": "The runtime-substitutable parameters for this web service."
+          },
+          "postBody": {
+            "type": "string",
+            "description": "The POST request body template for this web service."
+          },
+          "scope": {
+            "type": "string",
+            "description": "The scope if using OAuth authentication."
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "The token ID if using token authentication."
+          },
+          "tokenUrl": {
+            "type": "string",
+            "description": "The token URL if using OAuth authentication."
+          },
+          "username": {
+            "type": "string",
+            "description": "The username if using username/password or OAuth authentication."
+          },
+          "webServiceAuthentication": {
+            "type": "string",
+            "description": "The type of authentication the web service uses."
+          },
+          "webServiceMethod": {
+            "type": "string",
+            "description": "The HTTP method of the web service."
+          },
+          "webServiceName": {
+            "type": "string",
+            "description": "The name of the web service."
+          },
+          "webServiceURL": {
+            "type": "string",
+            "description": "The URL of the web service.",
+            "example": "https://mycompany.com/api"
+          }
+        },
+        "description": "Information about a configured web service."
+      },
+      "WebServiceParms": {
+        "required": [
+          "webServiceAuthentication",
+          "webServiceMethod",
+          "webServiceName",
+          "webServiceURL"
+        ],
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string",
+            "description": "The client ID used for OAuth authentication."
+          },
+          "clientSecret": {
+            "type": "string",
+            "description": "The client secret used for OAuth authentication."
+          },
+          "parameters": {
+            "type": "string",
+            "description": "The runtime-substitutable parameters for this web service."
+          },
+          "password": {
+            "type": "string",
+            "description": "The password used for username/password or OAuth authentication."
+          },
+          "postBody": {
+            "type": "string",
+            "description": "The POST request body template for this web service."
+          },
+          "scope": {
+            "type": "string",
+            "description": "The scope used for OAuth authentication."
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "The token ID used for token authentication."
+          },
+          "tokenUrl": {
+            "type": "string",
+            "description": "The token URL used for OAuth authentication."
+          },
+          "tokenValue": {
+            "type": "string",
+            "description": "The token value used for token authentication."
+          },
+          "username": {
+            "type": "string",
+            "description": "The username used for username/password or OAuth authentication."
+          },
+          "webServiceAuthentication": {
+            "type": "string",
+            "description": "The authentication type of this web service."
+          },
+          "webServiceMethod": {
+            "type": "string",
+            "description": "The HTTP method of this web service."
+          },
+          "webServiceName": {
+            "type": "string",
+            "description": "The name for this web service."
+          },
+          "webServiceURL": {
+            "type": "string",
+            "description": "The callback URL for this web service.",
+            "example": "https://mycompany.com/api"
+          }
+        },
+        "description": "Parameters including the callback URL."
+      },
       "Webhook": {
         "required": [
           "callbackUrl",
@@ -12957,6 +13361,7 @@
               "passkey.created",
               "passkey.updated",
               "passkey.deleted",
+              "passkey.registration.failed",
               "kba.question.created",
               "token.created",
               "token.activated",
