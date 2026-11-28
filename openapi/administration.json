@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.47"
+    "version": "5.48"
   },
   "servers": [
     {
@@ -1833,6 +1833,275 @@
           {
             "AdminAPIAuthentication": [
               "TEMPLATES:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/async/fidotokenspaged": {
+      "post": {
+        "tags": [
+          "FIDO Tokens"
+        ],
+        "summary": "Lists a page of FIDO/Passkey tokens asynchronously",
+        "description": "Returns FIDO/Passkey tokens for the provided search parameters. Caller requires the FIDOTOKENS:VIEW permission. The following searchByAttributes are supported: <ul><li>userId: a String value (it matches the User ID or any alias). Allowed operator is EQUALS. </li><li>name: a String matching the FIDO token name. Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>authenticatorModel: a String value matching the authenticator model name. Allowed operators are: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, STARTS_WITH, ENDS_WITH. </li><li>state: FIDO token state Active or Inactive. Allowed operator is: EQUALS </li><li>createDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL</li><li>lastUsedDate: a String value representing an ISO-8601 date in UTC time (e.g., 2018-08-04T18:15:30). Allowed operators are:  GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, EXISTS, NOT_EXISTS</li></ul>If you provide more than one search attribute, they are joined with an AND condition.<br><br>The orderByAttribute supports these attribute names: userId and createDate.",
+        "operationId": "fidoTokensPagedAsyncUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AsyncOperationStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "FIDOTOKENS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/async/fidotokenspaged/{id}/result": {
+      "get": {
+        "tags": [
+          "FIDO Tokens"
+        ],
+        "summary": "Get the result of an asynchronous list FIDO tokens operation",
+        "description": "Get the result of an asynchronous list FIDO tokens operation. Caller requires the FIDOTOKENS:VIEW permission.",
+        "operationId": "fidoTokensPagedAsyncResultUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the operation whose results are to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FIDOTokensPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "FIDOTOKENS:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/async/fidotokenspaged/{id}/status": {
+      "get": {
+        "tags": [
+          "FIDO Tokens"
+        ],
+        "summary": "Get the status of an asynchronous list FIDO tokens operation",
+        "description": "Get the status of an asynchronous list FIDO tokens operation. Caller requires the FIDOTOKENS:VIEW permission.",
+        "operationId": "fidoTokensPagedAsyncStatusUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the search operation whose status is to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AsyncOperationStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "FIDOTOKENS:VIEW"
             ]
           }
         ]
@@ -13285,6 +13554,106 @@
         ]
       }
     },
+    "/api/web/v1/users/{id}/authenticators/unlock": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Unlock authenticators for a user",
+        "description": "Unlock one or more authenticator lockouts for the user. When an authenticator type is PASSWORD, namedPasswordId identifies the named password. Caller requires the USERS:EDIT permission.",
+        "operationId": "unlockAuthenticatorsUsingPUT",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The UUID of the user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UnlockAuthenticatorsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnlockAuthenticatorsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "USERS:EDIT"
+            ]
+          }
+        ]
+      }
+    },
     "/api/web/v1/users/{id}/grids/assign": {
       "put": {
         "tags": [
@@ -14023,6 +14392,192 @@
         ]
       }
     },
+    "/api/web/v1/users/{userid}/face/registrationinvitation": {
+      "get": {
+        "tags": [
+          "Face"
+        ],
+        "summary": "Get Face Biometric registration invitation information",
+        "description": "Get information about whether a Face Biometric registration invitation can be created for the specified user. Caller requires the FACE:ADD permission.",
+        "operationId": "getFaceRegistrationInvitationInfoUsingGET",
+        "parameters": [
+          {
+            "name": "userid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FaceRegistrationInvitationInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "FACE:ADD"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Face"
+        ],
+        "summary": "Send a Face Biometric registration invitation",
+        "description": "Create and send a Magic Link invitation that allows the specified user to register one Face Biometric. Caller requires the FACE:ADD permission.",
+        "operationId": "createFaceRegistrationInvitationUsingPUT",
+        "parameters": [
+          {
+            "name": "userid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MagicLinkCreateParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MagicLinkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "FACE:ADD"
+            ]
+          }
+        ]
+      }
+    },
     "/api/web/v1/users/{userid}/faces": {
       "get": {
         "tags": [
@@ -14111,6 +14666,192 @@
           {
             "AdminAPIAuthentication": [
               "FACE:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/users/{userid}/fidotokens/registrationinvitation": {
+      "get": {
+        "tags": [
+          "FIDO Tokens"
+        ],
+        "summary": "Get Passkey registration invitation information",
+        "description": "Get information about whether a Passkey registration invitation can be created for the specified user. Caller requires the FIDOTOKENS:ADD permission.",
+        "operationId": "getPasskeyRegistrationInvitationInfoUsingGET",
+        "parameters": [
+          {
+            "name": "userid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FIDORegistrationInvitationInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "FIDOTOKENS:ADD"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "FIDO Tokens"
+        ],
+        "summary": "Send a Passkey registration invitation",
+        "description": "Create and send a Magic Link invitation that allows the specified user to register one Passkey. Caller requires the FIDOTOKENS:ADD permission.",
+        "operationId": "createPasskeyRegistrationInvitationUsingPUT",
+        "parameters": [
+          {
+            "name": "userid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MagicLinkCreateParms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MagicLinkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "FIDOTOKENS:ADD"
             ]
           }
         ]
@@ -14591,6 +15332,16 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "The type of Magic Link to retrieve. Supported values are AUTHENTICATION, REGISTRATION, PASSWORD_RESET, PASSKEY_REGISTRATION, and FACE_BIOMETRIC_REGISTRATION. If omitted or blank, returns the latest active Magic Link for the user.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "PASSKEY_REGISTRATION"
+            }
           }
         ],
         "responses": {
@@ -14668,7 +15419,7 @@
           "Magic Link"
         ],
         "summary": "Create and get the Magic Link for a user",
-        "description": "Create and get the Magic Link for the specified user UUID. Requires the MAGICLINKS:ADD permission.",
+        "description": "Create and get the Magic Link for the specified user UUID. Requires the MAGICLINKS:ADD permission. PASSKEY_REGISTRATION also requires FIDOTOKENS:ADD. FACE_BIOMETRIC_REGISTRATION also requires FACE:ADD.",
         "operationId": "createMagicLinkUsingPUT",
         "parameters": [
           {
@@ -16026,6 +16777,99 @@
           {
             "AdminAPIAuthentication": [
               "FACE:VIEW"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/web/v1/users/{userid}/settings/namedpasswords": {
+      "get": {
+        "tags": [
+          "Passwords"
+        ],
+        "summary": "Gets all user's named password settings",
+        "description": "Gets all user's named password settings. Caller requires the USERPASSWORDS:VIEW permission.",
+        "operationId": "getUserNamedPasswordsSettingsUsingGET",
+        "parameters": [
+          {
+            "name": "userid",
+            "in": "path",
+            "description": "The UUID of the user whose named password settings are to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserPasswordSettings"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminAPIAuthentication": [
+              "USERPASSWORDS:VIEW"
             ]
           }
         ]
@@ -23835,6 +24679,10 @@
             "type": "boolean",
             "description": "A flag indicating if the authentication flow can be modified or deleted."
           },
+          "strictAuthenticatorOrder": {
+            "type": "boolean",
+            "description": "When true, the system enforces the strict order of authenticators as defined in the authentication flow, returning only the first authenticator available to the user.Applies only when the User Login and/or IDP with second factor flow is enabled."
+          },
           "userLoginFirstStep": {
             "type": "string",
             "description": "The authenticator type to use in the first step of a two-step authentication scenario when the  User Login flow is enabled.",
@@ -23965,6 +24813,10 @@
             "type": "boolean",
             "description": "A flag indicating if group based OTP policy can be overridden by the authentication flow."
           },
+          "strictAuthenticatorOrder": {
+            "type": "boolean",
+            "description": "When true, the system enforces the strict order of authenticators as defined in the authentication flow, returning only the first authenticator available to the user. Applies only when the User Login and/or IDP with second factor flow is enabled."
+          },
           "userLoginFirstStep": {
             "type": "string",
             "description": "The authenticator type to use in the first step of a two-step authentication scenario when the  User Login flow is enabled.",
@@ -24012,6 +24864,63 @@
           }
         },
         "description": "Parameters defining the new authentication flow."
+      },
+      "AuthenticatorLockoutSettings": {
+        "required": [
+          "authenticatorType"
+        ],
+        "type": "object",
+        "properties": {
+          "authenticatorType": {
+            "type": "string",
+            "description": "Authenticator type",
+            "enum": [
+              "MACHINE",
+              "PASSWORD",
+              "EXTERNAL",
+              "KBA",
+              "TEMP_ACCESS_CODE",
+              "OTP",
+              "GRID",
+              "TOKEN",
+              "TOKENCR",
+              "TOKENPUSH",
+              "FIDO",
+              "SMARTCREDENTIALPUSH",
+              "PASSWORD_AND_SECONDFACTOR",
+              "SMART_LOGIN",
+              "IDP",
+              "PASSKEY",
+              "IDP_AND_SECONDFACTOR",
+              "USER_CERTIFICATE",
+              "FACE",
+              "PASSTHROUGH",
+              "MAGICLINK"
+            ]
+          },
+          "lockoutCount": {
+            "maximum": 20,
+            "minimum": 1,
+            "type": "integer",
+            "description": "Lockout count for this authenticator",
+            "format": "int32"
+          },
+          "lockoutLifetime": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Lockout lifetime in seconds for this authenticator",
+            "format": "int32"
+          },
+          "namedPasswordId": {
+            "type": "string",
+            "description": "Named password id for PASSWORD lockout rows"
+          },
+          "namedPasswordName": {
+            "type": "string",
+            "description": "Named password name for PASSWORD lockout rows"
+          }
+        },
+        "description": "Per-authenticator lockout settings"
       },
       "ChangeStateParms": {
         "required": [
@@ -24830,8 +25739,7 @@
           "certificate": {
             "type": "string",
             "description": "The SSL certificate to connect to the Directory with.",
-            "format": "byte",
-            "deprecated": true
+            "format": "byte"
           },
           "directoryId": {
             "type": "string",
@@ -25466,6 +26374,10 @@
             "type": "boolean",
             "description": "A flag indicating if app verification is required during activation."
           },
+          "enforcePolicyChanges": {
+            "type": "boolean",
+            "description": "A flag indicating if enforcing policy changes. The default is false."
+          },
           "facialRecognitionAllowed": {
             "type": "boolean",
             "description": "A flag indicating if the facial recognition feature supported by the Entrust Soft Token application is allowed. The default is false."
@@ -25536,6 +26448,14 @@
               6,
               8
             ]
+          },
+          "pinLength": {
+            "maximum": 8,
+            "minimum": 4,
+            "type": "integer",
+            "description": "The required length of the token PIN. Default is 4.",
+            "format": "int32",
+            "example": 4
           },
           "pinRequired": {
             "type": "boolean",
@@ -26182,6 +27102,16 @@
         },
         "description": "FIDORegisterResponse defines the information returned from a FIDO token to complete registration."
       },
+      "FIDORegistrationInvitationInfo": {
+        "type": "object",
+        "properties": {
+          "registrationAvailable": {
+            "type": "boolean",
+            "description": "Indicates whether a Passkey registration invitation can be created for the user."
+          }
+        },
+        "description": "Information about whether a Passkey registration invitation can be created for a user."
+      },
       "FIDOToken": {
         "type": "object",
         "properties": {
@@ -26672,6 +27602,20 @@
         },
         "description": "Face Biometric EBT information for a user."
       },
+      "FaceRegistrationInvitationInfo": {
+        "type": "object",
+        "properties": {
+          "mobileRegistration": {
+            "type": "boolean",
+            "description": "Indicates whether Face Biometric policy is configured for mobile registration."
+          },
+          "registrationAvailable": {
+            "type": "boolean",
+            "description": "Indicates whether a Face Biometric registration invitation can be created for the user."
+          }
+        },
+        "description": "Information about whether a Face Biometric registration invitation can be created for a user."
+      },
       "FaceUpdateParms": {
         "type": "object",
         "properties": {
@@ -26779,6 +27723,13 @@
               "ENTRUST_SOFT_TOKEN",
               "GOOGLE_AUTHENTICATOR"
             ]
+          },
+          "authenticatorLockoutSettings": {
+            "type": "array",
+            "description": "Per-authenticator lockout settings used when lockoutMode is AUTHENTICATOR.",
+            "items": {
+              "$ref": "#/components/schemas/AuthenticatorLockoutSettings"
+            }
           },
           "corsEnabled": {
             "type": "boolean",
@@ -27860,8 +28811,8 @@
           },
           "type": {
             "type": "string",
-            "description": "The type of Magic Link that was sent.",
-            "example": "AUTHENTICATION/REGISTRATION/PASSWORD_RESET."
+            "description": "The type of Magic Link that was sent. Supported values are AUTHENTICATION, REGISTRATION, PASSWORD_RESET, PASSKEY_REGISTRATION, and FACE_BIOMETRIC_REGISTRATION.",
+            "example": "PASSKEY_REGISTRATION"
           }
         },
         "description": "Magic Link authenticator information."
@@ -27886,8 +28837,9 @@
           },
           "type": {
             "type": "string",
-            "description": "The type of magic link to create. If not specified, defaults to REGISTRATION.",
-            "example": "REGISTRATION/PASSWORD_RESET"
+            "description": "The type of Magic Link to create. Supported values are REGISTRATION, PASSWORD_RESET, PASSKEY_REGISTRATION, and FACE_BIOMETRIC_REGISTRATION. If not specified, defaults to REGISTRATION.",
+            "example": "PASSKEY_REGISTRATION",
+            "default": "REGISTRATION"
           }
         },
         "description": "Magic link Parameters for a user."
@@ -27955,6 +28907,25 @@
           }
         },
         "description": "Information about an attribute that was modified for an entity."
+      },
+      "NamedPasswordDetails": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the named password policy is enabled."
+          },
+          "id": {
+            "type": "string",
+            "description": "The ID of the named password."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the named password.",
+            "example": "default"
+          }
+        },
+        "description": "NamedPasswordDetails"
       },
       "OAuthRole": {
         "required": [
@@ -29124,14 +30095,14 @@
           },
           "authenticators": {
             "type": "array",
-            "description": "The list of second factor authenticator types that can be used during a password reset operation.",
+            "description": "The list of second factor authenticator types that can be used during a password reset operation. Only password reset settings V1 or V2 can manage authenticators. This attribute is not returned  for password reset settings V3 and above.",
             "example": [
               "OTP",
               "TOKEN"
             ],
             "items": {
               "type": "string",
-              "description": "The list of second factor authenticator types that can be used during a password reset operation.",
+              "description": "The list of second factor authenticator types that can be used during a password reset operation. Only password reset settings V1 or V2 can manage authenticators. This attribute is not returned  for password reset settings V3 and above.",
               "example": "[\"OTP\",\"TOKEN\"]",
               "enum": [
                 "MACHINE",
@@ -29182,7 +30153,7 @@
           },
           "groups": {
             "type": "array",
-            "description": "Groups that can perform a password reset operation--not supported if these settings are part of a Group Policy (not the Global Policy).",
+            "description": "Groups that can perform a password reset operation--not supported if these settings are part of a Group Policy (not the Global Policy). Only password reset settings V1 can manage groups.This attribute is not returned for password reset settings V3 and above.",
             "deprecated": true,
             "items": {
               "$ref": "#/components/schemas/Group"
@@ -29191,6 +30162,11 @@
           "id": {
             "type": "string",
             "description": "ID of the password reset settings."
+          },
+          "mobilePasswordResetEnabled": {
+            "type": "boolean",
+            "description": "Flag indicates if password reset is allowed or not rom a mobile app.",
+            "example": true
           },
           "namedPasswordId": {
             "type": "string",
@@ -31259,7 +32235,7 @@
             }
           }
         },
-        "description": "Parameters specifying search attributes or a cursor to get results from a previous search."
+        "description": "Parameters specifying which FIDO tokens are to be fetched."
       },
       "ServiceBundle": {
         "required": [
@@ -32359,6 +33335,127 @@
         },
         "description": "Travel velocity checks to see if the time between authentications at different locations means the user has traveled faster than a given velocity. If the velocity is exceeded, risk applies."
       },
+      "UnlockAuthenticatorRequest": {
+        "required": [
+          "authenticatorType"
+        ],
+        "type": "object",
+        "properties": {
+          "authenticatorType": {
+            "type": "string",
+            "description": "The authenticator type to unlock (e.g., PASSWORD, FIDO, OTP, TOKEN, GRID, KBA)",
+            "example": "PASSWORD",
+            "enum": [
+              "MACHINE",
+              "PASSWORD",
+              "EXTERNAL",
+              "KBA",
+              "TEMP_ACCESS_CODE",
+              "OTP",
+              "GRID",
+              "TOKEN",
+              "TOKENCR",
+              "TOKENPUSH",
+              "FIDO",
+              "SMARTCREDENTIALPUSH",
+              "PASSWORD_AND_SECONDFACTOR",
+              "SMART_LOGIN",
+              "IDP",
+              "PASSKEY",
+              "IDP_AND_SECONDFACTOR",
+              "USER_CERTIFICATE",
+              "FACE",
+              "PASSTHROUGH",
+              "MAGICLINK"
+            ]
+          },
+          "namedPasswordId": {
+            "type": "string",
+            "description": "Named password ID; when omitted or blank, the default password is unlocked",
+            "example": "f5a8e4e2-39b5-4ad1-bf0a-c60d242a0409"
+          }
+        },
+        "description": "Request to unlock a specific authenticator for a user"
+      },
+      "UnlockAuthenticatorResponse": {
+        "type": "object",
+        "properties": {
+          "authenticatorType": {
+            "type": "string",
+            "description": "The authenticator type that was unlocked",
+            "example": "PASSWORD",
+            "enum": [
+              "MACHINE",
+              "PASSWORD",
+              "EXTERNAL",
+              "KBA",
+              "TEMP_ACCESS_CODE",
+              "OTP",
+              "GRID",
+              "TOKEN",
+              "TOKENCR",
+              "TOKENPUSH",
+              "FIDO",
+              "SMARTCREDENTIALPUSH",
+              "PASSWORD_AND_SECONDFACTOR",
+              "SMART_LOGIN",
+              "IDP",
+              "PASSKEY",
+              "IDP_AND_SECONDFACTOR",
+              "USER_CERTIFICATE",
+              "FACE",
+              "PASSTHROUGH",
+              "MAGICLINK"
+            ]
+          },
+          "namedPasswordName": {
+            "type": "string",
+            "description": "Named password name for PASSWORD lockout rows"
+          },
+          "unlocked": {
+            "type": "boolean",
+            "description": "Whether the requested authenticator was unlocked",
+            "example": true,
+            "default": false
+          },
+          "userId": {
+            "type": "string",
+            "description": "The ID of the unlocked user",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          }
+        },
+        "description": "Response describing an authenticator unlock attempt for a user"
+      },
+      "UnlockAuthenticatorsRequest": {
+        "required": [
+          "unlockAuthenticatorsRequest"
+        ],
+        "type": "object",
+        "properties": {
+          "unlockAuthenticatorsRequest": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UnlockAuthenticatorRequest"
+            }
+          }
+        },
+        "description": "Request to unlock one or more authenticator lockouts for a user"
+      },
+      "UnlockAuthenticatorsResponse": {
+        "required": [
+          "unlockAuthenticatorsResponse"
+        ],
+        "type": "object",
+        "properties": {
+          "unlockAuthenticatorsResponse": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UnlockAuthenticatorResponse"
+            }
+          }
+        },
+        "description": "Response describing authenticator unlock operations for a user"
+      },
       "UnlockParms": {
         "required": [
           "unlockChallenge"
@@ -33139,6 +34236,15 @@
           },
           "name": {
             "type": "string",
+            "description": "The user's named password authentication that is locked out. Use namedPasswordName instead.",
+            "deprecated": true
+          },
+          "namedPasswordId": {
+            "type": "string",
+            "description": "The named password ID when the authenticator type is PASSWORD."
+          },
+          "namedPasswordName": {
+            "type": "string",
             "description": "The users named password authentication that is locked out."
           },
           "remainingAuthenticationAttempts": {
@@ -33689,7 +34795,6 @@
             "type": "string",
             "description": "The password expiration time.",
             "format": "date-time",
-            "deprecated": true,
             "example": "2019-02-19T13:15:27Z"
           }
         },
@@ -33735,12 +34840,12 @@
           "passwordFormat": {
             "type": "string",
             "description": "Define the password format of new password, it's BCRYPT when importing BCrypted password, it's GETACCESS when importing GetAccess password,it defaults to CLEARTEXT if not provided.When passwordFormat is BCRYPT or GETACCESS, the following restrictions must be enforced:<ul><li>1.the user must be an IDaaS local user.</li><li>2.currentPassword must be null.</li><li>3.generatePassword must be false.</li><li>4.emailPassword must be false.</li><li>5.returnPassword must be false.</li></ul>",
+            "default": "CLEARTEXT",
             "enum": [
               "CLEARTEXT",
               "BCRYPT",
               "GETACCESS"
-            ],
-            "default": "CLEARTEXT"
+            ]
           },
           "returnPassword": {
             "type": "boolean",
@@ -33825,13 +34930,18 @@
             "format": "int32",
             "example": 3
           },
+          "namedPasswordDetails": {
+            "$ref": "#/components/schemas/NamedPasswordDetails"
+          },
           "namedPasswordEnabled": {
             "type": "boolean",
-            "description": "Indicates whether the named password policy is enabled for the user."
+            "description": "Whether the named password policy is enabled. Deprecated; use namedPasswordDetails.enabled instead.",
+            "deprecated": true
           },
           "namedPasswordId": {
             "type": "string",
-            "description": "The ID of the named password."
+            "description": "The ID of the named password. Deprecated; use namedPasswordDetails.id instead.",
+            "deprecated": true
           },
           "numberOfLowercaseRequired": {
             "type": "integer",
@@ -34129,6 +35239,8 @@
               "token.activated",
               "token.activated.online",
               "token.seed.rotated",
+              "tokenpush.notification.sent",
+              "tokenpush.notification.failed",
               "hardware.token.assigned",
               "face.biometric.created",
               "credential.create",

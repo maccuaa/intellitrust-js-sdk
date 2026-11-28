@@ -8,7 +8,7 @@
       "url": "https://www.entrust.com/",
       "email": "support@entrust.com"
     },
-    "version": "5.47"
+    "version": "5.48"
   },
   "servers": [
     {
@@ -1195,7 +1195,8 @@
         "description": "Response associated with an authentication request."
       },
       "CHAPResponse": {
-        "type": "object"
+        "type": "object",
+        "description": "CHAP Response if you client is using CHAP."
       },
       "Error": {
         "required": [
@@ -1246,7 +1247,8 @@
         "required": [
           "challenge",
           "timeout",
-          "timeoutMillis"
+          "timeoutMillis",
+          "userVerification"
         ],
         "type": "object",
         "properties": {
@@ -1272,6 +1274,15 @@
             "type": "integer",
             "description": "The number of milliseconds that the client will wait for the FIDO token to respond.",
             "format": "int32"
+          },
+          "userVerification": {
+            "type": "string",
+            "description": "The user verification requirement for FIDO authentication.",
+            "enum": [
+              "DISCOURAGED",
+              "PREFERRED",
+              "REQUIRED"
+            ]
           }
         },
         "description": "If the authentication challenge is of type FIDO, the FIDOChallenge will contain the FIDO challenge parameters that must be passed to the FIDO token to complete authentication."
@@ -1561,7 +1572,7 @@
             ]
           }
         },
-        "description": "The parameters specifying what is to be changed."
+        "description": "A FIDOTokenParms defines the information passed when modifying a FIDO token."
       },
       "FaceChallenge": {
         "type": "object",
@@ -2036,7 +2047,8 @@
           "namedPasswordId": {
             "type": "string"
           }
-        }
+        },
+        "description": "The details of the named password"
       },
       "RequestDetail": {
         "type": "object",
@@ -2685,6 +2697,15 @@
             "example": "2019-02-20T13:15:27Z"
           },
           "name": {
+            "type": "string",
+            "description": "The user's named password authentication that is locked out. Use namedPasswordName instead.",
+            "deprecated": true
+          },
+          "namedPasswordId": {
+            "type": "string",
+            "description": "The named password ID when the authenticator type is PASSWORD."
+          },
+          "namedPasswordName": {
             "type": "string",
             "description": "The users named password authentication that is locked out."
           },
